@@ -29,7 +29,8 @@ router.post("/signup", async (req, res) => {
 
         const newDocument = {
             name: name,
-            password: hashedPassword
+            password: hashedPassword,
+            userType: "User"
         };
 
         let collection = await db.collection("users");
@@ -66,9 +67,21 @@ router.post('/login', async (req, res) => {
         return res.status(401).send('Invalid username or password');
     }
 
-    const token = jwt.sign({ id: result._id, name: result.name }, 'your_jwt_secret', { expiresIn: '1h' });
-    res.status(200).json({ id: result._id, name: result.name });
-    res.status(200).json({ message: 'Authentication successful', token });
+    const token = jwt.sign({ 
+        id: result._id, 
+        name: result.name, 
+        userType: result.userType 
+    }, 'your_jwt_secret', { expiresIn: '1h' });
+    
+    res.status(200).json({ 
+        message: 'Authentication successful', 
+        token: token,
+        user: { 
+            id: result._id, 
+            name: result.name, 
+            userType: result.userType 
+        }
+    });
     console.log(token);
     }
     catch (error) {
@@ -79,4 +92,3 @@ router.post('/login', async (req, res) => {
 
 
 export default router;
-

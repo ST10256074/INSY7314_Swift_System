@@ -1,0 +1,23 @@
+User Schema:
+- name: String
+- password: String (hashed)
+
+Payment Application Schema:
+- recipientName: String (required)
+- accountNumber: String (required)
+- swiftCode: String (required, 8-11 characters, validated format)
+- amount: Number (required, positive)
+- currency: String (required, uppercase)
+- paymentProvider: String (required)
+- submittedBy: Id (reference to user)
+- submittedByName: String
+- status: String (pending/approved/rejected, default: pending)
+- submittedAt: Date
+- reviewedAt: Date (nullable)
+- reviewedBy: Id (nullable, reference to reviewer)
+- reviewerName: String (nullable)
+- reviewComments: String (nullable)
+
+Collections:
+- users: User documents
+- payment_applications: Payment application documents

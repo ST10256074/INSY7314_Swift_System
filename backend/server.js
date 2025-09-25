@@ -2,7 +2,8 @@ import https from "https";
 import http from 'http';
 import fs from 'fs';
 import posts from "./routes/post.js";
-import users from "./routes/user.js";    
+import users from "./routes/user.js";
+import payments from "./routes/payments.js";    
 import express from "express";
 import cors from "cors";
 import {execPath} from "process";
@@ -41,6 +42,8 @@ app.use("/post",posts);
 app.route("/post",posts);
 app.use("/user", users);
 app.route("/user", users);
+app.use("/payments", payments);
+app.route("/payments", payments);
 
 // let server = https.createServer(options, app);
 // console.log(PORT);
