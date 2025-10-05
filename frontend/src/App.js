@@ -7,6 +7,7 @@ import LoginPage from './pages/auth/LoginPage.js';
 import RegisterPage from './pages/auth/RegisterPage.js';
 import PaymentPage from './pages/client/PaymentPage.js';
 import PendingPayments from './pages/employee/PendingPayments.js';
+import AccountInfo from './pages/client/AccountInfo.js';
 function App() {
   return (
    <BrowserRouter>
@@ -14,7 +15,8 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/payment" element={<PaymentPage />} />
+  <Route path="/payment" element={<PaymentPage />} />
+  <Route path="/account-info" element={<AccountInfo />} />
         <Route path="/pendingPayments" element={<PendingPayments />} />
        
       </Routes>
