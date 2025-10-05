@@ -4,11 +4,11 @@ import "./PendingPayments.css";
 export default function PendingPayments() {
   // Mock data
   const payments = [
-    { id: 1, amount: "250 USD", provider: "PayPal", account: "ACC12345", date: "2025-10-01" },
-    { id: 2, amount: "100 EUR", provider: "Stripe", account: "ACC67890", date: "2025-09-29" },
-    { id: 3, amount: "500 ZAR", provider: "Bank Transfer", account: "ACC24680", date: "2025-09-27" },
-    { id: 4, amount: "75 GBP", provider: "Square", account: "ACC13579", date: "2025-09-26" },
-    { id: 5, amount: "300 USD", provider: "PayPal", account: "ACC98765", date: "2025-09-25" },
+    { id: 1, amount: "250 USD", provider: "PayPal", account: "ACC12345", date: "2025-10-01", swiftCode: "PPAYUS33" },
+    { id: 2, amount: "100 EUR", provider: "Stripe", account: "ACC67890", date: "2025-09-29", swiftCode: "STRPGB22" },
+    { id: 3, amount: "500 ZAR", provider: "Bank Transfer", account: "ACC24680", date: "2025-09-27", swiftCode: "ABZAZAJJ" },
+    { id: 4, amount: "75 GBP", provider: "Square", account: "ACC13579", date: "2025-09-26", swiftCode: "SQUPGB21" },
+    { id: 5, amount: "300 USD", provider: "PayPal", account: "ACC98765", date: "2025-09-25", swiftCode: "PPAYUS33" },
   ];
 
   const handleApprove = (id) => {
@@ -17,6 +17,10 @@ export default function PendingPayments() {
 
   const handleDeny = (id) => {
     alert(`Denied transaction ${id}`);
+  };
+
+  const handleSwiftCheck = (id) => {
+    alert(`Checking SWIFT code for transaction ${id}`);
   };
 
   return (
@@ -32,6 +36,8 @@ export default function PendingPayments() {
               <th>Provider</th>
               <th>Account</th>
               <th>Date</th>
+              <th>SWIFT Code</th>
+              <th>Swift Check</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -42,6 +48,15 @@ export default function PendingPayments() {
                 <td>{payment.provider}</td>
                 <td>{payment.account}</td>
                 <td>{payment.date}</td>
+                <td>{payment.swiftCode}</td>
+                <td>
+                  <button
+                    className="action-btn swift-check-btn"
+                    onClick={() => handleSwiftCheck(payment.id)}
+                  >
+                    Check Swift
+                  </button>
+                </td>
                 <td>
                   <button
                     className="action-btn approve-btn"

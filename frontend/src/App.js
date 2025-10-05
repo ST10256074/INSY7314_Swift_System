@@ -1,7 +1,7 @@
 
 import './App.css';
 
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar.js';
 import LoginPage from './pages/auth/LoginPage.js';
 import RegisterPage from './pages/auth/RegisterPage.js';
@@ -10,10 +10,15 @@ import PendingPayments from './pages/employee/PendingPayments.js';
 import AccountInfo from './pages/client/AccountInfo.js';
 import ClientHome from './pages/client/ClientHome.js';
 import EmployeeHome from './pages/employee/EmployeeHome.js';
-function App() {
+
+function AppContent() {
+  const location = useLocation();
+  const hideNavbarRoutes = ['/', '/register'];
+  const shouldHideNavbar = hideNavbarRoutes.includes(location.pathname);
+
   return (
-   <BrowserRouter>
-      <Navbar />
+    <>
+      {!shouldHideNavbar && <Navbar />}
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
@@ -24,6 +29,14 @@ function App() {
         <Route path="/pendingPayments" element={<PendingPayments />} />
        
       </Routes>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }

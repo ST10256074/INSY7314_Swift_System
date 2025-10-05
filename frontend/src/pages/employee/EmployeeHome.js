@@ -64,6 +64,16 @@ export default function EmployeeHome() {
             </div>
           </div>
         </div>
+
+        <div className="card">
+          <div className="card-header">
+            <h3>Session</h3>
+          </div>
+       
+          <Link to="/" className="action-btn secondary">
+            Logout
+          </Link>
+        </div>
       </div>
     </div>
   );

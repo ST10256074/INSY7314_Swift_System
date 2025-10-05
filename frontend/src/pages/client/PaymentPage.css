@@ -101,12 +101,13 @@
 .cancel-btn,
 .continue-btn {
   border: none;
-  padding: 10px 20px;
+  padding: 8px 32px;
   border-radius: 6px;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  min-width: 100px;
 }
 
 .cancel-btn {
