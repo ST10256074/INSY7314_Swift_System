@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useAppNavigation } from '../../utils/navigation.js';
 import "./PaymentPage.css";
 
 export default function PaymentPage() {
-  const navigate = useNavigate();
+  const navigation = useAppNavigation();
   const [formData, setFormData] = useState({
     firstName: "",
     surname: "",
@@ -23,7 +23,7 @@ export default function PaymentPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    navigate('/account-info');
+    navigation.accountInfo();
   };
 
   return (

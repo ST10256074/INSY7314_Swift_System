@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from 'react-router-dom';
+import { ROUTES } from '../../utils/navigation.js';
 import './LoginPage.css';
 
 export default function LoginPage() {
@@ -51,7 +52,7 @@ export default function LoginPage() {
           
           <div className="or-separator">or</div>
 
-          <Link to="/register" className="btn btn-secondary">Create New Account</Link>
+          <Link to={ROUTES.REGISTER} className="btn btn-secondary">Create New Account</Link>
         </form>
       </div>
     </div>

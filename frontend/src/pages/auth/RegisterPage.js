@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ROUTES } from '../../utils/navigation.js';
 import './RegisterPage.css';
 
 function RegisterPage() {
@@ -64,7 +65,7 @@ function RegisterPage() {
         </div>
         <div className="button-row">
           <button type="submit" className="continue-btn">Next</button>
-          <Link to="/" className="cancel-btn">
+          <Link to={ROUTES.LOGIN} className="cancel-btn">
   Back 
 </Link>
         </div>
