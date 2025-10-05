@@ -1,7 +1,3 @@
-(function () {
-	// placeholder to ensure this file is treated as a module when empty files are present
-})();
-
 import React, { useState } from "react";
 import "./AccountInfo.css";
 
