@@ -23,7 +23,7 @@ export default function PaymentPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    navigate('/account-info');
+    navigate('/accountInfo');
   };
 
   return (

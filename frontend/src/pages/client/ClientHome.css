@@ -1,0 +1,251 @@
+.client-home {
+  background-color: #f4f6f8;
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 40px;
+}
+
+.home-header {
+  margin-bottom: 30px;
+}
+
+.home-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin-bottom: 8px;
+}
+
+.home-header p {
+  color: #64748b;
+  font-size: 16px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.balance-card {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  color: white;
+}
+
+.balance-card .card-header h3,
+.balance-card .balance-label {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.card-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #334155;
+  margin: 0;
+}
+
+.account-number {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.balance-display {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.currency {
+  font-size: 18px;
+  margin-right: 4px;
+  opacity: 0.8;
+}
+
+.balance {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.balance-label {
+  font-size: 14px;
+  margin: 0;
+  opacity: 0.8;
+}
+
+.payment-list {
+  margin-bottom: 16px;
+}
+
+.payment-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.payment-item:last-child {
+  border-bottom: none;
+}
+
+.payment-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.payment-recipient {
+  font-weight: 500;
+  color: #334155;
+  font-size: 14px;
+}
+
+.payment-date {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.payment-amount {
+  font-weight: 600;
+  color: #dc2626;
+}
+
+.card-link {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.card-link:hover {
+  color: #1e40af;
+  text-decoration: underline;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.action-btn {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 14px;
+}
+
+.action-btn.primary {
+  background: #2563eb;
+  color: white;
+}
+
+.action-btn.primary:hover {
+  background: #1e40af;
+}
+
+.action-btn.secondary {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+}
+
+.action-btn.secondary:hover {
+  background: #e2e8f0;
+}
+
+.status-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-indicator.pending {
+  background: #f59e0b;
+}
+
+.status-indicator.completed {
+  background: #10b981;
+}
+
+.status-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.status-text {
+  font-weight: 500;
+  color: #334155;
+  font-size: 14px;
+}
+
+.status-detail {
+  font-size: 12px;
+  color: #64748b;
+}
+
+@media (max-width: 768px) {
+  .client-home {
+    padding: 20px;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .balance-display {
+    justify-content: center;
+  }
+  
+  .payment-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .payment-amount {
+    align-self: flex-end;
+  }
+}
