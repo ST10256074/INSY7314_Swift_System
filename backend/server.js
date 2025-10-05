@@ -1,7 +1,6 @@
 import https from "https";
 import http from 'http';
 import fs from 'fs';
-import posts from "./routes/post.js";
 import users from "./routes/user.js";
 import payments from "./routes/payments.js";    
 import express from "express";
@@ -38,8 +37,7 @@ app.use((req,res,next) => {
 
 });
 
-app.use("/post",posts);
-app.route("/post",posts);
+
 app.use("/user", users);
 app.route("/user", users);
 app.use("/payments", payments);
