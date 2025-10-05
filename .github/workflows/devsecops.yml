@@ -1,0 +1,495 @@
+name: DevSecOps CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop, Kevin-UI, Emil, Weylin ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run security scans daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  # ========================================
+  # Code Quality & Linting
+  # ========================================
+  code-quality:
+    name: Code Quality Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+          
+      - name: Install Backend Dependencies
+        working-directory: ./backend
+        run: npm ci
+        
+      - name: Install Frontend Dependencies
+        working-directory: ./frontend
+        run: npm ci
+        
+      - name: ESLint - Frontend
+        working-directory: ./frontend
+        run: |
+          npx eslint src/ --ext .js,.jsx --max-warnings 0 || true
+          
+      - name: ESLint - Backend
+        working-directory: ./backend
+        run: |
+          npx eslint . --ext .js --max-warnings 0 || true
+          
+      - name: Prettier Check
+        run: |
+          npx prettier --check "**/*.{js,jsx,json,css,md}" || true
+
+  # ========================================
+  # Build & Test - Backend
+  # ========================================
+  build-test-backend:
+    name: Build & Test Backend
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+          
+      - name: Install Dependencies
+        working-directory: ./backend
+        run: npm ci
+        
+      - name: Run Tests
+        working-directory: ./backend
+        run: npm test
+        env:
+          NODE_ENV: test
+          
+      - name: Build Check
+        working-directory: ./backend
+        run: |
+          echo "Checking backend startup..."
+          timeout 5s npm start || code=$?; if [[ $code -eq 124 ]]; then echo "Backend starts successfully"; exit 0; else exit $code; fi
+
+  # ========================================
+  # Build & Test - Frontend
+  # ========================================
+  build-test-frontend:
+    name: Build & Test Frontend
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+          
+      - name: Install Dependencies
+        working-directory: ./frontend
+        run: npm ci
+        
+      - name: Run Tests
+        working-directory: ./frontend
+        run: npm test -- --coverage --watchAll=false
+        env:
+          CI: true
+          
+      - name: Build Production
+        working-directory: ./frontend
+        run: npm run build
+        
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build-${{ matrix.node-version }}
+          path: frontend/build
+          retention-days: 7
+          
+      - name: Upload Coverage
+        if: matrix.node-version == '20.x'
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./frontend/coverage/lcov.info
+          flags: frontend
+          name: codecov-frontend
+          fail_ci_if_error: false
+
+  # ========================================
+  # Security Scanning - Dependency Check
+  # ========================================
+  dependency-security:
+    name: Dependency Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Backend - npm audit
+        working-directory: ./backend
+        run: |
+          echo "🔍 Scanning Backend Dependencies..."
+          npm audit --audit-level=moderate || true
+          npm audit --json > ../backend-audit.json || true
+          
+      - name: Frontend - npm audit
+        working-directory: ./frontend
+        run: |
+          echo "🔍 Scanning Frontend Dependencies..."
+          npm audit --audit-level=moderate || true
+          npm audit --json > ../frontend-audit.json || true
+          
+      - name: Check for Outdated Packages - Backend
+        working-directory: ./backend
+        run: |
+          echo "📦 Checking for outdated backend packages..."
+          npm outdated || true
+          
+      - name: Check for Outdated Packages - Frontend
+        working-directory: ./frontend
+        run: |
+          echo "📦 Checking for outdated frontend packages..."
+          npm outdated || true
+          
+      - name: Upload Audit Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-audit-reports
+          path: |
+            backend-audit.json
+            frontend-audit.json
+          retention-days: 30
+
+  # ========================================
+  # Security Scanning - SAST
+  # ========================================
+  sast-scan:
+    name: Static Application Security Testing
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+          queries: security-and-quality
+          
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:javascript"
+          
+      - name: Semgrep Security Scan
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/javascript
+            p/react
+            p/nodejs
+            p/express
+            p/jwt
+            p/owasp-top-ten
+          generateSarif: true
+          
+      - name: Upload Semgrep SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep.sarif
+
+  # ========================================
+  # Secret Scanning
+  # ========================================
+  secret-scan:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: TruffleHog Secret Scan
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --debug --only-verified
+          
+      - name: GitLeaks Secret Scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_SUMMARY: true
+          
+      - name: Check for Hardcoded Secrets
+        run: |
+          echo "🔐 Checking for common secret patterns..."
+          # Check for common patterns in JS files
+          git grep -n "api[_-]key\s*=\s*['\"]" -- '*.js' || echo "No API keys found"
+          git grep -n "password\s*=\s*['\"]" -- '*.js' || echo "No hardcoded passwords found"
+          git grep -n "secret\s*=\s*['\"]" -- '*.js' || echo "No secrets found"
+          git grep -n "mongodb://" -- '*.js' || echo "No MongoDB URIs found"
+          echo "✅ Manual secret check complete"
+
+  # ========================================
+  # Security Headers & SSL Check
+  # ========================================
+  security-headers:
+    name: Security Headers Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Check SSL Certificate Configuration
+        run: |
+          echo "🔒 Checking SSL certificate setup..."
+          if [ -f backend/keys/certificate.pem ] && [ -f backend/keys/privatekey.pem ]; then
+            echo "✅ SSL certificates found"
+            # Check certificate validity
+            openssl x509 -in backend/keys/certificate.pem -noout -text || echo "⚠️  Certificate validation failed"
+          else
+            echo "⚠️  SSL certificates not found or not configured"
+          fi
+          
+      - name: Check for Security Best Practices
+        run: |
+          echo "🛡️  Checking backend security configurations..."
+          
+          # Check for helmet usage (security headers)
+          if grep -r "helmet" backend/ 2>/dev/null; then
+            echo "✅ Helmet (security headers) found"
+          else
+            echo "⚠️  Consider adding helmet middleware for security headers"
+          fi
+          
+          # Check for rate limiting
+          if grep -r "rate.*limit\|express-rate-limit\|brute" backend/ 2>/dev/null; then
+            echo "✅ Rate limiting found"
+          else
+            echo "⚠️  Consider adding rate limiting"
+          fi
+          
+          # Check for input validation
+          if grep -r "validator\|joi\|express-validator" backend/ 2>/dev/null; then
+            echo "✅ Input validation library found"
+          else
+            echo "⚠️  Consider adding input validation"
+          fi
+
+  # ========================================
+  # OWASP Dependency Check
+  # ========================================
+  owasp-dependency-check:
+    name: OWASP Dependency Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Dependency-Check Backend
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'INSY7314-Backend'
+          path: './backend'
+          format: 'HTML'
+          out: 'backend-owasp-report'
+          
+      - name: Dependency-Check Frontend
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'INSY7314-Frontend'
+          path: './frontend'
+          format: 'HTML'
+          out: 'frontend-owasp-report'
+          
+      - name: Upload OWASP Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: owasp-dependency-reports
+          path: |
+            backend-owasp-report
+            frontend-owasp-report
+          retention-days: 30
+
+  # ========================================
+  # License Compliance Check
+  # ========================================
+  license-compliance:
+    name: License Compliance Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install license-checker
+        run: npm install -g license-checker
+        
+      - name: Check Backend Licenses
+        working-directory: ./backend
+        run: |
+          npm ci
+          echo "📋 Backend License Report"
+          license-checker --summary || true
+          license-checker --json > ../backend-licenses.json || true
+          
+      - name: Check Frontend Licenses
+        working-directory: ./frontend
+        run: |
+          npm ci
+          echo "📋 Frontend License Report"
+          license-checker --summary || true
+          license-checker --json > ../frontend-licenses.json || true
+          
+      - name: Upload License Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: license-reports
+          path: |
+            backend-licenses.json
+            frontend-licenses.json
+          retention-days: 90
+
+  # ========================================
+  # Container Security (Optional)
+  # ========================================
+  container-scan:
+    name: Container Security Scan
+    runs-on: ubuntu-latest
+    if: false  # Enable this if you add Docker support
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Build Backend Docker Image
+        run: docker build -t insy7314-backend:latest ./backend
+        
+      - name: Build Frontend Docker Image
+        run: docker build -t insy7314-frontend:latest ./frontend
+        
+      - name: Trivy Scan - Backend
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: insy7314-backend:latest
+          format: 'sarif'
+          output: 'trivy-backend.sarif'
+          severity: 'CRITICAL,HIGH'
+          
+      - name: Trivy Scan - Frontend
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: insy7314-frontend:latest
+          format: 'sarif'
+          output: 'trivy-frontend.sarif'
+          severity: 'CRITICAL,HIGH'
+          
+      - name: Upload Trivy Results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-backend.sarif
+
+  # ========================================
+  # Security Summary Report
+  # ========================================
+  security-summary:
+    name: Security Summary
+    needs: [code-quality, build-test-backend, build-test-frontend, dependency-security, sast-scan, secret-scan, security-headers, owasp-dependency-check, license-compliance]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        
+      - name: Generate Security Summary
+        run: |
+          echo "# 🔒 DevSecOps Security Summary - INSY7314 Payment System" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Pipeline Results" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Code Quality | ${{ needs.code-quality.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Backend Build & Test | ${{ needs.build-test-backend.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Frontend Build & Test | ${{ needs.build-test-frontend.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Dependency Security | ${{ needs.dependency-security.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| SAST Scan | ${{ needs.sast-scan.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Secret Scan | ${{ needs.secret-scan.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security Headers | ${{ needs.security-headers.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| OWASP Dependency Check | ${{ needs.owasp-dependency-check.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| License Compliance | ${{ needs.license-compliance.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Security Recommendations for Payment System" >> $GITHUB_STEP_SUMMARY
+          echo "1. ✅ Review all security findings in the Security tab" >> $GITHUB_STEP_SUMMARY
+          echo "2. 🔐 Ensure all sensitive data (passwords, JWT secrets, DB URIs) are in .env" >> $GITHUB_STEP_SUMMARY
+          echo "3. 🔒 Verify SSL/TLS certificates are valid and properly configured" >> $GITHUB_STEP_SUMMARY
+          echo "4. 🛡️  Check that helmet middleware is configured for security headers" >> $GITHUB_STEP_SUMMARY
+          echo "5. 🚦 Verify rate limiting is active to prevent brute force attacks" >> $GITHUB_STEP_SUMMARY
+          echo "6. 📦 Update dependencies regularly, especially security patches" >> $GITHUB_STEP_SUMMARY
+          echo "7. 🔍 Review payment processing code for PCI DSS compliance" >> $GITHUB_STEP_SUMMARY
+          echo "8. 🗄️  Ensure MongoDB connection strings don't contain passwords" >> $GITHUB_STEP_SUMMARY
+          echo "9. 🔑 Rotate JWT secrets and API keys periodically" >> $GITHUB_STEP_SUMMARY
+          echo "10. 📝 Keep audit logs for all payment transactions" >> $GITHUB_STEP_SUMMARY
+          
+      - name: Check Overall Status
+        run: |
+          if [ "${{ needs.build-test-backend.result }}" != "success" ] || [ "${{ needs.build-test-frontend.result }}" != "success" ]; then
+            echo "❌ Build and test failed"
+            exit 1
+          fi
+          
+          if [ "${{ needs.secret-scan.result }}" == "failure" ]; then
+            echo "⚠️  Secret scan detected issues - please review"
+            exit 1
+          fi
