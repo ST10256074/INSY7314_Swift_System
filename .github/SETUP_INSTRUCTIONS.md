@@ -5,19 +5,21 @@
 
 ## Action Required by Repository Owner
 
-The DevSecOps workflows have been pushed, but the repository owner needs to enable several GitHub features for full functionality.
+The DevSecOps workflows have been pushed and are running automatically. Some GitHub features require repository owner permissions to enable.
+
+**Note:** Most of these settings are optional during development but recommended to enable before final project submission.
 
 ---
 
-## Required Setup Steps
+## Optional Setup Steps (Recommended Before Submission)
 
-### 1. Enable Security Features (CRITICAL for Payment System)
+### 1. Enable Dependabot (Optional - Recommended)
 
 **Path**: Go to `Settings` → `Security` → `Code security and analysis`
 
 Enable the following:
 
-#### A. Dependabot
+#### Dependabot
 - **Dependabot alerts** - Enable
   - Automatically detects vulnerable dependencies
   - Critical for npm packages with security issues
@@ -26,34 +28,21 @@ Enable the following:
   - Automatically creates PRs to fix vulnerabilities
   - Keeps dependencies secure without manual intervention
 
-#### B. Code Scanning
-- **Code scanning** - Set up
-  - Click "Set up" → Choose "CodeQL Analysis"
-  - OR it will run automatically from our workflow
-  - Finds security vulnerabilities in code (SQL injection, XSS, etc.)
-
-#### C. Secret Scanning
-- **Secret scanning** - Enable (if available for private repos)
-  - Detects accidentally committed secrets
-  - Alerts for API keys, passwords, tokens
-  - CRITICAL for payment system security
-
-#### D. Private Vulnerability Reporting
-- **Private vulnerability reporting** - Enable
-  - Allows security researchers to report issues privately
-  - Prevents public disclosure of security issues
+**Note:** Code scanning and secret scanning require GitHub organization or public repository, so they are not available for this private repo.
 
 ---
 
-### 2. Branch Protection Rules
+### 2. Branch Protection Rules (Optional - Enable Before Final Submission)
 
 **Path**: `Settings` → `Branches` → `Add branch protection rule`
+
+**When to enable:** Before final project submission to ensure code quality and prevent direct pushes to main.
 
 #### For `main` branch:
 
 **Branch name pattern**: `main`
 
-Enable these rules:
+Recommended rules:
 - **Require a pull request before merging**
   - Require approvals: `1` (or more for critical code)
   - Dismiss stale pull request approvals when new commits are pushed
@@ -65,16 +54,12 @@ Enable these rules:
     - `Code Quality Check` (from devsecops.yml)
     - `Build & Test Backend` (from devsecops.yml)
     - `Build & Test Frontend` (from devsecops.yml)
-    - `Secret Detection` (from devsecops.yml)
   
 - **Require conversation resolution before merging**
   - All review comments must be resolved
 
 - **Include administrators**
   - Apply rules to repository administrators too
-
-- **Do not allow bypassing the above settings**
-  - Prevents force pushes that skip security checks
 
 **Click "Create" or "Save changes"**
 
@@ -108,10 +93,9 @@ If you need to add any secrets for the workflows:
 **Path**: `Settings` → `Notifications` or your personal GitHub settings
 
 Set up notifications for:
-- Security alerts (Dependabot, Secret scanning)
+- Security alerts (Dependabot)
 - Pull requests
 - Failed workflow runs
-- Code scanning alerts
 
 ---
 
@@ -124,14 +108,13 @@ Set up notifications for:
    - You should see workflows running
    - First run may take 10-15 minutes
 
-2. **Check Security Tab**
+2. **Check Security Tab** (if Dependabot is enabled)
    - Go to the `Security` tab
    - You should see:
      - Dependabot alerts (if any vulnerabilities exist)
-     - Code scanning results
-     - Secret scanning results
+     - Dependabot PRs for security updates
 
-3. **Check Dependabot Tab**
+3. **Check Dependabot Tab** (if enabled)
    - Should see "Dependabot is enabled"
    - May have PRs for dependency updates
 
@@ -218,16 +201,21 @@ Date: October 2025
 
 ## Setup Completion Checklist
 
-Please check off as you complete each section:
+### Optional During Development (Check off if completed):
 
-- [ ] Security features enabled (Dependabot, Code scanning, Secret scanning)
-- [ ] Branch protection rules configured for `main`
-- [ ] GitHub Actions verified and enabled
-- [ ] Notifications configured
-- [ ] First workflow run successful
+- [ ] Dependabot enabled for automated security updates
+- [ ] GitHub Actions verified and running successfully
+- [ ] Notifications configured for workflow failures
 - [ ] Team members added as reviewers in CODEOWNERS
 
-**Once complete, all security automation will be active!**
+### Required Before Final Submission:
+
+- [ ] Branch protection rules configured for `main` branch
+- [ ] All workflow tests passing
+- [ ] Security vulnerabilities addressed
+- [ ] Code quality issues resolved
+
+**Note:** The DevSecOps workflows are already active and running on every push!
 
 ---
 

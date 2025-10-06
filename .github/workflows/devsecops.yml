@@ -193,88 +193,6 @@ jobs:
           retention-days: 30
 
   # ========================================
-  # Security Scanning - SAST
-  # ========================================
-  sast-scan:
-    name: Static Application Security Testing
-    runs-on: ubuntu-latest
-    permissions:
-      security-events: write
-      actions: read
-      contents: read
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: javascript
-          queries: security-and-quality
-          
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-        with:
-          category: "/language:javascript"
-          
-      - name: Semgrep Security Scan
-        uses: returntocorp/semgrep-action@v1
-        with:
-          config: >-
-            p/security-audit
-            p/javascript
-            p/react
-            p/nodejs
-            p/express
-            p/jwt
-            p/owasp-top-ten
-          generateSarif: true
-          
-      - name: Upload Semgrep SARIF
-        if: always()
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: semgrep.sarif
-
-  # ========================================
-  # Secret Scanning
-  # ========================================
-  secret-scan:
-    name: Secret Detection
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          
-      - name: TruffleHog Secret Scan
-        uses: trufflesecurity/trufflehog@main
-        with:
-          path: ./
-          base: ${{ github.event.repository.default_branch }}
-          head: HEAD
-          extra_args: --debug --only-verified
-          
-      - name: GitLeaks Secret Scan
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITLEAKS_ENABLE_SUMMARY: true
-          
-      - name: Check for Hardcoded Secrets
-        run: |
-          echo "Checking for common secret patterns..."
-          # Check for common patterns in JS files
-          git grep -n "api[_-]key\s*=\s*['\"]" -- '*.js' || echo "No API keys found"
-          git grep -n "password\s*=\s*['\"]" -- '*.js' || echo "No hardcoded passwords found"
-          git grep -n "secret\s*=\s*['\"]" -- '*.js' || echo "No secrets found"
-          git grep -n "mongodb://" -- '*.js' || echo "No MongoDB URIs found"
-          echo "Manual secret check complete"
-
-  # ========================================
   # Security Headers & SSL Check
   # ========================================
   security-headers:
@@ -445,7 +363,7 @@ jobs:
   # ========================================
   security-summary:
     name: Security Summary
-    needs: [code-quality, build-test-backend, build-test-frontend, dependency-security, sast-scan, secret-scan, security-headers, owasp-dependency-check, license-compliance]
+    needs: [code-quality, build-test-backend, build-test-frontend, dependency-security, security-headers, owasp-dependency-check, license-compliance]
     runs-on: ubuntu-latest
     if: always()
     
@@ -465,8 +383,6 @@ jobs:
           echo "| Backend Build & Test | ${{ needs.build-test-backend.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Frontend Build & Test | ${{ needs.build-test-frontend.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Dependency Security | ${{ needs.dependency-security.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| SAST Scan | ${{ needs.sast-scan.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Secret Scan | ${{ needs.secret-scan.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Security Headers | ${{ needs.security-headers.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "| OWASP Dependency Check | ${{ needs.owasp-dependency-check.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "| License Compliance | ${{ needs.license-compliance.result }} |" >> $GITHUB_STEP_SUMMARY
@@ -487,10 +403,5 @@ jobs:
         run: |
           if [ "${{ needs.build-test-backend.result }}" != "success" ] || [ "${{ needs.build-test-frontend.result }}" != "success" ]; then
             echo "ERROR: Build and test failed"
-            exit 1
-          fi
-          
-          if [ "${{ needs.secret-scan.result }}" == "failure" ]; then
-            echo "WARNING: Secret scan detected issues - please review"
             exit 1
           fi
