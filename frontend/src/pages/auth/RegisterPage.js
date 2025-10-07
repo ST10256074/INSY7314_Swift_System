@@ -5,6 +5,7 @@ import apiService from '../../utils/api.js';
 import './RegisterPage.css';
 
 function RegisterPage() {
+  const [username, setUsername] = useState('');
   const [fullName, setFullName] = useState('');
   const [idNumber, setIdNumber] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
@@ -20,8 +21,9 @@ function RegisterPage() {
 
     try {
       const response = await apiService.register({
-        name: fullName,
-        idNumber: idNumber,
+        username: username,
+        full_name: fullName,
+        IDNumber: idNumber,
         accountNumber: accountNumber,
         password: password
       });
@@ -47,6 +49,16 @@ function RegisterPage() {
           <div className="section-line"></div>
           <div className="form-grid">
             <div>
+              <label>Username</label>
+              <input
+                type="text"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+                placeholder="3-16 characters, letters, numbers, underscores only"
+                required
+              />
+            </div>
+            <div>
               <label>Full Name</label>
               <input
                 type="text"
@@ -61,6 +73,9 @@ function RegisterPage() {
                 type="text"
                 value={idNumber}
                 onChange={e => setIdNumber(e.target.value)}
+                placeholder="13-digit ID number"
+                maxLength="13"
+                pattern="[0-9]{13}"
                 required
               />
             </div>
@@ -79,6 +94,8 @@ function RegisterPage() {
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
+                placeholder="Min 6 chars, include letters and numbers"
+                minLength="6"
                 required
               />
             </div>
