@@ -21,8 +21,21 @@ router.post("/signup", async (req, res) => {
         let name = req.body.name;
         let password = req.body.password;
 
+        // Username: 3-16 chars, letters, numbers, underscores only
+        const usernameRegex = /^[a-zA-Z0-9_]{3,16}$/;
+        // Password: min 6 chars, at least one letter and one number
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/;
+
         if (!name || !password) {
             return res.status(400).send('Name and password are required');
+        }
+
+        if (!usernameRegex.test(name)) {
+            return res.status(400).send('Username must be 3-16 characters and contain only letters, numbers, or underscores');
+        }
+
+        if (!passwordRegex.test(password)) {
+            return res.status(400).send('Password must be at least 6 characters and contain at least one letter and one number');
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);

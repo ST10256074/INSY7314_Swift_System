@@ -9,7 +9,8 @@ import {execPath} from "process";
 
 // Set the Port
 // const express = require('express');
-const PORT = 3000;
+const PORT = 443;
+const HTTP_PORT = 3000;
 const app = express();
 
 const options = {
@@ -19,7 +20,6 @@ const options = {
 
 app.use(cors());
 app.use(express.json());
-
 app.use(express.urlencoded({ extended: true }));
 
 //Test middleware
@@ -29,13 +29,21 @@ app.use(express.urlencoded({ extended: true }));
 //     next();
 // });
 
-app.use((req,res,next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "*");
-    res.header("Access-Control-Allow-Methods", "*");
+//Force HTTPS use
+app.use((req, res, next) => {
+    if (req.protocol !== 'https') {
+        return res.redirect('https://' + req.headers.host + req.url);
+    }
     next();
-
 });
+
+// app.use((req,res,next) => {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "*");
+//     res.header("Access-Control-Allow-Methods", "*");
+//     next();
+
+// });
 
 
 app.use("/user", users);
@@ -51,16 +59,29 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+// Start HTTPS server
+https.createServer(options, app).listen(PORT, () => {
+    console.log(`HTTPS Server is running on port ${PORT}`);
 });
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+// Optional: Start HTTP server to redirect to HTTPS
+http.createServer((req, res) => {
+    res.writeHead(301, { "Location": "https://" + req.headers.host + req.url });
+    res.end();
+}).listen(HTTP_PORT, () => {
+    console.log(`HTTP Server running on port ${HTTP_PORT} and redirecting to HTTPS`);
+});
 
-console.log("Server is running on port", PORT);
+// app.listen(PORT, () => {
+//     console.log(`Server is running on port ${PORT}`);
+// });
 
-let server = https.createServer(options, app)
+// app.use(express.urlencoded({ extended: true }));
+// app.use(express.json());
+
+// console.log("Server is running on port", PORT);
+
+// let server = https.createServer(options, app)
 // server.listen(PORT)
 // console.log(PORT);
 // server.listen(PORT);
