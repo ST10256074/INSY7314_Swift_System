@@ -18,7 +18,24 @@ const options = {
     cert: fs.readFileSync('keys/certificate.pem')
 }
 
-app.use(cors());
+// Configure CORS for frontend communication
+const allowedOrigins = [
+    'http://localhost:3000',
+    'https://localhost:3000',
+    'http://localhost:8080',
+    'https://localhost:8443'
+];
+
+const corsOptions = {
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept'],
+    optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+};
+
+app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -29,20 +46,11 @@ app.use(express.urlencoded({ extended: true }));
 //     next();
 // });
 
-//Force HTTPS use
-app.use((req, res, next) => {
-    if (req.protocol !== 'https') {
-        return res.redirect('https://' + req.headers.host + req.url);
-    }
-    next();
-});
-
 // app.use((req,res,next) => {
 //     res.header("Access-Control-Allow-Origin", "*");
 //     res.header("Access-Control-Allow-Headers", "*");
 //     res.header("Access-Control-Allow-Methods", "*");
 //     next();
-
 // });
 
 
@@ -64,12 +72,9 @@ https.createServer(options, app).listen(PORT, () => {
     console.log(`HTTPS Server is running on port ${PORT}`);
 });
 
-// Optional: Start HTTP server to redirect to HTTPS
-http.createServer((req, res) => {
-    res.writeHead(301, { "Location": "https://" + req.headers.host.replace(`:${HTTP_PORT}`, `:${PORT}`) + req.url });
-    res.end();
-}).listen(HTTP_PORT, () => {
-    console.log(`HTTP Server running on port ${HTTP_PORT} and redirecting to HTTPS`);
+// Start HTTP server for development
+http.createServer(app).listen(HTTP_PORT, () => {
+    console.log(`HTTP Server running on port ${HTTP_PORT}`);
 });
 
 // app.listen(PORT, () => {
