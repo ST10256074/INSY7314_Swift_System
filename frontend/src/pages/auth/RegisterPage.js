@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../utils/navigation.js';
+import apiService from '../../utils/api.js';
 import './RegisterPage.css';
 
 function RegisterPage() {
@@ -8,11 +9,29 @@ function RegisterPage() {
   const [idNumber, setIdNumber] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Registration logic here
-    alert(`Full Name: ${fullName}\nID Number: ${idNumber}\nAccount Number: ${accountNumber}\nPassword: ${password}`);
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await apiService.register({
+        name: fullName,
+        password: password
+      });
+
+      alert('Registration successful! Please login with your credentials.');
+      navigate(ROUTES.LOGIN);
+    } catch (error) {
+      setError(error.message || 'Registration failed. Please try again.');
+      console.error('Registration error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -63,11 +82,15 @@ function RegisterPage() {
             </div>
           </div>
         </div>
+          {error && <div className="error-message" style={{color: 'red', marginBottom: '10px'}}>{error}</div>}
+        
         <div className="button-row">
-          <button type="submit" className="continue-btn">Next</button>
+          <button type="submit" className="continue-btn" disabled={loading}>
+            {loading ? 'Creating Account...' : 'Next'}
+          </button>
           <Link to={ROUTES.LOGIN} className="cancel-btn">
-  Back 
-</Link>
+            Back 
+          </Link>
         </div>
       </form>
     </div>

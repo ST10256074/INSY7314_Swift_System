@@ -18,7 +18,14 @@ const options = {
     cert: fs.readFileSync('keys/certificate.pem')
 }
 
-app.use(cors());
+// Configure CORS for frontend communication
+app.use(cors({
+    origin: ['http://localhost:3000', 'https://localhost:3000'], // React dev server
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
