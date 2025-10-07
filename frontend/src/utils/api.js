@@ -1,6 +1,7 @@
+// Use HTTP for development to avoid HTTPS certificate issues
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://your-production-domain.com' 
-  : 'https://localhost:8443';
+  ? 'https://localhost:8443' 
+  : 'http://localhost:8080';
 
 class ApiService {
   constructor() {
@@ -53,6 +54,8 @@ class ApiService {
         method: 'POST',
         headers: this.getHeaders(false),
         body: JSON.stringify(userData),
+        mode: 'cors',
+        credentials: 'include'
       });
       
       return await this.handleResponse(response);
@@ -68,6 +71,8 @@ class ApiService {
         method: 'POST',
         headers: this.getHeaders(false),
         body: JSON.stringify(credentials),
+        mode: 'cors',
+        credentials: 'include'
       });
       
       const data = await this.handleResponse(response);
@@ -83,4 +88,12 @@ class ApiService {
       throw error;
     }
   }
+  // Logout
+  logout() {
+    this.setToken(null);
+  }
 }
+
+// Create and export a singleton instance
+const apiService = new ApiService();
+export default apiService;

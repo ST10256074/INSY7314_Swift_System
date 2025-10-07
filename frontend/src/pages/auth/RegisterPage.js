@@ -21,6 +21,8 @@ function RegisterPage() {
     try {
       const response = await apiService.register({
         name: fullName,
+        idNumber: idNumber,
+        accountNumber: accountNumber,
         password: password
       });
 
