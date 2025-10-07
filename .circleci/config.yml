@@ -1,31 +1,49 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/reference/configuration-reference
 version: 2.1
 
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/guides/orchestrate/jobs-steps/#jobs-overview & https://circleci.com/docs/reference/configuration-reference/#jobs
 jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/guides/execution-managed/executor-intro/ & https://circleci.com/docs/reference/configuration-reference/#executor-job
+  build:
     docker:
-      # Specify the version you desire here
-      # See: https://circleci.com/developer/images/image/cimg/base
-      - image: cimg/base:current
+      - image: cimg/node:20.10  # Use CircleCI Node image
+    working_directory: ~/repo
 
-    # Add steps to the job
-    # See: https://circleci.com/docs/guides/orchestrate/jobs-steps/#steps-overview & https://circleci.com/docs/reference/configuration-reference/#steps
     steps:
-      # Checkout the code as the first step.
-      - checkout
-      - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
+      - checkout  # Pull code from your repo
 
-# Orchestrate jobs using workflows
-# See: https://circleci.com/docs/guides/orchestrate/workflows/ & https://circleci.com/docs/reference/configuration-reference/#workflows
+      # Restore cached dependencies if available
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package-lock.json" }}
+            - v1-dependencies-
+
+      # Install dependencies
+      - run:
+          name: Install Dependencies
+          command: npm ci
+
+      # Save dependencies to cache
+      - save_cache:
+          paths:
+            - ~/.npm
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
+
+      # Run tests
+      - run:
+          name: Run Tests
+          command: npm test -- --watchAll=false
+
+      # Build production files
+      - run:
+          name: Build App
+          command: npm run build
+
+      # Save build artifacts (optional)
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build
+
 workflows:
-  say-hello-workflow: # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run.
+  version: 2
+  build_and_test:
     jobs:
-      - say-hello
+      - build
