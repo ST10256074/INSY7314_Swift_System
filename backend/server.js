@@ -9,8 +9,8 @@ import {execPath} from "process";
 
 // Set the Port
 // const express = require('express');
-const PORT = 443;
-const HTTP_PORT = 3000;
+const PORT = 8443;  
+const HTTP_PORT = 8080;  
 const app = express();
 
 const options = {
@@ -66,7 +66,7 @@ https.createServer(options, app).listen(PORT, () => {
 
 // Optional: Start HTTP server to redirect to HTTPS
 http.createServer((req, res) => {
-    res.writeHead(301, { "Location": "https://" + req.headers.host + req.url });
+    res.writeHead(301, { "Location": "https://" + req.headers.host.replace(`:${HTTP_PORT}`, `:${PORT}`) + req.url });
     res.end();
 }).listen(HTTP_PORT, () => {
     console.log(`HTTP Server running on port ${HTTP_PORT} and redirecting to HTTPS`);
