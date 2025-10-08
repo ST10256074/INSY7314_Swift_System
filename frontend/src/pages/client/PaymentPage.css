@@ -127,3 +127,50 @@
 .continue-btn:hover {
   background-color: #1e40af;
 }
+
+.continue-btn:disabled,
+.cancel-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.continue-btn:disabled:hover {
+  background-color: #2563eb;
+}
+
+.cancel-btn:disabled:hover {
+  background-color: #e5e7eb;
+}
+
+/* Error message styling */
+.error-message {
+  color: #dc2626 !important;
+  background-color: #fef2f2 !important;
+  padding: 12px !important;
+  border-radius: 6px !important;
+  margin: 15px 0 !important;
+  border: 1px solid #fecaca !important;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Input validation styles */
+.form-grid input:disabled,
+.form-grid select:disabled {
+  background-color: #f9fafb;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+/* Required field indicator */
+.form-grid label::after {
+  content: "";
+}
+
+/* Style for SWIFT code input */
+.form-grid input[name="swiftCode"] {
+  text-transform: uppercase;
+  font-family: monospace;
+  font-size: 14px;
+  letter-spacing: 1px;
+}

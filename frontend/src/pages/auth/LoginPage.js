@@ -1,15 +1,47 @@
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { ROUTES } from '../../utils/navigation.js';
+import apiService from '../../utils/api.js';
 import './LoginPage.css';
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Username: ${username}\nAccount: ${accountNumber}\nPassword: ${password}`);
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await apiService.login({
+        name: username,
+        password: password
+      });
+
+      // Store user info in localStorage for later use
+      if (response.user) {
+        localStorage.setItem('currentUser', JSON.stringify(response.user));
+      }
+
+      // Navigate based on user type
+      if (response.user.userType === 'Employee') {
+        navigate(ROUTES.PENDING_PAYMENTS);
+      } else {
+        navigate(ROUTES.PAYMENT);
+      }
+
+      alert('Login successful!');
+    } catch (error) {
+      setError(error.message || 'Login failed. Please check your credentials.');
+      console.error('Login error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -47,11 +79,15 @@ export default function LoginPage() {
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary">Sign In</button>
+          {error && <div className="error-message" style={{color: 'red', marginBottom: '10px'}}>{error}</div>}
+          
+          <button type="submit" className="btn btn-primary" disabled={loading}>
+            {loading ? 'Signing In...' : 'Sign In'}
+          </button>
           
           <div className="or-separator">or</div>
 
-          <Link to="/register" className="btn btn-secondary">Create New Account</Link>
+          <Link to={ROUTES.REGISTER} className="btn btn-secondary">Create New Account</Link>
         </form>
       </div>
     </div>
