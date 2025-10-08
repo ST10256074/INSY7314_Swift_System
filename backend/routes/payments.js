@@ -45,8 +45,8 @@ router.post('/submit', async (req, res) => {
             amount: parseFloat(amount),
             currency: currency.toUpperCase().trim(),
             paymentProvider: paymentProvider.trim(),
-            // submittedBy: req.user.id,
-            // submittedByName: req.user.name,
+            submittedBy: req.user.id,
+            submittedByName: req.user.name,
             status: 'pending', // pending, approved, rejected
             submittedAt: new Date(),
             reviewedAt: null,
