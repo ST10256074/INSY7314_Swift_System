@@ -110,8 +110,7 @@ jobs:
           command: |
             echo "Running security linting checks..."
             # Create a basic .eslintrc for security scanning
-            cat > .eslintrc.json << 'EOF'
-            {
+            echo '{
               "env": {
                 "node": true,
                 "es2021": true
@@ -130,8 +129,7 @@ jobs:
                 "security/detect-no-csrf-before-method-override": "error",
                 "security/detect-possible-timing-attacks": "warn"
               }
-            }
-            EOF
+            }' > .eslintrc.json
             npx eslint backend/**/*.js --no-eslintrc --config .eslintrc.json || true
 
   # Code Quality and Linting
