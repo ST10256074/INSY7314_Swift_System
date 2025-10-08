@@ -4,6 +4,7 @@ User Schema:
 - accountNumber: String
 - IDNumber:String
 - password: String (hashed)
+- userType: String (User, Employee)
 
 Payment Application Schema:
 - recipientName: String (required)
