@@ -17,7 +17,7 @@ commands:
           name: Install Backend Dependencies
           command: |
             cd backend
-            npm ci --network-timeout 100000
+            npm ci --network-timeout=100000
       - save_cache:
           key: backend-deps-{{ checksum "backend/package-lock.json" }}
           paths:
@@ -35,7 +35,7 @@ commands:
           command: |
             cd frontend
             # Use npm with network timeout and retry logic
-            npm install --network-timeout 100000 --maxsockets 1
+            npm install --network-timeout=100000 --maxsockets=1
       - save_cache:
           key: frontend-deps-{{ checksum "frontend/package.json" }}
           paths:
