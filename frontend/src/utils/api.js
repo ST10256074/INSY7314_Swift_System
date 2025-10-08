@@ -92,6 +92,105 @@ class ApiService {
   logout() {
     this.setToken(null);
   }
+
+  // Payment methods
+  async submitPayment(paymentData) {
+    try {
+      const response = await fetch(`${this.baseURL}/payments/submit`, {
+        method: 'POST',
+        headers: this.getHeaders(true),
+        body: JSON.stringify(paymentData),
+        mode: 'cors',
+        credentials: 'include'
+      });
+      
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Payment submission error:', error);
+      throw error;
+    }
+  }
+
+  async getAllPayments() {
+    try {
+      const response = await fetch(`${this.baseURL}/payments/all`, {
+        method: 'GET',
+        headers: this.getHeaders(true),
+        mode: 'cors',
+        credentials: 'include'
+      });
+      
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Get all payments error:', error);
+      throw error;
+    }
+  }
+
+  async getMyPayments() {
+    try {
+      const response = await fetch(`${this.baseURL}/payments/my-applications`, {
+        method: 'GET',
+        headers: this.getHeaders(true),
+        mode: 'cors',
+        credentials: 'include'
+      });
+      
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Get my payments error:', error);
+      throw error;
+    }
+  }
+
+  async getPaymentById(paymentId) {
+    try {
+      const response = await fetch(`${this.baseURL}/payments/${paymentId}`, {
+        method: 'GET',
+        headers: this.getHeaders(true),
+        mode: 'cors',
+        credentials: 'include'
+      });
+      
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Get payment by ID error:', error);
+      throw error;
+    }
+  }
+
+  async reviewPayment(paymentId, reviewData) {
+    try {
+      const response = await fetch(`${this.baseURL}/payments/review/${paymentId}`, {
+        method: 'PATCH',
+        headers: this.getHeaders(true),
+        body: JSON.stringify(reviewData),
+        mode: 'cors',
+        credentials: 'include'
+      });
+      
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Payment review error:', error);
+      throw error;
+    }
+  }
+
+  async getPaymentsByStatus(status) {
+    try {
+      const response = await fetch(`${this.baseURL}/payments/status/${status}`, {
+        method: 'GET',
+        headers: this.getHeaders(true),
+        mode: 'cors',
+        credentials: 'include'
+      });
+      
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Get payments by status error:', error);
+      throw error;
+    }
+  }
 }
 
 // Create and export a singleton instance
