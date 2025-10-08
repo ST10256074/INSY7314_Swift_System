@@ -32,6 +32,8 @@ export const useAppNavigation = () => {
 export const ROUTES = {
   LOGIN: '/',
   REGISTER: '/register',
+  CLIENT_HOME: '/ClientHome',
+  EMPLOYEE_HOME: '/EmployeeHome',
   PAYMENT: '/payment',
   ACCOUNT_INFO: '/account-info',
   TRANSACTIONS: '/transactions',
