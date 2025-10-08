@@ -10,10 +10,12 @@ export const useAppNavigation = () => {
     register: () => navigate('/register'),
     
     // Client routes
+    clientHome: () => navigate('/ClientHome'),
     payment: () => navigate('/payment'),
     accountInfo: () => navigate('/account-info'),
     
     // Employee routes
+    employeeHome: () => navigate('/EmployeeHome'),
     pendingPayments: () => navigate('/pendingPayments'),
     
     // Generic navigation

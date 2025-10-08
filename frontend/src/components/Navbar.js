@@ -6,6 +6,8 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-container">
+        <Link to={ROUTES.CLIENT_HOME} className="navbar-link">Client Home</Link>
+        <Link to={ROUTES.EMPLOYEE_HOME} className="navbar-link">Employee Home</Link>
         <Link to={ROUTES.LOGIN} className="navbar-link">Login</Link>
         <Link to={ROUTES.REGISTER} className="navbar-link">Register</Link>
         <Link to={ROUTES.PAYMENT} className="navbar-link">Payment</Link>
