@@ -23,3 +23,41 @@ frontend/node_modules
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Environment variables and secrets
+.env
+*.env
+.env.*
+!.env.example
+
+# Security scan results
+audit-*.json
+security-report.json
+*.sarif
+
+# IDE and OS
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Keys and certificates
+*.pem
+*.key
+*.cert
+*.crt
+*.p12
+*.pfx
+backend/keys/*
+!backend/keys/.gitkeep
+
+# Testing
+coverage/
+.nyc_output/
+test-results/
+
+# Build artifacts
+dist/
+build/
