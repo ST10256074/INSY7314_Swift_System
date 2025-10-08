@@ -1,10 +1,10 @@
 import express from "express";
 import db from "../db/conn.js";
 import { ObjectId } from 'mongodb';
-// import { verify } from "jsonwebtoken";
+import checkAuth from "../check-auth.js";
 
 const router = express.Router();
-// router.use(verify)
+router.use(checkAuth);
 
 // Submit a new payment application
 router.post('/submit', async (req, res) => {

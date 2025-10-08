@@ -21,7 +21,9 @@ const options = {
 // Configure CORS for frontend communication
 const allowedOrigins = [
     'http://localhost:3000',
+    'http://localhost:3001',
     'https://localhost:3000',
+    'https://localhost:3001',
     'http://localhost:8080',
     'https://localhost:8443'
 ];
