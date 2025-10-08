@@ -12,7 +12,7 @@ import AccountInfo from './pages/client/AccountInfo.js';
 import ClientHome from './pages/client/ClientHome.js';
 import EmployeeHome from './pages/employee/EmployeeHome.js';
 
-function App() {
+function AppContent() {
   const location = useLocation();
   const hideNavbarRoutes = ['/', '/register'];
   const shouldHideNavbar = hideNavbarRoutes.includes(location.pathname);
