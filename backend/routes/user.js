@@ -18,23 +18,59 @@ router.post("/signup", async (req, res) => {
     console.log("signup")
     try {
         console.log(req.body);
-        let name = req.body.name;
+        let username = req.body.username;
+        let full_name = req.body.full_name;
+        let accountNumber = req.body.accountNumber;
+        let IDNumber = req.body.IDNumber;
         let password = req.body.password;
 
-        if (!name || !password) {
-            return res.status(400).send('Name and password are required');
+        // Username: 3-16 chars, letters, numbers, underscores only
+        const usernameRegex = /^[a-zA-Z0-9_]{3,16}$/;
+        // Password: min 6 chars, at least one letter and one number
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/;
+        // ID Number: 13 digits for South African ID
+        const idNumberRegex = /^\d{13}$/;
+
+        if (!username || !full_name || !accountNumber || !IDNumber || !password) {
+            return res.status(400).send('All fields (username, full name, account number, ID number, password) are required');
+        }
+
+        if (!usernameRegex.test(username)) {
+            return res.status(400).send('Username must be 3-16 characters and contain only letters, numbers, or underscores');
+        }
+
+        if (!passwordRegex.test(password)) {
+            return res.status(400).send('Password must be at least 6 characters and contain at least one letter and one number');
+        }
+
+        if (!idNumberRegex.test(IDNumber)) {
+            return res.status(400).send('ID Number must be exactly 13 digits');
+        }
+
+        if (!accountNumber.trim()) {
+            return res.status(400).send('Account number cannot be empty');
+        }
+
+        // Check if username already exists
+        let userCollection = await db.collection("users");
+        const existingUser = await userCollection.findOne({ username: username });
+        
+        if (existingUser) {
+            return res.status(400).send('Username already exists');
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const newDocument = {
-            name: name,
+            username: username,
+            full_name: full_name,
+            accountNumber: accountNumber,
+            IDNumber: IDNumber,
             password: hashedPassword,
             userType: "User"
         };
 
-        let collection = await db.collection("users");
-        let result = await collection.insertOne(newDocument);
+        let result = await userCollection.insertOne(newDocument);
 
         console.log(password);
         console.log(hashedPassword);
@@ -54,8 +90,8 @@ router.post('/login', async (req, res) => {
     console.log(user);
 
     try{
-    let collection = await db.collection("users");
-    let result = await collection.findOne({ name: user });
+    let userCollection = await db.collection("users");
+    let result = await userCollection.findOne({ username: user });
 
     if (!result) {
         return res.status(401).send('Authentication failed');
@@ -69,7 +105,8 @@ router.post('/login', async (req, res) => {
 
     const token = jwt.sign({ 
         id: result._id, 
-        name: result.name, 
+        username: result.username,
+        full_name: result.full_name,
         userType: result.userType 
     }, 'your_jwt_secret', { expiresIn: '1h' });
     
@@ -78,7 +115,8 @@ router.post('/login', async (req, res) => {
         token: token,
         user: { 
             id: result._id, 
-            name: result.name, 
+            username: result.username,
+            full_name: result.full_name,
             userType: result.userType 
         }
     });
