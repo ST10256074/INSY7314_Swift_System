@@ -102,7 +102,7 @@ jobs:
       - run:
           name: Install Security Tools
           command: |
-            npm install -g eslint-plugin-security
+            npm install eslint-plugin-security
       - install-backend-deps
       - install-frontend-deps
       - run:
