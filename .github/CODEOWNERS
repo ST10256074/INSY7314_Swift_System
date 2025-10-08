@@ -16,9 +16,6 @@
 /frontend/src/pages/client/ @ST10256074
 /frontend/src/pages/employee/ @ST10256074
 
-# GitHub Actions workflows - require review for security
-/.github/workflows/ @ST10256074
-
 # Security and configuration files
 .env* @ST10256074
 *.config.js @ST10256074
