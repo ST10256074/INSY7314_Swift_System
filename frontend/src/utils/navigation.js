@@ -12,6 +12,7 @@ export const useAppNavigation = () => {
     // Client routes
     clientHome: () => navigate('/ClientHome'),
     payment: () => navigate('/payment'),
+    transactions: () => navigate('/transactions'),
     accountInfo: () => navigate('/account-info'),
     
     // Employee routes
@@ -33,5 +34,6 @@ export const ROUTES = {
   REGISTER: '/register',
   PAYMENT: '/payment',
   ACCOUNT_INFO: '/account-info',
+  TRANSACTIONS: '/transactions',
   PENDING_PAYMENTS: '/pendingPayments',
 };

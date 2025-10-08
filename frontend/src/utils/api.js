@@ -88,9 +88,14 @@ class ApiService {
       throw error;
     }
   }
-  // Logout
+  // Logout - clear all authentication data
   logout() {
     this.setToken(null);
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('authToken');
+    // Clear any other user-related data
+    localStorage.removeItem('userPreferences');
+    localStorage.removeItem('lastLoginTime');
   }
 
   // Payment methods

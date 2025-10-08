@@ -6,7 +6,8 @@ const checkAuth = (req, res, next) => {
         if (!token) {
             return res.status(401).json({ message: "Authentication failed!" });
         }
-        jwt.verify(token, " this secret should be longer than it is");
+        const decoded = jwt.verify(token, 'your_jwt_secret');
+        req.user = decoded; // Add user information to request object
         next();
     } catch (error) {
         return res.status(401).json({ message: "Authentication failed!" });

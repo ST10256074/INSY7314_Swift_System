@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../utils/navigation.js';
-import apiService from '../../utils/api.js';
+import { useAuth } from '../../contexts/AuthContext.js';
 import './LoginPage.css';
 
 export default function LoginPage() {
@@ -11,6 +11,14 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
+
+  // Redirect if already authenticated
+  React.useEffect(() => {
+    if (isAuthenticated()) {
+      navigate(ROUTES.PAYMENT);
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,15 +26,10 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const response = await apiService.login({
+      const response = await login({
         name: username,
         password: password
       });
-
-      // Store user info in localStorage for later use
-      if (response.user) {
-        localStorage.setItem('currentUser', JSON.stringify(response.user));
-      }
 
       // Navigate based on user type
       if (response.user.userType === 'Employee') {
