@@ -17,7 +17,7 @@ commands:
           name: Install Backend Dependencies
           command: |
             cd backend
-            npm ci
+            npm ci --network-timeout 100000
       - save_cache:
           key: backend-deps-{{ checksum "backend/package-lock.json" }}
           paths:
@@ -28,15 +28,18 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - frontend-deps-{{ checksum "frontend/package-lock.json" }}
+            - frontend-deps-{{ checksum "frontend/yarn.lock" }}
             - frontend-deps-
       - run:
           name: Install Frontend Dependencies
           command: |
             cd frontend
-            npm ci
+            # Install yarn if not available
+            npm install -g yarn
+            # Use yarn for dependency installation with retry logic
+            yarn install --network-timeout 100000 --network-concurrency 1
       - save_cache:
-          key: frontend-deps-{{ checksum "frontend/package-lock.json" }}
+          key: frontend-deps-{{ checksum "frontend/yarn.lock" }}
           paths:
             - frontend/node_modules
 
