@@ -159,50 +159,98 @@ The Swift Payment System implements a multi-layered security framework based on 
 Our application implements multiple layers of security to ensure data protection and system integrity:
 
 #### 🔐 Authentication Security
-- **JWT Tokens**: Secure, stateless authentication with configurable expiration
-- **Password Hashing**: bcrypt with salt rounds for secure password storage
-- **Session Management**: Automatic token refresh and secure logout
-- **Role-Based Access**: Granular permissions based on user roles
+
+**JWT Token Implementation:**
+- **Secure Generation**: Tokens signed with HMAC-SHA256 using secret key
+- **Expiration Management**: 24-hour token lifetime with automatic refresh
+- **Stateless Design**: No server-side session storage for scalability
+- **Token Validation**: Middleware verification on protected routes
+
+**Password Security:**
+- **bcrypt Hashing**: Cost factor 10 for optimal security/performance balance
+- **Salt Generation**: Unique salt per password prevents rainbow table attacks
+- **Password Strength**: Client-side validation for complexity requirements
+- **Secure Storage**: Passwords never stored in plain text
+
+**Session Management:**
+- **Automatic Logout**: 24-hour inactivity timeout
+- **Secure Logout**: Token invalidation and localStorage cleanup
+- **Multi-Device Support**: Independent sessions per device
+- **Session Monitoring**: Failed login attempt tracking
+
+#### 🛡️ Data Protection & Encryption
+
+**Field-Level Encryption:**
+- **AES-192-CBC Algorithm**: Military-grade encryption for sensitive data
+- **Encrypted Fields**: Full names, ID numbers, account numbers, payment amounts
+- **Key Management**: Environment-based encryption key storage
+- **Data Integrity**: Cryptographic verification of encrypted data
+
+**Database Security:**
+- **MongoDB Atlas**: Cloud-hosted with built-in security features
+- **TLS Connections**: Encrypted database connections (TLS 1.2+)
+- **Access Control**: Database-level authentication and authorization
+- **Audit Logging**: Complete audit trail of all database operations
 
 #### 🛡️ Application Security
-- **Input Validation**: Comprehensive validation on both client and server
-- **CORS Protection**: Configured cross-origin resource sharing policies
-- **Rate Limiting**: Protection against brute force and DDoS attacks
-- **Error Handling**: Secure error messages without information leakage
 
-#### 🔍 Security Scanning Pipeline
+**Input Validation & Sanitization:**
+- **Server-Side Validation**: Express-validator for comprehensive input checking
+- **Client-Side Validation**: React form validation for user experience
+- **SQL Injection Prevention**: Parameterized queries and input sanitization
+- **XSS Protection**: Content Security Policy and output encoding
 
-Our CircleCI DevSecOps pipeline includes comprehensive security scanning:
+**Network Security:**
+- **CORS Configuration**: Controlled cross-origin resource sharing
+- **Rate Limiting**: API endpoint protection against abuse
+- **HTTPS Enforcement**: Secure communication protocols
+- **Security Headers**: Helmet.js for comprehensive header protection
+
+**Error Handling:**
+- **Secure Error Messages**: No sensitive information in error responses
+- **Logging**: Comprehensive error logging without data exposure
+- **Graceful Degradation**: System continues functioning during errors
+
+#### 🔍 Automated Security Scanning
+
+CircleCI pipeline provides continuous security monitoring:
 
 ![DevSecOps Successful Pipeline](Images1/circle_ci_successful_test.png)
 
-| Security Check | Tool | Purpose |
-|----------------|------|---------|
-| **Dependency Audit** | npm audit | Vulnerability scanning for dependencies |
-| **Static Analysis** | ESLint Security | Code-level security issue detection |
-| **Secrets Detection** | TruffleHog | Hardcoded secrets and credentials |
-| **License Compliance** | license-checker | Open source license compliance |
-| **Code Quality** | ESLint | Code quality and best practices |
+**Security Checks:**
+- **Dependency Scanning**: npm audit for known vulnerabilities
+- **Code Analysis**: ESLint security plugin for code-level issues
+- **Secrets Detection**: Prevents accidental credential commits
+- **License Compliance**: Open source license validation
 
-### DevSecOps Pipeline
+### Security Packages & Implementation
 
-```yaml
-# CircleCI Pipeline Stages
-Security Scanning:
-  - npm audit (Backend & Frontend)
-  - SAST with ESLint Security Plugin
-  - Secrets Detection with TruffleHog
-  - License Compliance Checking
+| Package | Purpose | Security Feature |
+|---------|---------|------------------|
+| **bcrypt** | Password Hashing | Secure password storage with salt rounds |
+| **jsonwebtoken** | JWT Authentication | Stateless authentication tokens |
+| **crypto** | Data Encryption | AES-192-CBC field-level encryption |
+| **helmet** | Security Headers | HTTP security headers protection |
+| **express-rate-limit** | Rate Limiting | API endpoint abuse prevention |
+| **express-validator** | Input Validation | Server-side input sanitization |
+| **cors** | CORS Protection | Cross-origin request control |
 
-Code Quality:
-  - ESLint for Backend
-  - React Linting for Frontend
-  - Parallel execution for efficiency
+**Real Implementation Examples:**
 
-Testing:
-  - Backend Unit Tests
-  - Frontend Tests with Coverage
-  - Integration Testing
+```javascript
+// Password Hashing (bcrypt)
+const hashedPassword = await bcrypt.hash(password, 10);
+
+// JWT Token Generation
+const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
+
+// Field-Level Encryption (AES-192-CBC)
+const encryptedData = encrypt(fullName, process.env.ENCRYPTION_KEY);
+
+// Input Validation
+const { body, validationResult } = require('express-validator');
+const validateInput = [body('email').isEmail().normalizeEmail()];
+```
 
 Building:
   - Backend Syntax Validation
