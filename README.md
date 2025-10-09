@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Swift Payment System](images/logo.png)
+![Swift Payment System](images1/swift_home.png)
 
 **A secure, enterprise-grade payment processing application with comprehensive DevSecOps pipeline**
 
