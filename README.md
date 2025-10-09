@@ -646,14 +646,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👥 Authors
 
 - **Emil Fabel** - *Initial work and DevSecOps implementation* - [ST10359034](https://github.com/ST10359034)
-- **Project Team** - *Collaborative development* - [INSY7314 Team](https://github.com/ST10256074/INSY7314_Swift_System)
-
-## 🙏 Acknowledgments
-
-- **University of South Africa (UNISA)** - Academic project framework
-- **INSY7314 Course** - Software Engineering principles
-- **Open Source Community** - Libraries and tools used
-- **Security Community** - Best practices and guidelines
+- **Weylin** - *Collaborative development* - [INSY7314 Team](https://github.com/ST10256074/INSY7314_Swift_System)
+- **James** - *Collaborative development* - [INSY7314 Team](https://github.com/ST10256074/INSY7314_Swift_System)
+- **Kevin** - *Collaborative development* - [INSY7314 Team](https://github.com/ST10256074/INSY7314_Swift_System)
 
 ## 📞 Support
 
