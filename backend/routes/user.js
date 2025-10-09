@@ -108,8 +108,8 @@ router.post('/login', async (req, res) => {
         username: result.username,
         full_name: result.full_name,
         userType: result.userType 
-    }, 'your_jwt_secret', { expiresIn: '1h' });
-    
+    }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
     res.status(200).json({ 
         message: 'Authentication successful', 
         token: token,
