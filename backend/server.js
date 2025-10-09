@@ -1,11 +1,15 @@
 import https from "https";
 import http from 'http';
 import fs from 'fs';
+import dotenv from 'dotenv';
 import users from "./routes/user.js";
 import payments from "./routes/payments.js";    
 import express from "express";
 import cors from "cors";
 import {execPath} from "process";
+
+// Configure environment variables
+dotenv.config();
 
 // Set the Port
 // const express = require('express');
