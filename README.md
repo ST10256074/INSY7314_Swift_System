@@ -89,39 +89,76 @@ The **Swift Payment System** is a comprehensive, enterprise-grade payment proces
 
 ### System Architecture
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   React Frontend │    │  Node.js Backend │    │   MongoDB DB    │
-│                 │    │                 │    │                 │
-│ • Authentication│◄──►│ • REST API      │◄──►│ • User Data     │
-│ • Payment Forms │    │ • JWT Auth      │    │ • Transactions  │
-│ • Transactions  │    │ • Validation    │    │ • Applications  │
-│ • Employee UI   │    │ • Security      │    │ • Audit Logs    │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         └───────────────────────┼───────────────────────┘
-                                 │
-                    ┌─────────────────┐
-                    │  CircleCI CI/CD │
-                    │                 │
-                    │ • Security Scan │
-                    │ • Code Quality  │
-                    │ • Testing       │
-                    │ • Deployment    │
-                    └─────────────────┘
-```
+![System Architecture Diagram](images/system-architecture.png)
+
+The Swift Payment System follows a comprehensive security-focused architecture with distinct layers:
+
+**Client Side (Blue):** User interface for payment transactions, authentication, and transaction management.
+
+**Employee Side (Orange):** Administrative interface for transaction approval, user management, and system oversight.
+
+**Database Layer (Green):** Secure data storage with encryption, hashed passwords, parameterized queries, and input sanitization.
+
+**SWIFT Layer (Red):** International payment processing with encryption, authentication, access control, and validation.
+
+**Security Considerations:** The system addresses multiple attack vectors including SQL injection, DDoS, session jacking, clickjacking, and man-in-the-middle attacks through comprehensive security measures across all layers.
+
+### Security Framework Implementation
+
+The Swift Payment System implements a multi-layered security framework based on industry best practices:
+
+#### **Authentication & Authorization Layer**
+- **JWT Token Management**: Secure token generation, validation, and expiration
+- **Role-Based Access Control**: Separate permissions for clients and employees
+- **Password Security**: bcrypt hashing with salt rounds for secure password storage
+- **Session Management**: Automatic token refresh and secure logout procedures
+
+#### **Data Protection Layer**
+- **Encryption at Rest**: AES-192-CBC encryption for sensitive payment data
+- **Encryption in Transit**: HTTPS/TLS for all communications
+- **Key Management**: Secure key derivation using scrypt algorithm
+- **Data Sanitization**: Input validation and sanitization across all endpoints
+
+#### **Network Security Layer**
+- **CORS Protection**: Configured cross-origin resource sharing policies
+- **Rate Limiting**: Protection against brute force and DDoS attacks
+- **Security Headers**: Helmet.js implementation for comprehensive header protection
+- **Input Validation**: Express-validator for preventing injection attacks
+
+#### **Database Security Layer**
+- **NoSQL Injection Prevention**: Parameterized queries and input sanitization
+- **Connection Security**: Encrypted connections to MongoDB Atlas
+- **Access Control**: Database-level authentication and authorization
+- **Audit Logging**: Comprehensive logging of all database operations
 
 ### Technology Stack
 
-| Component | Technology | Version | Purpose |
-|-----------|------------|---------|---------|
-| **Frontend** | React | 18+ | User interface and state management |
-| **Backend** | Node.js | 18+ | Server-side logic and API |
-| **Framework** | Express.js | 5+ | Web application framework |
-| **Database** | MongoDB | 6+ | Document-based data storage |
-| **Authentication** | JWT | 9+ | Secure token-based authentication |
+| Component | Technology | Version | Security Features |
+|-----------|------------|---------|-------------------|
+| **Frontend** | React | 18+ | XSS protection, CSRF tokens, Content Security Policy |
+| **Backend** | Node.js | 18+ | Secure runtime environment, memory protection |
+| **Framework** | Express.js | 5+ | Helmet.js security headers, rate limiting |
+| **Database** | MongoDB Atlas | 6+ | Encryption at rest, network isolation, authentication |
+| **Authentication** | JWT + bcrypt | 9+ | Token-based auth, password hashing with salt |
+| **Encryption** | Node.js Crypto | Built-in | AES-192-CBC encryption, scrypt key derivation |
+| **Validation** | Express Validator | Latest | Input sanitization, SQL injection prevention |
+| **CORS** | cors | 2.8+ | Cross-origin request protection |
 | **Styling** | CSS3 | Latest | Responsive design and UI |
-| **CI/CD** | CircleCI | Latest | Automated testing and deployment |
+| **CI/CD** | CircleCI | Latest | Automated security scanning, dependency auditing |
+
+### Security NPM Packages
+
+| Package | Purpose | Security Against |
+|---------|---------|------------------|
+| **bcrypt** | Password hashing | Brute force attacks, rainbow table attacks |
+| **jsonwebtoken** | JWT authentication | Session hijacking, unauthorized access |
+| **helmet** | Security headers | XSS, clickjacking, MIME sniffing |
+| **express-rate-limit** | Rate limiting | DDoS attacks, brute force attempts |
+| **cors** | CORS configuration | Cross-origin attacks, unauthorized domains |
+| **express-validator** | Input validation | SQL injection, XSS, data corruption |
+| **dotenv** | Environment variables | Credential exposure, configuration leaks |
+| **mongodb** | Database driver | NoSQL injection, connection hijacking |
+| **crypto** | Built-in encryption | Data interception, man-in-the-middle attacks |
 
 ## 🛡️ Security & DevSecOps
 
@@ -384,37 +421,20 @@ Get all pending payment applications for review.
 #### Backend Environment Variables
 
 ```env
-# Database
-MONGODB_URI=mongodb://localhost:27017/swift_payment_system
+# Database (MongoDB Atlas)
+ATLAS_URI=mongodb+srv://username:password@cluster.mongodb.net/?retryWrites=true&w=majority&appName=ClusterName
 
 # Authentication
 JWT_SECRET=your_secure_jwt_secret_here
-JWT_EXPIRES_IN=24h
+
+# Encryption
+ENCRYPTION_KEY=your_encryption_key_here_32_chars
 
 # Server
 PORT=8080
 NODE_ENV=development
-
-# CORS
-ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001
 ```
 
-### Database Setup
-
-1. **Start MongoDB**
-   ```bash
-   # Local MongoDB
-   mongod
-   
-   # Or use MongoDB Atlas (cloud)
-   # Update MONGODB_URI in .env
-   ```
-
-2. **Create initial data** (optional)
-   ```bash
-   # The application will create collections automatically
-   # You can add sample data through the registration endpoint
-   ```
 
 ![Installation Guide](images/installation-guide.png)
 
@@ -595,53 +615,6 @@ Our CircleCI pipeline automatically:
 
 ![Deployment Pipeline](images/deployment-pipeline.png)
 
-## 🤝 Contributing
-
-We welcome contributions to the Swift Payment System! Please follow these guidelines:
-
-### Getting Started
-
-1. **Fork the repository**
-2. **Create a feature branch**
-   ```bash
-   git checkout -b feature/amazing-feature
-   ```
-3. **Make your changes**
-4. **Run tests and linting**
-   ```bash
-   npm test
-   npm run lint
-   ```
-5. **Commit your changes**
-   ```bash
-   git commit -m "Add amazing feature"
-   ```
-6. **Push to your fork**
-   ```bash
-   git push origin feature/amazing-feature
-   ```
-7. **Create a Pull Request**
-
-### Contribution Guidelines
-
-- Follow the existing code style
-- Write tests for new features
-- Update documentation as needed
-- Ensure all tests pass
-- Follow security best practices
-
-### Code Review Process
-
-1. **Automated Checks**: CircleCI runs security scans and tests
-2. **Peer Review**: Team members review code changes
-3. **Security Review**: Security team validates changes
-4. **Approval**: Maintainer approval required for merge
-
-![Contributing Guide](images/contributing-guide.png)
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 👥 Authors
 
@@ -650,20 +623,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **James** - *Collaborative development* - [INSY7314 Team](https://github.com/ST10256074/INSY7314_Swift_System)
 - **Kevin** - *Collaborative development* - [INSY7314 Team](https://github.com/ST10256074/INSY7314_Swift_System)
 
-## 📞 Support
-
-For support and questions:
-
-- **Issues**: [GitHub Issues](https://github.com/ST10256074/INSY7314_Swift_System/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/ST10256074/INSY7314_Swift_System/discussions)
-- **Email**: st10359034@vcconnect.edu.za
-
-## 📚 Additional Resources
-
-- [Security Documentation](SECURITY.md)
-- [API Documentation](docs/API.md)
-- [Deployment Guide](docs/DEPLOYMENT.md)
-- [Contributing Guidelines](CONTRIBUTING.md)
 
 ---
 
