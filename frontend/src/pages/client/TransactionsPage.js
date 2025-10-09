@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import apiService from '../../utils/api.js';
 import { useAuth } from '../../contexts/AuthContext';
 import './TransactionsPage.css';
@@ -10,16 +10,7 @@ const TransactionsPage = () => {
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('all'); // all, pending, approved, rejected
 
-  useEffect(() => {
-    if (isAuthenticated() && user) {
-      fetchTransactions();
-    } else if (!isAuthenticated()) {
-      setError('You must be logged in to view transactions.');
-      setLoading(false);
-    }
-  }, [user]); // Remove isAuthenticated from dependencies since it's a function
-
-  const fetchTransactions = async () => {
+  const fetchTransactions = useCallback(async () => {
     if (!isAuthenticated()) {
       setError('You must be logged in to view transactions.');
       setLoading(false);
@@ -51,7 +42,16 @@ const TransactionsPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (isAuthenticated() && user) {
+      fetchTransactions();
+    } else if (!isAuthenticated()) {
+      setError('You must be logged in to view transactions.');
+      setLoading(false);
+    }
+  }, [user, isAuthenticated, fetchTransactions]);
 
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
