@@ -77,7 +77,6 @@ export default function AccountDetails() {
 	const idNumber = profileData?.IDNumber || '';
 	const username = profileData?.username || '';
 	const accountNumber = profileData?.accountNumber || '';
-	const password = '********'; 
 
 	return (
 		<div className="account-info-page">
