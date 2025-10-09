@@ -113,8 +113,8 @@ export default function ClientHome() {
             <Link to={ROUTES.PAYMENT} className="action-btn primary">
               Make Payment
             </Link>
-            <Link to={ROUTES.ACCOUNT_INFO} className="action-btn secondary">
-              Account Info
+            <Link to={ROUTES.ACCOUNT_DETAILS} className="action-btn secondary">
+              Account Details
             </Link>
             <button onClick={handleLogout} className="action-btn secondary">
               Logout
