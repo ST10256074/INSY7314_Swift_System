@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Swift Payment System](images1/swift_home.png)
+![Swift Payment System](Images1/swift_home.png)
 
 **A secure, enterprise-grade payment processing application with comprehensive DevSecOps pipeline**
 
@@ -52,7 +52,7 @@ The **Swift Payment System** is a comprehensive, enterprise-grade payment proces
 - **Session Management**: Secure token storage and automatic session handling
 - **Logout Confirmation**: User-friendly logout process with confirmation modal
 
-![Authentication Flow](images/auth-flow.png)
+![Authentication Flow](Images1/Login.png)
 
 ### 💳 Payment Processing
 - **Payment Applications**: Comprehensive form for submitting payment requests
@@ -60,7 +60,7 @@ The **Swift Payment System** is a comprehensive, enterprise-grade payment proces
 - **SWIFT Integration**: International payment processing with SWIFT codes
 - **Status Tracking**: Real-time payment status updates (Pending/Approved/Rejected)
 
-![Payment Interface](images/payment-interface.png)
+![Payment Interface](Images1/Payment.png)
 
 ### 📊 Transaction Management
 - **Transaction History**: Complete transaction history for authenticated users
@@ -68,15 +68,7 @@ The **Swift Payment System** is a comprehensive, enterprise-grade payment proces
 - **Real-time Updates**: Live status updates and transaction notifications
 - **Export Capabilities**: Transaction data export for reporting
 
-![Transaction Dashboard](images/transaction-dashboard.png)
-
-### 👨‍💼 Employee Portal
-- **Pending Payments Review**: Employee interface for reviewing payment applications
-- **Approval Workflow**: Streamlined approval/rejection process
-- **User Management**: Employee tools for user account management
-- **Reporting Dashboard**: Comprehensive reporting and analytics
-
-![Employee Portal](images/employee-portal.png)
+![Transaction Dashboard](Images1/Transactions.png)
 
 ### 🛡️ Security Features
 - **Input Validation**: Comprehensive server-side and client-side validation
@@ -182,7 +174,7 @@ Our application implements multiple layers of security to ensure data protection
 
 Our CircleCI DevSecOps pipeline includes comprehensive security scanning:
 
-![DevSecOps Pipeline](images/devsecops-pipeline.png)
+![DevSecOps Successful Pipeline](Images1/circle_ci_successful_test.png)
 
 | Security Check | Tool | Purpose |
 |----------------|------|---------|
@@ -218,7 +210,7 @@ Building:
   - Artifact Generation
 ```
 
-![CircleCI Dashboard](images/circleci-dashboard.png)
+![CircleCI Dashboard](Images1/circle_ci_dashboard.png)
 
 ## 🗄️ Database Architecture & MongoDB Implementation
 
