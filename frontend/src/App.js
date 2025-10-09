@@ -14,6 +14,7 @@ import PendingPayments from './pages/employee/PendingPayments.js';
 import AccountInfo from './pages/client/AccountInfo.js';
 import ClientHome from './pages/client/ClientHome.js';
 import EmployeeHome from './pages/employee/EmployeeHome.js';
+import AccountDetails from './pages/client/AccountDetails.js';
 
 function AppContent() {
   const location = useLocation();
@@ -54,6 +55,14 @@ function AppContent() {
           element={
             <ProtectedRoute requireClient={true}>
               <AccountInfo />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path={ROUTES.ACCOUNT_DETAILS} 
+          element={
+            <ProtectedRoute requireClient={true}>
+              <AccountDetails />
             </ProtectedRoute>
           } 
         />
