@@ -249,3 +249,69 @@
     align-self: flex-end;
   }
 }
+
+/* New styles for enhanced dashboard */
+
+.payment-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.payment-status {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.payment-status.pending {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.payment-status.approved {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.payment-status.rejected {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.loading-message, .empty-message {
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
+  padding: 20px;
+}
+
+.action-buttons button {
+  background: #6b7280;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  display: inline-block;
+  text-align: center;
+  width: 100%;
+}
+
+.action-buttons button:hover {
+  background: #4b5563;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .payment-details {
+    align-items: flex-start;
+  }
+}

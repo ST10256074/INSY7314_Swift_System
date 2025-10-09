@@ -1,27 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import apiService from '../../utils/api.js';
+import { useAuth } from '../../contexts/AuthContext';
 import './TransactionsPage.css';
 
 const TransactionsPage = () => {
+  const { user, isAuthenticated } = useAuth();
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('all'); // all, pending, approved, rejected
 
   useEffect(() => {
-    fetchTransactions();
-  }, []);
+    if (isAuthenticated() && user) {
+      fetchTransactions();
+    } else if (!isAuthenticated()) {
+      setError('You must be logged in to view transactions.');
+      setLoading(false);
+    }
+  }, [user]); // Remove isAuthenticated from dependencies since it's a function
 
   const fetchTransactions = async () => {
+    if (!isAuthenticated()) {
+      setError('You must be logged in to view transactions.');
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       setError('');
       const response = await apiService.getMyPayments();
-      // The API returns { message: "...", applications: [...] }
+      console.log('Fetched transactions:', response.applications?.length || 0); // Debug log
+
       setTransactions(response.applications || []);
     } catch (err) {
-      setError('Failed to load transactions. Please try again.');
       console.error('Error fetching transactions:', err);
+      
+      // Handle different types of errors
+      if (err.message.includes('401') || err.message.includes('Unauthorized')) {
+        setError('Your session has expired. Please log in again.');
+      } else if (err.message.includes('403') || err.message.includes('Forbidden')) {
+        setError('You do not have permission to view transactions.');
+      } else if (err.message.includes('Network')) {
+        setError('Network error. Please check your connection and try again.');
+      } else {
+        setError('Failed to load transactions. Please try again.');
+      }
+      
       setTransactions([]); // Ensure transactions is always an array
     } finally {
       setLoading(false);
@@ -101,6 +126,9 @@ const TransactionsPage = () => {
         <div className="transactions-header">
           <h1>My Transactions</h1>
           <p>View and track your payment history</p>
+          <button onClick={fetchTransactions} className="refresh-btn" disabled={loading}>
+            {loading ? 'Refreshing...' : 'Refresh'}
+          </button>
         </div>
 
         {error && (
@@ -148,10 +176,15 @@ const TransactionsPage = () => {
               <h3>No transactions found</h3>
               <p>
                 {filter === 'all' 
-                  ? "You haven't made any transactions yet." 
-                  : `No ${filter} transactions found.`
+                  ? "You haven't made any payment applications yet. Visit the Payment page to submit your first payment." 
+                  : `No ${filter} payment applications found.`
                 }
               </p>
+              {filter === 'all' && (
+                <p>
+                  <small>Note: Only payment applications submitted by you will appear here.</small>
+                </p>
+              )}
             </div>
           ) : (
             <div className="transactions-list">
@@ -175,7 +208,7 @@ const TransactionsPage = () => {
                     </div>
                     <div className="detail-row">
                       <span className="label">Account Number:</span>
-                      <span className="value">{transaction.recipientAccountNumber || 'N/A'}</span>
+                      <span className="value">{transaction.accountNumber || 'N/A'}</span>
                     </div>
                     <div className="detail-row">
                       <span className="label">Amount:</span>
@@ -191,7 +224,7 @@ const TransactionsPage = () => {
                     </div>
                     <div className="detail-row">
                       <span className="label">Date:</span>
-                      <span className="value">{formatDate(transaction.createdAt || transaction.date)}</span>
+                      <span className="value">{formatDate(transaction.submittedAt || transaction.createdAt || transaction.date)}</span>
                     </div>
                   </div>
 
