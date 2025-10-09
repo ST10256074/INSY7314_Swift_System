@@ -14,7 +14,7 @@ import checkAuth from "../check-auth.js";
 
 // Encryption configuration
 const ALGORITHM = 'aes-192-cbc';
-const PASSWORD = process.env.ENCRYPTION_KEY || 'default-password-for-key-derivation';
+const PASSWORD = process.env.ENCRYPTION_KEY;
 const SALT = 'salt'; // In production, use a random salt per encryption
 const KEY_LENGTH = 24; // 24 bytes for AES-192
 const IV_LENGTH = 16; // For AES, this is always 16
