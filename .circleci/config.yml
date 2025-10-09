@@ -252,11 +252,11 @@ jobs:
       - run:
           name: Check Dependencies Licenses
           command: |
-            npm install -g license-checker
+            npm install license-checker
             echo "=== Backend Licenses ==="
-            cd backend && license-checker --summary
+            cd backend && npx license-checker --summary
             echo "=== Frontend Licenses ==="
-            cd ../frontend && license-checker --summary
+            cd ../frontend && npx license-checker --summary
 
 # Workflows define the order of jobs
 workflows:
