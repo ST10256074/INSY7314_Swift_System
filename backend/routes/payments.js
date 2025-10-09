@@ -13,6 +13,23 @@ router.use(checkAuth);
  * POST /payments/submit (requires authentication)
  */
 router.post('/submit', async (req, res) => {
+
+    // Whitelist allowed fields
+    const allowedFields = ["recipientName", "accountNumber", "swiftCode", "amount", "currency", "paymentProvider"];
+    Object.keys(req.body).forEach(key => {
+        if (!allowedFields.includes(key)) {
+            delete req.body[key];
+        }
+    });
+
+    // Regex patterns for input validation
+    const recipientNameRegex = /^[a-zA-Z0-9 .,'-]{2,50}$/;
+    const accountNumberRegex = /^\d{6,20}$/;
+    const swiftCodeRegex = /^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/;
+    const amountRegex = /^\d+(\.\d{1,2})?$/;
+    const currencyRegex = /^[A-Z]{3}$/;
+    const paymentProviderRegex = /^[a-zA-Z0-9 .,'-]{2,50}$/;
+
     try {
         const {
             recipientName,
@@ -30,16 +47,24 @@ router.post('/submit', async (req, res) => {
             });
         }
 
-        // Validate amount is positive 
-        if (isNaN(amount) || parseFloat(amount) <= 0) {
-            return res.status(400).json({ message: 'Amount must be a positive number' });
+        // Regex validation for each field
+        if (!recipientNameRegex.test(recipientName)) {
+            return res.status(400).json({ message: 'Invalid recipient name format.' });
         }
-
-        // Validate SWIFT code format 
-        // validation - 8 or 11 characters
-        const swiftRegex = /^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/;
-        if (!swiftRegex.test(swiftCode.toUpperCase())) {
-            return res.status(400).json({ message: 'Invalid SWIFT code format' });
+        if (!accountNumberRegex.test(accountNumber)) {
+            return res.status(400).json({ message: 'Invalid account number format.' });
+        }
+        if (!swiftCodeRegex.test(swiftCode.toUpperCase())) {
+            return res.status(400).json({ message: 'Invalid SWIFT code format.' });
+        }
+        if (!amountRegex.test(amount)) {
+            return res.status(400).json({ message: 'Invalid amount format.' });
+        }
+        if (!currencyRegex.test(currency.toUpperCase())) {
+            return res.status(400).json({ message: 'Invalid currency format.' });
+        }
+        if (!paymentProviderRegex.test(paymentProvider)) {
+            return res.status(400).json({ message: 'Invalid payment provider format.' });
         }
 
         // Encrypt all sensitive data before storing
