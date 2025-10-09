@@ -5,12 +5,6 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import checkAuth from "../check-auth.js";
 import { encrypt, decrypt } from "../utils/encryption.js";
-// import ExpressBrute from 'express-brute';
-
-// const router = express.Router
-
-// var store = new ExpressBrute.MemoryStore();
-// var bruteforce = new ExpressBrute(store);
 
 const router = express.Router();
 
@@ -20,9 +14,7 @@ const router = express.Router();
  * POST /user/signup
  */
 router.post("/signup", async (req, res) => {
-    console.log("signup")
     try {
-        console.log(req.body);
         let username = req.body.username;
         let full_name = req.body.full_name;
         let accountNumber = req.body.accountNumber;
@@ -82,8 +74,6 @@ router.post("/signup", async (req, res) => {
 
         let result = await userCollection.insertOne(newDocument);
 
-        console.log(password);
-        console.log(hashedPassword);
         res.status(201).json({ message: 'User created successfully', result });
     }
     catch (error) {
@@ -98,9 +88,7 @@ router.post("/signup", async (req, res) => {
  * GET /user/profile (requires authentication)
  */
 router.get('/profile', checkAuth, async (req, res) => {
-    console.log("profile")
     try {
-        console.log("User from token:", req.user);
         const userName = req.user.username;
         
         if (!userName) {
@@ -147,8 +135,6 @@ router.post('/login', async (req, res) => {
     const accountNumber = req.body.accountNumber;
     const password = req.body.password;
 
-    console.log('Login attempt for user:', user);
-
     try{
     let userCollection = await db.collection("users");
     let result = await userCollection.findOne({ username: user });
@@ -189,13 +175,10 @@ router.post('/login', async (req, res) => {
             userType: result.userType 
         }
     });
-    console.log(token);
     }
     catch (error) {
         res.status(500).send('Internal server error');
     }
 });
-
-
 
 export default router;
