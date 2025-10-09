@@ -98,6 +98,25 @@ class ApiService {
     localStorage.removeItem('lastLoginTime');
   }
 
+  // Get current user profile
+  async getUserProfile() {
+    try {
+      const response = await fetch(`${this.baseURL}/user/profile`, {
+        method: 'GET',
+        headers: this.getHeaders(true),
+        mode: 'cors',
+        credentials: 'include'
+      });
+      
+      const data = await this.handleResponse(response);
+
+      return data;
+    } catch (error) {
+      console.error('Get user profile error:', error);
+      throw error;
+    }
+  }
+
   // Payment methods
   async submitPayment(paymentData) {
     try {

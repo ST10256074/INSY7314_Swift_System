@@ -1,10 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './AccountDetails.css';
 import { useAuth } from '../../contexts/AuthContext.js';
+import apiService from '../../utils/api.js';
 
 export default function AccountDetails() {
 	const { user } = useAuth();
-	const [showPassword, setShowPassword] = useState(false);
+	const [profileData, setProfileData] = useState(null);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
+
+	useEffect(() => {
+		const fetchProfile = async () => {
+			try {
+				setLoading(true);
+				const response = await apiService.getUserProfile();
+				setProfileData(response.user);
+				setError(null);
+			} catch (error) {
+				console.error('Error fetching profile:', error);
+				setError('Failed to load profile data');
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		if (user) {
+			fetchProfile();
+		} else {
+			setLoading(false);
+		}
+	}, [user]);
 
 	if (!user) {
 		return (
@@ -19,12 +44,40 @@ export default function AccountDetails() {
 		);
 	}
 
+	if (loading) {
+		return (
+			<div className="account-info-page">
+				<div className="account-header">
+					<h1>Account Details</h1>
+				</div>
+				<div className="account-form">
+					<p>Loading profile data...</p>
+				</div>
+			</div>
+		);
+	}
 
-	const fullName = user.full_name || user.fullName || user.name || '';
-	const idNumber = user.IDNumber || user.idNumber || user.ID || '';
-	const username = user.username || '';
-	const accountNumber = user.accountNumber || '';
-	const password = user.password || '********'; 
+	if (error) {
+		return (
+			<div className="account-info-page">
+				<div className="account-header">
+					<h1>Account Details</h1>
+				</div>
+				<div className="account-form">
+					<p style={{color: 'red'}}>{error}</p>
+					<button onClick={() => window.location.reload()} className="retry-btn">
+						Retry
+					</button>
+				</div>
+			</div>
+		);
+	}
+
+	const fullName = profileData?.full_name || '';
+	const idNumber = profileData?.IDNumber || '';
+	const username = profileData?.username || '';
+	const accountNumber = profileData?.accountNumber || '';
+	const password = '********'; 
 
 	return (
 		<div className="account-info-page">
@@ -80,8 +133,8 @@ export default function AccountDetails() {
 							<label>Password</label>
 							<div className="password-row">
 								<input
-									type={showPassword ? "text" : "password"}
-									value={showPassword ? password : '••••••••'}
+									type="text"
+									value={'••••••••'}
 									readOnly
 									className="readonly-input"
 								/>
