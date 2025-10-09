@@ -3,6 +3,8 @@ import db from "../db/conn.js";
 import { ObjectId } from 'mongodb';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import checkAuth from "../check-auth.js";
+import { encrypt, decrypt } from "../utils/encryption.js";
 // import ExpressBrute from 'express-brute';
 
 // const router = express.Router
@@ -61,11 +63,16 @@ router.post("/signup", async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Encrypt sensitive data before storing
+        const encryptedAccountNumber = await encrypt(accountNumber);
+        const encryptedIDNumber = await encrypt(IDNumber);
+        const encryptedFullName = await encrypt(full_name);
+
         const newDocument = {
-            username: username,
-            full_name: full_name,
-            accountNumber: accountNumber,
-            IDNumber: IDNumber,
+            username: username, // Username is not encrypted as it's used for login
+            full_name: encryptedFullName,
+            accountNumber: encryptedAccountNumber,
+            IDNumber: encryptedIDNumber,
             password: hashedPassword,
             userType: "User"
         };
@@ -79,6 +86,45 @@ router.post("/signup", async (req, res) => {
     catch (error) {
         console.error("signup error:", error);  
         res.status(500).send('Internal server error');
+    }
+});
+
+// Get current user's account info
+router.get('/profile', checkAuth, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        
+        if (!userId) {
+            return res.status(401).json({ message: 'User ID required' });
+        }
+
+        let userCollection = await db.collection("users");
+        let user = await userCollection.findOne({ _id: new ObjectId(userId) });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Decrypt sensitive data for response
+        const decryptedFullName = await decrypt(user.full_name);
+        const decryptedAccountNumber = await decrypt(user.accountNumber);
+        const decryptedIDNumber = await decrypt(user.IDNumber);
+
+        res.status(200).json({
+            message: 'User profile retrieved successfully',
+            user: {
+                id: user._id,
+                username: user.username,
+                full_name: decryptedFullName,
+                accountNumber: decryptedAccountNumber,
+                IDNumber: decryptedIDNumber,
+                userType: user.userType
+            }
+        });
+
+    } catch (error) {
+        console.error("Profile retrieval error:", error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 });
 
@@ -103,20 +149,23 @@ router.post('/login', async (req, res) => {
         return res.status(401).send('Invalid username or password');
     }
 
+    // Decrypt sensitive data for response
+    const decryptedFullName = await decrypt(result.full_name);
+
     const token = jwt.sign({ 
         id: result._id, 
         username: result.username,
-        full_name: result.full_name,
+        full_name: decryptedFullName,
         userType: result.userType 
-    }, 'your_jwt_secret', { expiresIn: '1h' });
-    
+    }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
     res.status(200).json({ 
         message: 'Authentication successful', 
         token: token,
         user: { 
             id: result._id, 
             username: result.username,
-            full_name: result.full_name,
+            full_name: decryptedFullName,
             userType: result.userType 
         }
     });
