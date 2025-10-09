@@ -1,19 +1,25 @@
 /* Inspect Transaction Page */
 .inspect-transaction-page {
   min-height: 100vh;
-  background-color: #f8fafc;
-  padding: 20px;
+  background-color: #f4f6f8;
+  padding: 40px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* max-width: 1200px; */
+  margin: 0 auto;
 }
 
 .inspect-container {
-  max-width: 1000px;
-  margin: 0 auto;
+  width: 100%;
 }
 
 /* Header */
 .inspect-header {
-  margin-bottom: 32px;
+  margin-bottom: 30px;
+  width: 100%;
+  text-align: center;
 }
 
 .back-button {
@@ -35,14 +41,14 @@
 
 .inspect-header h1 {
   color: #1e3a8a;
-  font-size: 2.5rem;
+  font-size: 32px;
   font-weight: 700;
-  margin: 0 0 8px 0;
+  margin-bottom: 8px;
 }
 
 .inspect-header p {
-  color: #6b7280;
-  font-size: 1.1rem;
+  color: #64748b;
+  font-size: 16px;
   margin: 0;
 }
 
