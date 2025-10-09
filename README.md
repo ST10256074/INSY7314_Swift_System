@@ -226,9 +226,14 @@ Building:
 
 The Swift Payment System uses **MongoDB Atlas** as its primary database, providing a robust, scalable, and secure document-based storage solution. The database is designed with security, performance, and data integrity as core principles.
 
+![MongoDB Atlas Overview](images/mongodb-atlas-overview.png)
+
 #### **Database Configuration**
 - **Platform**: MongoDB Atlas (Cloud-hosted)
+- **Cluster**: hartsCluster
 - **Database Name**: `users`
+- **Data Size**: 74.13 KB (current usage)
+- **Collections**: 2 (users, payment_applications)
 - **Connection**: Secure connection string with authentication
 - **Encryption**: Encryption at rest and in transit
 - **Backup**: Automated daily backups with point-in-time recovery
@@ -238,42 +243,27 @@ The Swift Payment System uses **MongoDB Atlas** as its primary database, providi
 
 #### **1. Users Collection (`users`)**
 
-The users collection stores all user account information with comprehensive security measures:
+The users collection stores all user account information with comprehensive security measures and field-level encryption:
 
+![MongoDB Users Collection](images/mongodb-users-collection.png)
+
+**Real Implementation Example:**
 ```javascript
 {
-  _id: ObjectId("507f1f77bcf86cd799439011"),    // Unique document identifier
-  username: "john_doe",                         // Unique username (indexed)
-  full_name: "John Doe",                        // User's full legal name
-  IDNumber: "1234567890123",                    // Government ID number
-  accountNumber: "1234567890",                  // Bank account number
-  password: "$2b$10$N9qo8uLOickgx2ZMRZoMye...", // bcrypt hashed password
-  userType: "User",                             // "User" (Client) or "Employee"
-  createdAt: ISODate("2024-01-15T10:30:00Z"),   // Account creation timestamp
-  lastLogin: ISODate("2024-01-20T14:22:00Z"),   // Last successful login
-  isActive: true,                               // Account status flag
-  email: "john.doe@email.com",                  // User email address
-  phoneNumber: "+1234567890",                   // Contact phone number
-  address: {                                    // User address information
-    street: "123 Main Street",
-    city: "New York",
-    state: "NY",
-    zipCode: "10001",
-    country: "USA"
-  },
-  preferences: {                                // User preferences
-    language: "en",
-    timezone: "America/New_York",
-    notifications: true
-  },
-  security: {                                   // Security-related fields
-    failedLoginAttempts: 0,
-    lastFailedLogin: null,
-    accountLocked: false,
-    twoFactorEnabled: false
-  }
+  _id: ObjectId("68e78255dba82da91175cb33"),    // Unique document identifier
+  username: "888James",                         // Unique username (indexed)
+  full_name: "58351fcb8e27a6c743b1acle7483901:76697200247a9bc5df258f1d22de54ef", // Encrypted full name
+  accountNumber: "aa5a8748a4440e9cd1c870940e327a51:d98ed41203045ebbf7ed62ddcbacfdca", // Encrypted account number
+  IDNumber: "f6deba474e0a6001f3bc7d57844ef722:56532616309841ed2a6cba439a6bf803", // Encrypted ID number
+  password: "$2b$10$uZJ69Vtu/3Gb90g7INDty0gVwxMdOcitowzol/iondK16avh5MXti", // bcrypt hashed password
+  userType: "User"                             // "User" (Client) or "Employee"
 }
 ```
+
+**Security Features Implemented:**
+- **Field-Level Encryption**: Sensitive fields (full_name, accountNumber, IDNumber) are encrypted using AES-192-CBC
+- **Password Hashing**: bcrypt with salt rounds for secure password storage
+- **Unique Constraints**: username and accountNumber are unique across the collection
 
 **Indexes:**
 - `username` (Unique)
@@ -284,58 +274,35 @@ The users collection stores all user account information with comprehensive secu
 
 #### **2. Payment Applications Collection (`payment_applications`)**
 
-Stores all payment transaction data with comprehensive audit trails:
+Stores all payment transaction data with comprehensive audit trails and field-level encryption:
 
+![MongoDB Payment Applications Collection](images/mongodb-payment-applications.png)
+
+**Real Implementation Example:**
 ```javascript
 {
-  _id: ObjectId("507f1f77bcf86cd799439012"),
-  submittedBy: ObjectId("507f1f77bcf86cd799439011"), // Reference to User._id
-  recipientName: "Jane Smith",                        // Recipient's full name
-  recipientAccountNumber: "9876543210",               // Recipient's account
-  recipientBank: "Chase Bank",                        // Recipient's bank name
-  amount: 1500.00,                                    // Payment amount
-  currency: "USD",                                    // Currency code (ISO 4217)
-  exchangeRate: 1.0,                                  // Exchange rate applied
-  paymentProvider: "SWIFT",                           // Payment service provider
-  swiftCode: "CHASUS33",                             // SWIFT/BIC code
-  iban: "GB29NWBK60161331926819",                    // International Bank Account Number
-  routingNumber: "021000021",                         // Bank routing number
-  notes: "Payment for consulting services",           // Additional payment notes
-  status: "Pending",                                  // "Pending", "Approved", "Rejected", "Processing", "Completed"
-  priority: "Normal",                                 // "Low", "Normal", "High", "Urgent"
-  submittedAt: ISODate("2024-01-20T09:15:00Z"),      // Submission timestamp
-  reviewedAt: ISODate("2024-01-20T14:30:00Z"),       // Review timestamp
-  reviewedBy: ObjectId("507f1f77bcf86cd799439013"),  // Employee who reviewed
-  reviewNotes: "Approved after verification",         // Employee review comments
-  processingStartedAt: ISODate("2024-01-20T15:00:00Z"), // Processing start time
-  completedAt: ISODate("2024-01-21T10:00:00Z"),      // Completion timestamp
-  fees: {                                            // Transaction fees
-    processingFee: 25.00,
-    currency: "USD",
-    exchangeFee: 0.00
-  },
-  compliance: {                                      // Compliance and security
-    amlChecked: true,
-    kycVerified: true,
-    riskScore: 2.5,
-    sanctionsScreened: true
-  },
-  auditTrail: [                                      // Complete audit trail
-    {
-      action: "submitted",
-      timestamp: ISODate("2024-01-20T09:15:00Z"),
-      userId: ObjectId("507f1f77bcf86cd799439011"),
-      details: "Payment application submitted"
-    },
-    {
-      action: "reviewed",
-      timestamp: ISODate("2024-01-20T14:30:00Z"),
-      userId: ObjectId("507f1f77bcf86cd799439013"),
-      details: "Payment approved by employee"
-    }
-  ]
+  _id: ObjectId("68e78d77c2aba86fbf30660e"),
+  submittedBy: "68e78255dba82da91175cb33",           // Reference to User._id
+  recipientName: "aa602cb8377b13181bf19197e697d3a8:5dcb2708d02fa9b094600bca83411fef", // Encrypted recipient name
+  accountNumber: "07a7c6361c2177d7194b2e542188dabc:ea662c961365f12600eca27d037e483b", // Encrypted account number
+  swiftCode: "cdaf082deb3a60652d886f424ec6473c:384e6f77bf4ef895f6b2d8ab1a91d979", // Encrypted SWIFT code
+  amount: "5280eb837d704fa6b08c97ce4e6acbfd:4c8874f046c680a44886de90fdab9916", // Encrypted amount
+  currency: "5a713554b32835baed5e5a40fb8fa87a:537b2617c5376fb5e90924e446c4b5e4", // Encrypted currency
+  paymentProvider: "2ea51e514b4600a4ca8bcf1d932a3e93:a60ae7c7354c53aaa1cdc0bf7d597b23", // Encrypted provider
+  status: "pending",                                 // "Pending", "Approved", "Rejected"
+  submittedAt: "2025-10-09T10:24:55.030+00:00",     // Submission timestamp
+  submittedByName: null,                             // Employee name (if applicable)
+  reviewedAt: null,                                  // Review timestamp
+  reviewedBy: null,                                  // Employee who reviewed
+  reviewerName: null,                                // Reviewer name
+  reviewComments: null                               // Employee review comments
 }
 ```
+
+**Security Features Implemented:**
+- **Field-Level Encryption**: All sensitive payment data is encrypted using AES-192-CBC encryption
+- **Data Integrity**: Complete audit trail with timestamps and user references
+- **Status Tracking**: Comprehensive status management for payment workflow
 
 **Indexes:**
 - `submittedBy`
@@ -410,7 +377,15 @@ Comprehensive logging for security and compliance:
 
 ### Database Relationships & Data Flow
 
-![Database Schema](images/database-schema.png)
+![MongoDB Collections Overview](images/mongodb-collections-overview.png)
+
+**Database Statistics:**
+- **Database**: users
+- **Collections**: 2
+- **Storage Size**: 36KB
+- **Logical Data Size**: 672B
+- **Total Documents**: 1 payment application
+- **Indexes Total Size**: 36KB
 
 #### **Relationship Mapping**
 - **One-to-Many**: Users → Payment Applications (one user can have multiple payments)
