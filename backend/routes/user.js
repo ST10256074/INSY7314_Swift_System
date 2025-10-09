@@ -133,15 +133,22 @@ router.get('/profile', checkAuth, async (req, res) => {
 //login
 router.post('/login', async (req, res) => {
     const user = req.body.name;
+    const accountNumber = req.body.accountNumber;
     const password = req.body.password;
 
-    console.log(user);
+    console.log('Login attempt for user:', user);
 
     try{
     let userCollection = await db.collection("users");
     let result = await userCollection.findOne({ username: user });
 
     if (!result) {
+        return res.status(401).send('Authentication failed');
+    }
+
+    // Decrypt and validate account number
+    const decryptedAccountNumber = await decrypt(result.accountNumber);
+    if (decryptedAccountNumber !== accountNumber) {
         return res.status(401).send('Authentication failed');
     }
 

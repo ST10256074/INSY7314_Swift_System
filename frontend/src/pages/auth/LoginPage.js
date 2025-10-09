@@ -28,6 +28,7 @@ export default function LoginPage() {
     try {
       const response = await login({
         name: username,
+        accountNumber: accountNumber,
         password: password
       });
 
