@@ -210,7 +210,7 @@ Building:
   - Artifact Generation
 ```
 
-![CircleCI Dashboard](Images1/circle_ci_dashboard.png)
+![CircleCI Dashboard](Images1/circle_ci_dahsboard.png)
 
 ## 🗄️ Database Architecture & MongoDB Implementation
 
