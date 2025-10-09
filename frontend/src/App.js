@@ -11,9 +11,10 @@ import RegisterPage from './pages/auth/RegisterPage.js';
 import PaymentPage from './pages/client/PaymentPage.js';
 import TransactionsPage from './pages/client/TransactionsPage.js';
 import PendingPayments from './pages/employee/PendingPayments.js';
-import AccountInfo from './pages/client/AccountInfo.js';
 import ClientHome from './pages/client/ClientHome.js';
 import EmployeeHome from './pages/employee/EmployeeHome.js';
+import AccountDetails from './pages/client/AccountDetails.js';
+import InspectTransaction from './pages/client/InspectTransaction.js';
 
 function AppContent() {
   const location = useLocation();
@@ -49,11 +50,20 @@ function AppContent() {
             </ProtectedRoute>
           } 
         />
+      
         <Route 
-          path={ROUTES.ACCOUNT_INFO} 
+          path={ROUTES.ACCOUNT_DETAILS} 
           element={
             <ProtectedRoute requireClient={true}>
-              <AccountInfo />
+              <AccountDetails />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path={ROUTES.INSPECT_TRANSACTION} 
+          element={
+            <ProtectedRoute requireClient={true}>
+              <InspectTransaction />
             </ProtectedRoute>
           } 
         />

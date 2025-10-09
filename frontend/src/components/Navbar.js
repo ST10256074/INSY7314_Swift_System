@@ -46,7 +46,7 @@ function Navbar() {
                   <Link to={ROUTES.CLIENT_HOME} className="navbar-link">Home</Link>
                   <Link to={ROUTES.PAYMENT} className="navbar-link">Payment</Link>
                   <Link to={ROUTES.TRANSACTIONS} className="navbar-link">Transactions</Link>
-                  <Link to={ROUTES.ACCOUNT_INFO} className="navbar-link">Account Info</Link>
+                  <Link to={ROUTES.ACCOUNT_DETAILS} className="navbar-link">Account Details</Link>
                 </>
               )}
               
