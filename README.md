@@ -220,49 +220,232 @@ Building:
 
 ![CircleCI Dashboard](images/circleci-dashboard.png)
 
-## 🗄️ Database Schema
+## 🗄️ Database Architecture & MongoDB Implementation
 
-### User Collection
+### Database Overview
+
+The Swift Payment System uses **MongoDB Atlas** as its primary database, providing a robust, scalable, and secure document-based storage solution. The database is designed with security, performance, and data integrity as core principles.
+
+#### **Database Configuration**
+- **Platform**: MongoDB Atlas (Cloud-hosted)
+- **Database Name**: `users`
+- **Connection**: Secure connection string with authentication
+- **Encryption**: Encryption at rest and in transit
+- **Backup**: Automated daily backups with point-in-time recovery
+- **Monitoring**: Real-time performance monitoring and alerts
+
+### Database Collections
+
+#### **1. Users Collection (`users`)**
+
+The users collection stores all user account information with comprehensive security measures:
 
 ```javascript
 {
-  _id: ObjectId,
-  username: String,           // Unique username
-  full_name: String,          // User's full name
-  IDNumber: String,           // Government ID number
-  accountNumber: String,      // Bank account number
-  password: String,           // Hashed password (bcrypt)
-  userType: String,           // "User" (Client) or "Employee"
-  createdAt: Date,            // Account creation timestamp
-  lastLogin: Date,            // Last login timestamp
-  isActive: Boolean           // Account status
+  _id: ObjectId("507f1f77bcf86cd799439011"),    // Unique document identifier
+  username: "john_doe",                         // Unique username (indexed)
+  full_name: "John Doe",                        // User's full legal name
+  IDNumber: "1234567890123",                    // Government ID number
+  accountNumber: "1234567890",                  // Bank account number
+  password: "$2b$10$N9qo8uLOickgx2ZMRZoMye...", // bcrypt hashed password
+  userType: "User",                             // "User" (Client) or "Employee"
+  createdAt: ISODate("2024-01-15T10:30:00Z"),   // Account creation timestamp
+  lastLogin: ISODate("2024-01-20T14:22:00Z"),   // Last successful login
+  isActive: true,                               // Account status flag
+  email: "john.doe@email.com",                  // User email address
+  phoneNumber: "+1234567890",                   // Contact phone number
+  address: {                                    // User address information
+    street: "123 Main Street",
+    city: "New York",
+    state: "NY",
+    zipCode: "10001",
+    country: "USA"
+  },
+  preferences: {                                // User preferences
+    language: "en",
+    timezone: "America/New_York",
+    notifications: true
+  },
+  security: {                                   // Security-related fields
+    failedLoginAttempts: 0,
+    lastFailedLogin: null,
+    accountLocked: false,
+    twoFactorEnabled: false
+  }
 }
 ```
 
-### Payment Applications Collection
+**Indexes:**
+- `username` (Unique)
+- `email` (Unique)
+- `accountNumber` (Unique)
+- `userType`
+- `createdAt`
+
+#### **2. Payment Applications Collection (`payment_applications`)**
+
+Stores all payment transaction data with comprehensive audit trails:
 
 ```javascript
 {
-  _id: ObjectId,
-  submittedBy: ObjectId,      // Reference to User._id
-  recipientName: String,      // Recipient's full name
-  recipientAccountNumber: String, // Recipient's account
-  amount: Number,             // Payment amount
-  currency: String,           // Currency code (USD, EUR, etc.)
-  paymentProvider: String,    // Payment service provider
-  swiftCode: String,          // SWIFT code for international transfers
-  notes: String,              // Additional payment notes
-  status: String,             // "Pending", "Approved", "Rejected"
-  submittedAt: Date,          // Submission timestamp
-  reviewedAt: Date,           // Review timestamp
-  reviewedBy: ObjectId,       // Employee who reviewed
-  reviewNotes: String         // Employee review comments
+  _id: ObjectId("507f1f77bcf86cd799439012"),
+  submittedBy: ObjectId("507f1f77bcf86cd799439011"), // Reference to User._id
+  recipientName: "Jane Smith",                        // Recipient's full name
+  recipientAccountNumber: "9876543210",               // Recipient's account
+  recipientBank: "Chase Bank",                        // Recipient's bank name
+  amount: 1500.00,                                    // Payment amount
+  currency: "USD",                                    // Currency code (ISO 4217)
+  exchangeRate: 1.0,                                  // Exchange rate applied
+  paymentProvider: "SWIFT",                           // Payment service provider
+  swiftCode: "CHASUS33",                             // SWIFT/BIC code
+  iban: "GB29NWBK60161331926819",                    // International Bank Account Number
+  routingNumber: "021000021",                         // Bank routing number
+  notes: "Payment for consulting services",           // Additional payment notes
+  status: "Pending",                                  // "Pending", "Approved", "Rejected", "Processing", "Completed"
+  priority: "Normal",                                 // "Low", "Normal", "High", "Urgent"
+  submittedAt: ISODate("2024-01-20T09:15:00Z"),      // Submission timestamp
+  reviewedAt: ISODate("2024-01-20T14:30:00Z"),       // Review timestamp
+  reviewedBy: ObjectId("507f1f77bcf86cd799439013"),  // Employee who reviewed
+  reviewNotes: "Approved after verification",         // Employee review comments
+  processingStartedAt: ISODate("2024-01-20T15:00:00Z"), // Processing start time
+  completedAt: ISODate("2024-01-21T10:00:00Z"),      // Completion timestamp
+  fees: {                                            // Transaction fees
+    processingFee: 25.00,
+    currency: "USD",
+    exchangeFee: 0.00
+  },
+  compliance: {                                      // Compliance and security
+    amlChecked: true,
+    kycVerified: true,
+    riskScore: 2.5,
+    sanctionsScreened: true
+  },
+  auditTrail: [                                      // Complete audit trail
+    {
+      action: "submitted",
+      timestamp: ISODate("2024-01-20T09:15:00Z"),
+      userId: ObjectId("507f1f77bcf86cd799439011"),
+      details: "Payment application submitted"
+    },
+    {
+      action: "reviewed",
+      timestamp: ISODate("2024-01-20T14:30:00Z"),
+      userId: ObjectId("507f1f77bcf86cd799439013"),
+      details: "Payment approved by employee"
+    }
+  ]
 }
 ```
 
-### Database Relationships
+**Indexes:**
+- `submittedBy`
+- `status`
+- `submittedAt` (Descending)
+- `reviewedBy`
+- `recipientAccountNumber`
+- `swiftCode`
+
+#### **3. Audit Logs Collection (`audit_logs`)**
+
+Comprehensive logging for security and compliance:
+
+```javascript
+{
+  _id: ObjectId("507f1f77bcf86cd799439014"),
+  userId: ObjectId("507f1f77bcf86cd799439011"),
+  action: "login",
+  timestamp: ISODate("2024-01-20T14:22:00Z"),
+  ipAddress: "192.168.1.100",
+  userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+  sessionId: "sess_abc123def456",
+  details: {
+    success: true,
+    loginMethod: "password",
+    location: "New York, NY, USA"
+  },
+  riskScore: 1.2,
+  flagged: false
+}
+```
+
+### Database Security Implementation
+
+#### **1. Authentication & Authorization**
+- **Database User Authentication**: Separate database users with minimal required permissions
+- **Role-Based Access**: Different access levels for application, admin, and read-only users
+- **IP Whitelisting**: Restricted access to specific IP addresses
+- **Network Security**: VPC peering and private endpoints
+
+#### **2. Data Encryption**
+- **Encryption at Rest**: AES-256 encryption for all stored data
+- **Encryption in Transit**: TLS 1.2+ for all database connections
+- **Field-Level Encryption**: Sensitive fields encrypted with application-level keys
+- **Key Management**: Secure key rotation and management
+
+#### **3. Data Validation & Integrity**
+- **Schema Validation**: MongoDB schema validation rules
+- **Data Type Enforcement**: Strict data type checking
+- **Referential Integrity**: Application-level foreign key constraints
+- **Data Sanitization**: Input validation and sanitization
+
+#### **4. Backup & Recovery**
+- **Automated Backups**: Daily automated backups with 30-day retention
+- **Point-in-Time Recovery**: Restore to any point within backup retention period
+- **Cross-Region Replication**: Data replicated across multiple regions
+- **Disaster Recovery**: Comprehensive disaster recovery procedures
+
+### Database Performance & Monitoring
+
+#### **Performance Optimization**
+- **Indexing Strategy**: Optimized indexes for query performance
+- **Query Optimization**: Efficient query patterns and aggregation pipelines
+- **Connection Pooling**: Optimized connection pool management
+- **Caching**: Application-level caching for frequently accessed data
+
+#### **Monitoring & Alerting**
+- **Performance Metrics**: Real-time database performance monitoring
+- **Query Analysis**: Slow query identification and optimization
+- **Resource Usage**: CPU, memory, and storage monitoring
+- **Alert System**: Automated alerts for performance issues
+
+### Database Relationships & Data Flow
 
 ![Database Schema](images/database-schema.png)
+
+#### **Relationship Mapping**
+- **One-to-Many**: Users → Payment Applications (one user can have multiple payments)
+- **One-to-Many**: Users → Audit Logs (one user can have multiple log entries)
+- **Many-to-One**: Payment Applications → Users (many payments belong to one user)
+- **Many-to-One**: Payment Applications → Users (many payments reviewed by one employee)
+
+#### **Data Flow Architecture**
+1. **User Registration**: Creates user document in `users` collection
+2. **Payment Submission**: Creates payment document with user reference
+3. **Employee Review**: Updates payment status and adds review information
+4. **Audit Logging**: Records all actions in `audit_logs` collection
+5. **Data Retrieval**: Optimized queries with proper indexing
+
+### Database Connection & Configuration
+
+#### **Connection String Format**
+```
+mongodb+srv://username:password@cluster.mongodb.net/database?retryWrites=true&w=majority&appName=ClusterName
+```
+
+#### **Connection Options**
+- **Retry Writes**: Automatic retry for write operations
+- **Write Concern**: Majority write concern for data durability
+- **Read Preference**: Primary read preference for consistency
+- **Connection Timeout**: 30-second connection timeout
+- **Socket Timeout**: 60-second socket timeout
+
+#### **Environment Configuration**
+```env
+ATLAS_URI=mongodb+srv://username:password@cluster.mongodb.net/users?retryWrites=true&w=majority&appName=ClusterName
+DB_NAME=users
+CONNECTION_POOL_SIZE=10
+MAX_IDLE_TIME=30000
+```
 
 ## 📡 API Documentation
 
