@@ -10,15 +10,6 @@ const TransactionsPage = () => {
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('all'); // all, pending, approved, rejected
 
-  useEffect(() => {
-    if (isAuthenticated() && user) {
-      fetchTransactions();
-    } else if (!isAuthenticated()) {
-      setError('You must be logged in to view transactions.');
-      setLoading(false);
-    }
-  }, [user, isAuthenticated, fetchTransactions]);
-
   const fetchTransactions = useCallback(async () => {
     if (!isAuthenticated()) {
       setError('You must be logged in to view transactions.');
@@ -52,6 +43,15 @@ const TransactionsPage = () => {
       setLoading(false);
     }
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (isAuthenticated() && user) {
+      fetchTransactions();
+    } else if (!isAuthenticated()) {
+      setError('You must be logged in to view transactions.');
+      setLoading(false);
+    }
+  }, [user, isAuthenticated, fetchTransactions]);
 
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
