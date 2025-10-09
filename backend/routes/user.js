@@ -12,10 +12,13 @@ import { encrypt, decrypt } from "../utils/encryption.js";
 // var store = new ExpressBrute.MemoryStore();
 // var bruteforce = new ExpressBrute(store);
 
-// SignUp
-
 const router = express.Router();
 
+/**
+ * User registration endpoint
+ * Validates input data, encrypts sensitive information, and creates new user account
+ * POST /user/signup
+ */
 router.post("/signup", async (req, res) => {
     console.log("signup")
     try {
@@ -89,7 +92,11 @@ router.post("/signup", async (req, res) => {
     }
 });
 
-// Get current user's account info
+/**
+ * Retrieves authenticated user's profile information
+ * Decrypts sensitive data before sending response
+ * GET /user/profile (requires authentication)
+ */
 router.get('/profile', checkAuth, async (req, res) => {
     console.log("profile")
     try {
@@ -130,7 +137,11 @@ router.get('/profile', checkAuth, async (req, res) => {
     }
 });
 
-//login
+/**
+ * User authentication endpoint
+ * Validates credentials, compares encrypted data, and generates JWT token
+ * POST /user/login
+ */
 router.post('/login', async (req, res) => {
     const user = req.body.name;
     const accountNumber = req.body.accountNumber;

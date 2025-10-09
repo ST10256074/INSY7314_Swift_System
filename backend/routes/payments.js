@@ -7,7 +7,11 @@ import { encrypt, decrypt } from "../utils/encryption.js";
 const router = express.Router();
 router.use(checkAuth);
 
-// Submit a new payment application
+/**
+ * Submits a new international payment application
+ * Validates input data, encrypts sensitive information, and stores in database
+ * POST /payments/submit (requires authentication)
+ */
 router.post('/submit', async (req, res) => {
     try {
         const {
@@ -79,7 +83,11 @@ router.post('/submit', async (req, res) => {
     }
 });
 
-// Get all payment applications (employees)
+/**
+ * Retrieves all payment applications for employee review
+ * Decrypts sensitive data and returns sorted by submission date
+ * GET /payments/all (requires authentication - employee access)
+ */
 router.get('/all', async (req, res) => {
     try {
         let collection = await db.collection("payment_applications");
@@ -109,7 +117,11 @@ router.get('/all', async (req, res) => {
     }
 });
 
-// Get payment applications by user (clients)
+/**
+ * Retrieves payment applications submitted by the current user
+ * Filters by user ID from JWT token and decrypts sensitive data
+ * GET /payments/my-applications (requires authentication)
+ */
 router.get('/my-applications', async (req, res) => {
     try {
         let collection = await db.collection("payment_applications");
@@ -141,7 +153,11 @@ router.get('/my-applications', async (req, res) => {
     }
 });
 
-// Get a specific payment by ID
+/**
+ * Retrieves a specific payment application by its MongoDB ObjectId
+ * Validates ID format, finds application, and decrypts sensitive data
+ * GET /payments/:id (requires authentication)
+ */
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -179,7 +195,11 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Review a payment application
+/**
+ * Reviews a payment application (approve/reject) - employee functionality
+ * Updates application status, adds reviewer info and comments
+ * PATCH /payments/review/:id (requires authentication - employee access)
+ */
 router.patch('/review/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -251,7 +271,11 @@ router.patch('/review/:id', async (req, res) => {
     }
 });
 
-// Get applications by status
+/**
+ * Retrieves payment applications filtered by status
+ * Validates status parameter and returns matching applications with decrypted data
+ * GET /payments/status/:status (requires authentication)
+ */
 router.get('/status/:status', async (req, res) => {
     try {
         const { status } = req.params;
