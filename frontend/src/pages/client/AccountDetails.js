@@ -40,44 +40,53 @@ export default function AccountDetails() {
 					<div className="form-grid details-grid">
 						<div>
 							<label>Full Name</label>
+							<input 
+								type="text" 
+								value={fullName || 'N/A'} 
+								readOnly 
+								className="readonly-input"
+							/>
 						</div>
-						<div>
-							<span className="value">{fullName || 'N/A'}</span>
-						</div>
-
 						<div>
 							<label>ID Number</label>
-						</div>
-						<div>
-							<span className="value">{idNumber || 'N/A'}</span>
+							<input 
+								type="text" 
+								value={idNumber || 'N/A'} 
+								readOnly 
+								className="readonly-input"
+							/>
 						</div>
 
 						<div>
 							<label>Username</label>
+							<input 
+								type="text" 
+								value={username || 'N/A'} 
+								readOnly 
+								className="readonly-input"
+							/>
 						</div>
-						<div>
-							<span className="value">{username || 'N/A'}</span>
-						</div>
-
 						<div>
 							<label>Account Number</label>
-						</div>
-						<div>
-							<span className="value">{accountNumber || 'N/A'}</span>
+							<input 
+								type="text" 
+								value={accountNumber || 'N/A'} 
+								readOnly 
+								className="readonly-input"
+							/>
 						</div>
 
 						<div>
 							<label>Password</label>
-						</div>
-						<div className="password-row">
-							<span className="value">{showPassword ? password : ''}</span>
-							<button
-								type="button"
-								className="show-password-btn"
-								onClick={() => setShowPassword(s => !s)}
-							>
-								{showPassword ? 'Hide' : 'Show'}
-							</button>
+							<div className="password-row">
+								<input
+									type={showPassword ? "text" : "password"}
+									value={showPassword ? password : '••••••••'}
+									readOnly
+									className="readonly-input"
+								/>
+								
+							</div>
 						</div>
 					</div>
 				</section>

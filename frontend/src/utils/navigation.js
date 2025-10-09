@@ -13,9 +13,9 @@ export const useAppNavigation = () => {
     clientHome: () => navigate('/ClientHome'),
     payment: () => navigate('/payment'),
     transactions: () => navigate('/transactions'),
-    accountInfo: () => navigate('/account-info'),
     accountDetails: () => navigate('/account-details'),
-    
+    inspectTransaction: (transactionId) => navigate(`/inspect-transaction/${transactionId}`),
+
     // Employee routes
     employeeHome: () => navigate('/EmployeeHome'),
     pendingPayments: () => navigate('/pendingPayments'),
@@ -36,8 +36,8 @@ export const ROUTES = {
   CLIENT_HOME: '/ClientHome',
   EMPLOYEE_HOME: '/EmployeeHome',
   PAYMENT: '/payment',
-  ACCOUNT_INFO: '/account-info',
   TRANSACTIONS: '/transactions',
   PENDING_PAYMENTS: '/pendingPayments',
   ACCOUNT_DETAILS: '/account-details',
+  INSPECT_TRANSACTION: '/inspect-transaction/:transactionId',
 };

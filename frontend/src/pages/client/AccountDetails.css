@@ -21,24 +21,48 @@
 	background: #e5e7eb;
 	margin: 8px 0 16px 0;
 }
-
 .form-grid {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+ 
+  padding: 0 8px;
 }
 
 .form-grid label {
-	display: block;
-	font-weight: 600;
-	margin-bottom: 6px;
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
 }
 
-.form-grid input {
+.form-grid input,
+.form-grid select {
 	width: 100%;
-	padding: 10px 12px;
-	border: 1px solid #d1d5db;
+	padding: 10px;
+	border: 1px solid #cbd5e1;
 	border-radius: 6px;
+	outline: none;
+	font-size: 15px;
+	transition: border-color 0.3s;
+	box-sizing: border-box;
+}
+
+.form-grid input:focus,
+.form-grid select:focus {
+	border-color: #3b82f6;
+}
+
+/* Readonly Input Styling */
+.readonly-input {
+	background-color: #bfdbff !important;
+	color: #374151 !important;
+	cursor: default;
+	font-weight: 500;
+}
+
+.readonly-input:focus {
+	border-color: #cbd5e1 !important;
+	outline: none;
 }
 
 .button-row {
@@ -79,9 +103,14 @@
 	align-items: center;
 	gap: 8px;
 }
+
+.password-row .readonly-input {
+	flex: 1;
+}
+
 .show-password-btn {
 	background: transparent;
-	border: 1px solid #d1d5db;
+	border: 1px solid #ffffff;
 	padding: 6px 10px;
 	border-radius: 6px;
 	cursor: pointer;

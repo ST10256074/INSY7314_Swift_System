@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import apiService from '../../utils/api.js';
 import { useAuth } from '../../contexts/AuthContext';
 import './TransactionsPage.css';
@@ -234,6 +235,15 @@ const TransactionsPage = () => {
                       <span className="value">{transaction.notes}</span>
                     </div>
                   )}
+
+                  <div className="transaction-actions">
+                    <Link 
+                      to={`/inspect-transaction/${transaction._id}`}
+                      className="inspect-btn"
+                    >
+                      View Details
+                    </Link>
+                  </div>
                 </div>
               ))}
             </div>
