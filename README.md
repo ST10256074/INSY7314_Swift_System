@@ -60,7 +60,7 @@ The **Swift Payment System** is a comprehensive, enterprise-grade payment proces
 - **SWIFT Integration**: International payment processing with SWIFT codes
 - **Status Tracking**: Real-time payment status updates (Pending/Approved/Rejected)
 
-![Payment Interface](Images1/Payment.png)
+![Payment Interface](Images1/Payment.jpeg)
 
 ### 📊 Transaction Management
 - **Transaction History**: Complete transaction history for authenticated users
