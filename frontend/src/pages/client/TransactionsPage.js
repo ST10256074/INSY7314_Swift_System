@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import apiService from '../../utils/api.js';
 import { useAuth } from '../../contexts/AuthContext';
 import './TransactionsPage.css';
@@ -17,9 +17,9 @@ const TransactionsPage = () => {
       setError('You must be logged in to view transactions.');
       setLoading(false);
     }
-  }, [user]); // Remove isAuthenticated from dependencies since it's a function
+  }, [user, isAuthenticated, fetchTransactions]);
 
-  const fetchTransactions = async () => {
+  const fetchTransactions = useCallback(async () => {
     if (!isAuthenticated()) {
       setError('You must be logged in to view transactions.');
       setLoading(false);
@@ -51,7 +51,7 @@ const TransactionsPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [isAuthenticated]);
 
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
