@@ -11,14 +11,18 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, isEmployee, isClient } = useAuth();
 
   // Redirect if already authenticated
   React.useEffect(() => {
     if (isAuthenticated()) {
-      navigate(ROUTES.PAYMENT);
+      if (isEmployee()) {
+        navigate(ROUTES.EMPLOYEE_HOME);
+      } else if (isClient()) {
+        navigate(ROUTES.CLIENT_HOME);
+      }
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, isEmployee, isClient, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,14 +32,15 @@ export default function LoginPage() {
     try {
       const response = await login({
         name: username,
+        accountNumber: accountNumber,
         password: password
       });
 
       // Navigate based on user type
       if (response.user.userType === 'Employee') {
-        navigate(ROUTES.PENDING_PAYMENTS);
+        navigate(ROUTES.EMPLOYEE_HOME);
       } else {
-        navigate(ROUTES.PAYMENT);
+        navigate(ROUTES.CLIENT_HOME);
       }
 
       alert('Login successful!');

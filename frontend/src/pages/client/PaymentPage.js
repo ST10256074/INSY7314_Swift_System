@@ -11,7 +11,7 @@ export default function PaymentPage() {
     swiftCode: "",
     amount: "",
     currency: "USD",
-    paymentProvider: "",
+    paymentProvider: "MasterCard",
   });
   
   const [loading, setLoading] = useState(false);
@@ -19,6 +19,24 @@ export default function PaymentPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    // Handle special validation for specific fields
+    if (name === 'recipientName') {
+      // Only allow letters and spaces
+      const nameRegex = /^[A-Za-z\s]*$/;
+      if (!nameRegex.test(value)) {
+        return; // Don't update if invalid characters
+      }
+    }
+    
+    if (name === 'accountNumber') {
+      // Only allow numbers
+      const accountRegex = /^[0-9]*$/;
+      if (!accountRegex.test(value)) {
+        return; // Don't update if invalid characters
+      }
+    }
+    
     setFormData({ ...formData, [name]: value });
   };
 
@@ -26,7 +44,11 @@ export default function PaymentPage() {
     const { recipientName, accountNumber, swiftCode, amount, currency, paymentProvider } = formData;
     
     if (!recipientName.trim()) return "Recipient name is required";
+    if (recipientName.trim().length < 2) return "Recipient name must be at least 2 characters";
+    
     if (!accountNumber.trim()) return "Account number is required";
+    if (accountNumber.trim().length < 8) return "Account number must be at least 8 digits";
+    
     if (!swiftCode.trim()) return "SWIFT code is required";
     if (!amount || parseFloat(amount) <= 0) return "Amount must be a positive number";
     if (!currency.trim()) return "Currency is required";
@@ -67,7 +89,7 @@ export default function PaymentPage() {
       
       // Success 
       alert(`Payment application submitted successfully! Application ID: ${response.applicationId}`);
-      // navigation.accountInfo();
+      navigation.transactions(); // Redirect to transactions page
       
     } catch (error) {
       console.error('Payment submission error:', error);
@@ -105,10 +127,12 @@ export default function PaymentPage() {
             <div>
               <label>Recipient Name *</label>
               <input
+                type="text"
                 name="recipientName"
                 value={formData.recipientName}
                 onChange={handleChange}
-                placeholder="Enter recipient full name"
+                placeholder="Enter recipient full name (letters only)"
+                pattern="[A-Za-z\s]*"
                 required
                 disabled={loading}
               />
@@ -116,10 +140,13 @@ export default function PaymentPage() {
             <div>
               <label>Account Number *</label>
               <input
+                type="text"
                 name="accountNumber"
                 value={formData.accountNumber}
                 onChange={handleChange}
-                placeholder="Enter recipient account number"
+                placeholder="Enter recipient account number (numbers only)"
+                pattern="[0-9]*"
+                inputMode="numeric"
                 required
                 disabled={loading}
               />
@@ -139,14 +166,16 @@ export default function PaymentPage() {
             </div>
             <div>
               <label>Payment Provider *</label>
-              <input
+              <select
                 name="paymentProvider"
                 value={formData.paymentProvider}
                 onChange={handleChange}
-                placeholder="Enter payment provider name"
                 required
                 disabled={loading}
-              />
+              >
+                <option value="MasterCard">MasterCard</option>
+                <option value="Visa">Visa</option>
+              </select>
             </div>
           </div>
         </section>

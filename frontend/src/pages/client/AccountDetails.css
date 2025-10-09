@@ -1,0 +1,134 @@
+.account-info-page {
+	padding: 40px;
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	/* max-width: 1200px; */
+	margin: 0 auto;
+	background-color: #f4f6f8;
+	min-height: 100vh;
+}
+
+.account-header {
+	width: 100%;
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+.account-header h1 {
+	font-size: 32px;
+	font-weight: 700;
+	color: #1e3a8a;
+	margin-bottom: 8px;
+}
+
+.account-form {
+	background: #fff;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+	max-width: 760px;
+	width: 100%;
+}
+
+.section-line {
+	height: 2px;
+	background: #e5e7eb;
+	margin: 8px 0 16px 0;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+ 
+  padding: 0 8px;
+}
+
+.form-grid label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.form-grid input,
+.form-grid select {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #cbd5e1;
+	border-radius: 6px;
+	outline: none;
+	font-size: 15px;
+	transition: border-color 0.3s;
+	box-sizing: border-box;
+}
+
+.form-grid input:focus,
+.form-grid select:focus {
+	border-color: #3b82f6;
+}
+
+/* Readonly Input Styling */
+.readonly-input {
+	background-color: #bfdbff !important;
+	color: #374151 !important;
+	cursor: default;
+	font-weight: 500;
+}
+
+.readonly-input:focus {
+	border-color: #cbd5e1 !important;
+	outline: none;
+}
+
+.button-row {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	margin-top: 18px;
+}
+
+.cancel-btn {
+	background: #e5e7eb;
+	border: none;
+	padding: 8px 14px;
+	border-radius: 6px;
+}
+
+.continue-btn {
+	background: #2563eb;
+	color: white;
+	border: none;
+	padding: 8px 14px;
+	border-radius: 6px;
+}
+
+
+.details-grid {
+	display: grid;
+	grid-template-columns: 1fr 2fr;
+	gap: 12px 24px;
+	align-items: center;
+}
+.value {
+	font-weight: 500;
+	color: #111827;
+}
+.password-row {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.password-row .readonly-input {
+	flex: 1;
+}
+
+.show-password-btn {
+	background: transparent;
+	border: 1px solid #ffffff;
+	padding: 6px 10px;
+	border-radius: 6px;
+	cursor: pointer;
+}
+

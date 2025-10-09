@@ -91,15 +91,17 @@ router.post("/signup", async (req, res) => {
 
 // Get current user's account info
 router.get('/profile', checkAuth, async (req, res) => {
+    console.log("profile")
     try {
-        const userId = req.user.id;
+        console.log("User from token:", req.user);
+        const userName = req.user.username;
         
-        if (!userId) {
-            return res.status(401).json({ message: 'User ID required' });
+        if (!userName) {
+            return res.status(401).json({ message: 'Username required' });
         }
 
         let userCollection = await db.collection("users");
-        let user = await userCollection.findOne({ _id: new ObjectId(userId) });
+        let user = await userCollection.findOne({ username: userName });
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -131,15 +133,22 @@ router.get('/profile', checkAuth, async (req, res) => {
 //login
 router.post('/login', async (req, res) => {
     const user = req.body.name;
+    const accountNumber = req.body.accountNumber;
     const password = req.body.password;
 
-    console.log(user);
+    console.log('Login attempt for user:', user);
 
     try{
     let userCollection = await db.collection("users");
     let result = await userCollection.findOne({ username: user });
 
     if (!result) {
+        return res.status(401).send('Authentication failed');
+    }
+
+    // Decrypt and validate account number
+    const decryptedAccountNumber = await decrypt(result.accountNumber);
+    if (decryptedAccountNumber !== accountNumber) {
         return res.status(401).send('Authentication failed');
     }
 

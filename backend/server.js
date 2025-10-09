@@ -70,7 +70,7 @@ app.route("/payments", payments);
 
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('SWIFT PAYMENT SYSTEM - Backend Server is running');
 })
 
 // Start HTTPS server
