@@ -176,7 +176,10 @@ class ApiService {
         credentials: 'include'
       });
       
-      return await this.handleResponse(response);
+      const data = await this.handleResponse(response);
+      
+      // Return the full response data - the frontend will handle extracting the application
+      return data;
     } catch (error) {
       console.error('Get payment by ID error:', error);
       throw error;

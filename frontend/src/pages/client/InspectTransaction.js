@@ -31,11 +31,13 @@ const InspectTransaction = () => {
         setLoading(true);
         setError('');
         const response = await apiService.getPaymentById(transactionId);
-        setTransaction(response);
+        
+        // Handle both direct application response and wrapped response
+        const applicationData = response.application || response;
+        setTransaction(applicationData);
       } catch (err) {
         console.error('Error fetching transaction:', err);
-        
-      
+        setError(err.message || 'Failed to load transaction details. Please try again.');
       } finally {
         setLoading(false);
       }
@@ -194,8 +196,10 @@ const InspectTransaction = () => {
                 <span className="value">{transaction.paymentProvider || 'N/A'}</span>
               </div>
               <div className="detail-item">
-                <span className="label">Submitted Date</span>
-                <span className="value">{formatDate(transaction.submittedAt || transaction.createdAt || transaction.date)}</span>
+                <span className="label">Status</span>
+                <span className={`value ${getStatusColor(transaction.status)}`}>
+                  {transaction.status ? transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1) : 'N/A'}
+                </span>
               </div>
             </div>
           </section>
@@ -218,8 +222,8 @@ const InspectTransaction = () => {
                 <span className="value">{transaction.swiftCode || 'N/A'}</span>
               </div>
               <div className="detail-item">
-                <span className="label">Bank/Institution</span>
-                <span className="value">{transaction.bankName || 'N/A'}</span>
+                <span className="label">Payment Provider</span>
+                <span className="value">{transaction.paymentProvider || 'N/A'}</span>
               </div>
             </div>
           </section>
@@ -230,60 +234,60 @@ const InspectTransaction = () => {
             <div className="section-line"></div>
             <div className="details-grid">
               <div className="detail-item">
-                <span className="label">Your Name</span>
-                <span className="value">{user?.full_name || user?.username || 'N/A'}</span>
+                <span className="label">Submitted By</span>
+                <span className="value">{transaction.submittedByName || user?.full_name || user?.username || 'N/A'}</span>
               </div>
               <div className="detail-item">
-                <span className="label">Your Account</span>
-                <span className="value">{user?.accountNumber || 'N/A'}</span>
+                <span className="label">Submitted Date</span>
+                <span className="value">{formatDate(transaction.submittedAt)}</span>
               </div>
               <div className="detail-item">
                 <span className="label">Application ID</span>
-                <span className="value">{transaction.applicationId || transaction._id || 'N/A'}</span>
+                <span className="value">{transaction._id || 'N/A'}</span>
               </div>
               <div className="detail-item">
-                <span className="label">Reference Number</span>
-                <span className="value">{transaction.referenceNumber || 'N/A'}</span>
+                <span className="label">User ID</span>
+                <span className="value">{transaction.submittedBy || 'N/A'}</span>
               </div>
             </div>
           </section>
 
           {/* Processing Information */}
-          {(transaction.processedAt || transaction.reviewedBy || transaction.notes) && (
+          {(transaction.reviewedAt || transaction.reviewedBy || transaction.reviewComments || transaction.status !== 'pending') && (
             <section className="detail-section">
-              <h2>Processing Information</h2>
+              <h2>Review Information</h2>
               <div className="section-line"></div>
               <div className="details-grid">
-                {transaction.processedAt && (
+                {transaction.reviewedAt && (
                   <div className="detail-item">
-                    <span className="label">Processed Date</span>
-                    <span className="value">{formatDate(transaction.processedAt)}</span>
+                    <span className="label">Review Date</span>
+                    <span className="value">{formatDate(transaction.reviewedAt)}</span>
+                  </div>
+                )}
+                {transaction.reviewerName && (
+                  <div className="detail-item">
+                    <span className="label">Reviewed By</span>
+                    <span className="value">{transaction.reviewerName}</span>
                   </div>
                 )}
                 {transaction.reviewedBy && (
                   <div className="detail-item">
-                    <span className="label">Reviewed By</span>
+                    <span className="label">Reviewer ID</span>
                     <span className="value">{transaction.reviewedBy}</span>
                   </div>
                 )}
-                {transaction.estimatedCompletion && (
-                  <div className="detail-item">
-                    <span className="label">Estimated Completion</span>
-                    <span className="value">{formatDate(transaction.estimatedCompletion)}</span>
-                  </div>
-                )}
-                {transaction.fees && (
-                  <div className="detail-item">
-                    <span className="label">Processing Fees</span>
-                    <span className="value">{formatAmount(transaction.fees, transaction.currency)}</span>
-                  </div>
-                )}
+                <div className="detail-item">
+                  <span className="label">Current Status</span>
+                  <span className={`value ${getStatusColor(transaction.status)}`}>
+                    {transaction.status ? transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1) : 'N/A'}
+                  </span>
+                </div>
               </div>
               
-              {transaction.notes && (
+              {transaction.reviewComments && (
                 <div className="transaction-notes">
-                  <span className="label">Processing Notes</span>
-                  <div className="notes-content">{transaction.notes}</div>
+                  <span className="label">Review Comments</span>
+                  <div className="notes-content">{transaction.reviewComments}</div>
                 </div>
               )}
             </section>
