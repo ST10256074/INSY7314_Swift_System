@@ -218,7 +218,7 @@ Building:
 
 The Swift Payment System uses **MongoDB Atlas** as its primary database, providing a robust, scalable, and secure document-based storage solution. The database is designed with security, performance, and data integrity as core principles.
 
-![MongoDB Atlas Overview](Images1/MongoDB_20dahsboard.jpeg)
+![MongoDB Atlas Overview](Images1/MongoDB_dahsboard.jpeg)
 
 #### **Database Configuration**
 - **Platform**: MongoDB Atlas (Cloud-hosted)
@@ -268,7 +268,7 @@ The users collection stores all user account information with comprehensive secu
 
 Stores all payment transaction data with comprehensive audit trails and field-level encryption:
 
-![MongoDB Payment Applications Collection](Images1/Mongodb.jpeg)
+![MongoDB Payment Applications Collection](Images1/Payment.jpeg)
 
 **Real Implementation Example:**
 ```javascript
@@ -369,7 +369,7 @@ Comprehensive logging for security and compliance:
 
 ### Database Relationships & Data Flow
 
-![MongoDB Collections Overview](Images1/MongoDB20dahsboard.jpeg)
+![MongoDB Collections Overview](Images1/Mongodb.jpeg)
 
 **Database Statistics:**
 - **Database**: users
@@ -586,7 +586,7 @@ NODE_ENV=development
 ```
 
 
-![Installation Guide](Images1/Login.png)
+![Installation Guide](Images1/Logn.png)
 
 ## 💻 Usage
 
@@ -608,7 +608,7 @@ NODE_ENV=development
 
 ### User Interface Guide
 
-![User Interface](Images1/account_details.png)
+![User Interface](Images1/account_detals.png)
 
 ## 🔧 Development
 
@@ -763,7 +763,7 @@ Our CircleCI pipeline automatically:
 - Builds the application
 - Deploys to staging/production
 
-![Deployment Pipeline](Images1/Transactions.png)
+![Deployment Pipeline](Images1/Transacions.png)
 
 
 ## 👥 Authors
