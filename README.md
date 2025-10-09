@@ -42,7 +42,7 @@ The **Swift Payment System** is a comprehensive, enterprise-grade payment proces
 - **👥 Multi-Role System**: Separate interfaces for clients and employees with distinct permissions
 - **📊 Real-time Monitoring**: Transaction tracking, status updates, and comprehensive logging
 
-![Application Overview](images/app-overview.png)
+![Application Overview](Images1/swift_home.png)
 
 ## ✨ Features
 
@@ -81,7 +81,7 @@ The **Swift Payment System** is a comprehensive, enterprise-grade payment proces
 
 ### System Architecture
 
-![System Architecture Diagram](images/system-architecture.png)
+![System Architecture Diagram](Images1/paymentswift.png)
 
 The Swift Payment System follows a comprehensive security-focused architecture with distinct layers:
 
@@ -218,7 +218,7 @@ Building:
 
 The Swift Payment System uses **MongoDB Atlas** as its primary database, providing a robust, scalable, and secure document-based storage solution. The database is designed with security, performance, and data integrity as core principles.
 
-![MongoDB Atlas Overview](images/mongodb-atlas-overview.png)
+![MongoDB Atlas Overview](Images1/MongoDB_20dahsboard.jpeg)
 
 #### **Database Configuration**
 - **Platform**: MongoDB Atlas (Cloud-hosted)
@@ -237,7 +237,7 @@ The Swift Payment System uses **MongoDB Atlas** as its primary database, providi
 
 The users collection stores all user account information with comprehensive security measures and field-level encryption:
 
-![MongoDB Users Collection](images/mongodb-users-collection.png)
+![MongoDB Users Collection](Images1/User.jpeg)
 
 **Real Implementation Example:**
 ```javascript
@@ -268,7 +268,7 @@ The users collection stores all user account information with comprehensive secu
 
 Stores all payment transaction data with comprehensive audit trails and field-level encryption:
 
-![MongoDB Payment Applications Collection](images/mongodb-payment-applications.png)
+![MongoDB Payment Applications Collection](Images1/Mongodb.jpeg)
 
 **Real Implementation Example:**
 ```javascript
@@ -369,7 +369,7 @@ Comprehensive logging for security and compliance:
 
 ### Database Relationships & Data Flow
 
-![MongoDB Collections Overview](images/mongodb-collections-overview.png)
+![MongoDB Collections Overview](Images1/MongoDB20dahsboard.jpeg)
 
 **Database Statistics:**
 - **Database**: users
@@ -515,7 +515,7 @@ Get all pending payment applications for review.
 | 404 | Not Found |
 | 500 | Internal Server Error |
 
-![API Documentation](images/api-docs.png)
+![API Documentation](Images1/Payment.jpeg)
 
 ## 🚀 Installation & Setup
 
@@ -586,7 +586,7 @@ NODE_ENV=development
 ```
 
 
-![Installation Guide](images/installation-guide.png)
+![Installation Guide](Images1/Login.png)
 
 ## 💻 Usage
 
@@ -608,7 +608,7 @@ NODE_ENV=development
 
 ### User Interface Guide
 
-![User Interface](images/ui-guide.png)
+![User Interface](Images1/account_details.png)
 
 ## 🔧 Development
 
@@ -630,7 +630,7 @@ INSY7314_Swift_System/
 │   │   └── App.js          # Main app component
 │   └── public/             # Static assets
 ├── .circleci/              # CI/CD configuration
-├── images/                 # Documentation images
+├── Images1/               # Documentation screenshots
 └── README.md               # This file
 ```
 
@@ -678,7 +678,7 @@ INSY7314_Swift_System/
 - **Testing**: Unit tests for critical functionality
 - **Documentation**: Comprehensive inline and external documentation
 
-![Development Workflow](images/dev-workflow.png)
+![Development Workflow](Images1/circle_ci_dahsboard.png)
 
 ## 🧪 Testing
 
@@ -713,7 +713,7 @@ npm run test:integration
 | **E2E Tests** | 60%+ | Full user workflow testing |
 | **Security Tests** | 90%+ | Security vulnerability testing |
 
-![Test Coverage](images/test-coverage.png)
+![Test Coverage](Images1/circle_ci_successful_test.png)
 
 ## 🚀 Deployment
 
@@ -763,7 +763,7 @@ Our CircleCI pipeline automatically:
 - Builds the application
 - Deploys to staging/production
 
-![Deployment Pipeline](images/deployment-pipeline.png)
+![Deployment Pipeline](Images1/Transactions.png)
 
 
 ## 👥 Authors
