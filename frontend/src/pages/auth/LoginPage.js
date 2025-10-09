@@ -34,9 +34,9 @@ export default function LoginPage() {
 
       // Navigate based on user type
       if (response.user.userType === 'Employee') {
-        navigate(ROUTES.PENDING_PAYMENTS);
+        navigate(ROUTES.EMPLOYEE_HOME);
       } else {
-        navigate(ROUTES.PAYMENT);
+        navigate(ROUTES.CLIENT_HOME);
       }
 
       alert('Login successful!');
