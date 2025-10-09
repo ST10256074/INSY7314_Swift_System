@@ -20,6 +20,7 @@ function RegisterPage() {
     setError('');
 
     try {
+      //const response = await apiService.register({...});
       await apiService.register({
         username: username,
         full_name: fullName,
