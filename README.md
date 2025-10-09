@@ -596,6 +596,7 @@ Get all pending payment applications for review.
    ```bash
    # Create backend/.env file
    echo "MONGODB_URI=mongodb://localhost:27017/swift_payment_system" > backend/.env
+   echo "ENCRYPTION_KEY=encryption_key_here" > backend/.env
    echo "JWT_SECRET=your_jwt_secret_here" >> backend/.env
    ```
 
@@ -603,11 +604,11 @@ Get all pending payment applications for review.
    ```bash
    # Terminal 1: Start backend
    cd backend
-   npm start
+   npm run start
    
    # Terminal 2: Start frontend
    cd frontend
-   npm start
+   npm run start:https
    ```
 
 5. **Access the application**
