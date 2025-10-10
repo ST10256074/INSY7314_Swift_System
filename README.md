@@ -1014,17 +1014,15 @@ npm run build
 
 You can test the API endpoints using Postman or any HTTP client.
 
-**Example: User Signup**
+**Example: User Login**
 ```bash
-POST https://localhost:8443/user/signup
+POST https://localhost:8443/user/login
 Content-Type: application/json
 
 {
-  "username": "testuser",
-  "password": "Test123",
-  "full_name": "Test User",
+  "name": "testuser",
   "accountNumber": "1234567890",
-  "IDNumber": "1234567890123"
+  "password": "1234567890123"
 }
 ```
 ![HTTPS User Login](Images1/postman_https_user_login.jpeg)
@@ -1044,7 +1042,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
   "paymentProvider": "Bank of America"
 }
 ```
-![HTTPS User Login](Images1/postman_https_post_payment.jpeg)
+![HTTPS Post Payment](Images1/postman_http_post_payment.jpeg)
 
 ---
 
