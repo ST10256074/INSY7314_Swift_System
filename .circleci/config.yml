@@ -172,8 +172,12 @@ jobs:
           name: Run Backend Tests
           command: |
             cd backend
-            # Run our comprehensive test suite
-            npm test || echo "Backend tests completed"
+            # Run our comprehensive test suite (encryption + server tests)
+            npm test
+      - store_test_results:
+          path: backend/coverage
+      - store_artifacts:
+          path: backend/coverage
 
   test-frontend:
     docker:
