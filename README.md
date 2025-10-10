@@ -1027,6 +1027,7 @@ Content-Type: application/json
   "IDNumber": "1234567890123"
 }
 ```
+![HTTPS User Login](Images1/postman_https_user_login.png)
 
 **Example: Payment Submission (with JWT)**
 ```bash
