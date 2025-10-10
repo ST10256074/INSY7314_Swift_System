@@ -73,6 +73,16 @@ app.get('/', (req, res) => {
   res.send('SWIFT PAYMENT SYSTEM - Backend Server is running');
 })
 
+// Health check endpoint for performance testing
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    version: '1.0.0'
+  });
+})
+
 // Start HTTPS server
 https.createServer(options, app).listen(PORT, () => {
     console.log(`HTTPS Server is running on port ${PORT}`);
