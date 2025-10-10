@@ -976,8 +976,13 @@ PORT=8443
 HTTP_PORT=8080
 ```
 
-**Generate SSL Certificates (for HTTPS):**
+**Generate SSL Certificates (for HTTPS)(Used in Backend and Frontend):**
 ```bash
+cd frontend
+mkdir keys
+openssl req -x509 -newkey rsa:4096 -keyout keys/privatekey.pem -out keys/certificate.pem -days 365 -nodes
+
+cd backend
 mkdir keys
 openssl req -x509 -newkey rsa:4096 -keyout keys/privatekey.pem -out keys/certificate.pem -days 365 -nodes
 ```
@@ -996,7 +1001,7 @@ npm install
 
 **Start Development Server:**
 ```bash
-npm run start:https      # HTTPS (port 3001)
+npm run start    # HTTPS (port 3001)
 ```
 
 ---
