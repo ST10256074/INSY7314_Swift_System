@@ -14,6 +14,9 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
+  "devDependencies": {
+    "jest-junit": "^16.0.0"
+  },
   "scripts": {
     "start": "react-scripts start",
     "start:https": "HTTPS=true SSL_CRT_FILE=../backend/keys/certificate.pem SSL_KEY_FILE=../backend/keys/privatekey.pem react-scripts start",
