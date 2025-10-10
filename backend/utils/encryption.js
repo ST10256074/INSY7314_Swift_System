@@ -3,7 +3,7 @@ import { scrypt, randomFill, createCipheriv, createDecipheriv } from 'crypto';
 // Encryption configuration
 const ALGORITHM = 'aes-192-cbc';
 const PASSWORD = process.env.ENCRYPTION_KEY;
-const SALT = 'salt'; // In production, use a random salt per encryption
+const SALT = 'salt';
 const KEY_LENGTH = 24; // 24 bytes for AES-192
 const IV_LENGTH = 16; // For AES, this is always 16
 
