@@ -1027,7 +1027,7 @@ Content-Type: application/json
   "IDNumber": "1234567890123"
 }
 ```
-![HTTPS User Login](Images1/postman_https_user_login.png)
+![HTTPS User Login](Images1/postman_https_user_login.jpeg)
 
 **Example: Payment Submission (with JWT)**
 ```bash
@@ -1044,7 +1044,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
   "paymentProvider": "Bank of America"
 }
 ```
-![HTTPS Post Payment](Images1/postman_https_post_payment.png)
+![HTTPS User Login](Images1/postman_https_post_payment.jpeg)
+
 ---
 
 ## 🔄 CircleCI Configuration
