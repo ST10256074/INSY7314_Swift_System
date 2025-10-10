@@ -38,7 +38,7 @@ The **Swift Payment System** is a comprehensive, enterprise-grade international 
 
 ### Key Highlights
 
-- 🔐 **Enterprise Security**: AES-256-GCM encryption, bcrypt password hashing, JWT authentication
+- 🔐 **Enterprise Security**: AES-192-CBC encryption, bcrypt password hashing, JWT authentication
 - 🛡️ **DevSecOps Pipeline**: 168 automated tests, 4 security scanning tools, performance monitoring
 - ⚡ **Modern Stack**: React 19+ frontend, Node.js/Express backend, MongoDB Atlas database
 - 👥 **Multi-Role System**: Separate interfaces for clients and employees
@@ -66,7 +66,7 @@ The **Swift Payment System** is a comprehensive, enterprise-grade international 
 - Node.js with Express 5.1.0
 - JWT (jsonwebtoken 9.0.2)
 - bcrypt 6.0.0 for password hashing
-- AES-256-GCM encryption
+- AES-192-CBC encryption
 - Express Rate Limit for DDoS protection
 - CORS configuration
 
@@ -144,7 +144,7 @@ Creates a new user account with encrypted personal information.
 - Input validation with RegEx patterns
 - Field whitelisting (prevents privilege escalation)
 - Password hashing with bcrypt (10+ salt rounds)
-- AES-256-GCM encryption for PII (full_name, accountNumber, IDNumber)
+- AES-192-CBC encryption for PII (full_name, accountNumber, IDNumber)
 - Duplicate username prevention
 
 **Response (201 Created):**
@@ -220,7 +220,7 @@ Authorization: Bearer <JWT_TOKEN>
   - SWIFT: `^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$`
   - Amount: `^\d+(\.\d{1,2})?$`
   - Currency: `^[A-Z]{3}$`
-- AES-256-GCM encryption for all sensitive fields
+- AES-192-CBC encryption for all sensitive fields
 - User ID attached from JWT token
 
 **Response (201 Created):**
@@ -323,9 +323,9 @@ methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
   _id: ObjectId,
   username: String,                    // Plain text (used for login)
   password: String,                    // Bcrypt hashed (60 chars)
-  full_name: String,                   // AES-256-GCM encrypted
-  accountNumber: String,               // AES-256-GCM encrypted
-  IDNumber: String,                    // AES-256-GCM encrypted
+  full_name: String,                   // AES-192-CBC encrypted
+  accountNumber: String,               // AES-192-CBC encrypted
+  IDNumber: String,                    // AES-192-CBC encrypted
   userType: String,                    // "User" or "Employee"
   createdAt: Date
 }
@@ -333,7 +333,7 @@ methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
 
 **Security Features:**
 - Passwords hashed with bcrypt (10 salt rounds)
-- All PII encrypted with AES-256-GCM
+- All PII encrypted with AES-192-CBC
 - Username plain text for authentication efficiency
 - Indexed on username for fast lookups
 
@@ -346,12 +346,12 @@ methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
 ```javascript
 {
   _id: ObjectId,
-  recipientName: String,               // AES-256-GCM encrypted
-  accountNumber: String,               // AES-256-GCM encrypted (recipient)
-  swiftCode: String,                   // AES-256-GCM encrypted
-  amount: String,                      // AES-256-GCM encrypted
-  currency: String,                    // AES-256-GCM encrypted
-  paymentProvider: String,             // AES-256-GCM encrypted
+  recipientName: String,               // AES-192-CBC encrypted
+  accountNumber: String,               // AES-192-CBC encrypted (recipient)
+  swiftCode: String,                   // AES-192-CBC encrypted
+  amount: String,                      // AES-192-CBC encrypted
+  currency: String,                    // AES-192-CBC encrypted
+  paymentProvider: String,             // AES-192-CBC encrypted
   submittedBy: String,                 // User ID from JWT
   submittedByName: String,             // Username from JWT
   status: String,                      // "pending", "approved", "rejected"
@@ -400,7 +400,7 @@ ATLAS_URI=mongodb+srv://username:password@cluster.mongodb.net/database
 
 ## 🔒 Security Implementation
 
-### 1. Encryption (AES-256-GCM)
+### 1. Encryption (AES-192-CBC)
 
 **What We Encrypt:**
 - User PII: `full_name`, `accountNumber`, `IDNumber`
@@ -409,12 +409,12 @@ ATLAS_URI=mongodb+srv://username:password@cluster.mongodb.net/database
 **Implementation:**
 ```javascript
 // Encryption
-const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+const cipher = crypto.createCipheriv('aes-192-cbc', key, iv);
 const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
 const authTag = cipher.getAuthTag();
 
 // Decryption with authentication tag verification
-const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
+const decipher = crypto.createDecipheriv('aes-192-cbc', key, iv);
 decipher.setAuthTag(authTag);
 const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]);
 ```
@@ -621,7 +621,7 @@ Our CircleCI pipeline implements a comprehensive DevSecOps workflow with **11 di
 - **36 Route Validation Tests**: Verify security implementations in code
 - **20 Server Tests**: Middleware, CORS, rate limiting
 - **19 Authentication Tests**: Bcrypt, JWT, validation
-- **17 Encryption Tests**: AES-256-GCM (85% coverage)
+- **17 Encryption Tests**: AES-192-CBC (85% coverage)
 - **15 Payment Tests**: SWIFT, amount, currency validation
 
 **Frontend Tests (24 tests)**
@@ -984,8 +984,7 @@ openssl req -x509 -newkey rsa:4096 -keyout keys/privatekey.pem -out keys/certifi
 
 **Start Server:**
 ```bash
-npm start          # Production
-npm run dev        # Development (with nodemon)
+npm run dev        
 ```
 
 ### Frontend Setup
@@ -997,13 +996,7 @@ npm install
 
 **Start Development Server:**
 ```bash
-npm start                # HTTP (port 3001)
 npm run start:https      # HTTPS (port 3001)
-```
-
-**Build for Production:**
-```bash
-npm run build
 ```
 
 ---
