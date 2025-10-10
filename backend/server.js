@@ -7,6 +7,7 @@ import payments from "./routes/payments.js";
 import express from "express";
 import cors from "cors";
 import {execPath} from "process";
+import { rateLimit } from 'express-rate-limit';
 
 // Configure environment variables
 dotenv.config();
@@ -22,7 +23,7 @@ const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
   standardHeaders: true,
-  legacyHeaders: false,
+  legacyHeaders: true,
 });
 app.use(limiter);
 

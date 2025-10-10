@@ -145,7 +145,7 @@ router.get('/profile', checkAuth, async (req, res) => {
 router.post('/login', async (req, res) => {
 
     // Whitelist allowed fields
-    const allowedFields = ["name", "password"];
+    const allowedFields = ["name", "password", "accountNumber"];
     Object.keys(req.body).forEach(key => {
         if (!allowedFields.includes(key)) {
             delete req.body[key];

@@ -16,7 +16,6 @@ function Navbar() {
   const handleLogoutConfirm = () => {
     logout();
     setShowLogoutModal(false);
-    // Navigation will be handled by ProtectedRoute redirects
   };
 
   const handleLogoutCancel = () => {
