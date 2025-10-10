@@ -1107,7 +1107,7 @@ This project is developed for educational purposes as part of INSY7314 coursewor
 
 ---
 
-## 🔗 References
+## 🔥 Resources
 
 - [CircleCI Documentation](https://circleci.com/docs/)
 - [Snyk Security Scanner](https://snyk.io/)
