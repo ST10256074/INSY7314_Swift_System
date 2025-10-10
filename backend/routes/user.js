@@ -5,52 +5,58 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import checkAuth from "../check-auth.js";
 import { encrypt, decrypt } from "../utils/encryption.js";
-// import ExpressBrute from 'express-brute';
-
-// const router = express.Router
-
-// var store = new ExpressBrute.MemoryStore();
-// var bruteforce = new ExpressBrute(store);
-
-// SignUp
 
 const router = express.Router();
 
+/**
+ * User registration endpoint
+ * Validates input data, encrypts sensitive information, and creates new user account
+ * POST /user/signup
+ */
 router.post("/signup", async (req, res) => {
-    console.log("signup")
     try {
-        console.log(req.body);
+
+                // Whitelist allowed fields
+        const allowedFields = ["username", "full_name", "accountNumber", "IDNumber", "password"];
+        Object.keys(req.body).forEach(key => {
+            if (!allowedFields.includes(key)) {
+                delete req.body[key];
+            }
+        });
+
+        // Regex patterns for input validation
+        const usernameRegex = /^[a-zA-Z0-9_]{3,16}$/;
+        const fullNameRegex = /^[a-zA-Z .,'-]{2,50}$/;
+        const accountNumberRegex = /^\d{6,20}$/;
+        const idNumberRegex = /^\d{13}$/;
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/;
+
+
         let username = req.body.username;
         let full_name = req.body.full_name;
         let accountNumber = req.body.accountNumber;
         let IDNumber = req.body.IDNumber;
         let password = req.body.password;
 
-        // Username: 3-16 chars, letters, numbers, underscores only
-        const usernameRegex = /^[a-zA-Z0-9_]{3,16}$/;
-        // Password: min 6 chars, at least one letter and one number
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/;
-        // ID Number: 13 digits for South African ID
-        const idNumberRegex = /^\d{13}$/;
 
         if (!username || !full_name || !accountNumber || !IDNumber || !password) {
             return res.status(400).send('All fields (username, full name, account number, ID number, password) are required');
         }
 
-        if (!usernameRegex.test(username)) {
+         if (!usernameRegex.test(username)) {
             return res.status(400).send('Username must be 3-16 characters and contain only letters, numbers, or underscores');
         }
-
-        if (!passwordRegex.test(password)) {
-            return res.status(400).send('Password must be at least 6 characters and contain at least one letter and one number');
+        if (!fullNameRegex.test(full_name)) {
+            return res.status(400).send('Full name contains invalid characters');
         }
-
+        if (!accountNumberRegex.test(accountNumber)) {
+            return res.status(400).send('Account number must be 6-20 digits');
+        }
         if (!idNumberRegex.test(IDNumber)) {
             return res.status(400).send('ID Number must be exactly 13 digits');
         }
-
-        if (!accountNumber.trim()) {
-            return res.status(400).send('Account number cannot be empty');
+        if (!passwordRegex.test(password)) {
+            return res.status(400).send('Password must be at least 6 characters and contain at least one letter and one number');
         }
 
         // Check if username already exists
@@ -61,6 +67,7 @@ router.post("/signup", async (req, res) => {
             return res.status(400).send('Username already exists');
         }
 
+        //salted and hashed 10 rounds
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Encrypt sensitive data before storing
@@ -79,8 +86,6 @@ router.post("/signup", async (req, res) => {
 
         let result = await userCollection.insertOne(newDocument);
 
-        console.log(password);
-        console.log(hashedPassword);
         res.status(201).json({ message: 'User created successfully', result });
     }
     catch (error) {
@@ -89,11 +94,13 @@ router.post("/signup", async (req, res) => {
     }
 });
 
-// Get current user's account info
+/**
+ * Retrieves authenticated user's profile information
+ * Decrypts sensitive data before sending response
+ * GET /user/profile (requires authentication)
+ */
 router.get('/profile', checkAuth, async (req, res) => {
-    console.log("profile")
     try {
-        console.log("User from token:", req.user);
         const userName = req.user.username;
         
         if (!userName) {
@@ -130,13 +137,38 @@ router.get('/profile', checkAuth, async (req, res) => {
     }
 });
 
-//login
+/**
+ * User authentication endpoint
+ * Validates credentials, compares encrypted data, and generates JWT token
+ * POST /user/login
+ */
 router.post('/login', async (req, res) => {
+
+    // Whitelist allowed fields
+    const allowedFields = ["name", "password", "accountNumber"];
+    Object.keys(req.body).forEach(key => {
+        if (!allowedFields.includes(key)) {
+            delete req.body[key];
+        }
+    });
+
+    // Regex patterns for input validation
+    const nameRegex = /^[a-zA-Z0-9_]{3,16}$/;
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/;
+
     const user = req.body.name;
     const accountNumber = req.body.accountNumber;
     const password = req.body.password;
 
-    console.log('Login attempt for user:', user);
+    if (!user || !password) {
+        return res.status(400).send('Username and password are required');
+    }
+    if (!nameRegex.test(user)) {
+        return res.status(400).send('Username must be 3-16 characters and contain only letters, numbers, or underscores');
+    }
+    if (!passwordRegex.test(password)) {
+        return res.status(400).send('Password must be at least 6 characters and contain at least one letter and one number');
+    }
 
     try{
     let userCollection = await db.collection("users");
@@ -178,13 +210,10 @@ router.post('/login', async (req, res) => {
             userType: result.userType 
         }
     });
-    console.log(token);
     }
     catch (error) {
         res.status(500).send('Internal server error');
     }
 });
-
-
 
 export default router;

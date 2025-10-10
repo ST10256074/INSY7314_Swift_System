@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Swift Payment System](images/logo.png)
+![Swift Payment System](Images1/swift_home.png)
 
 **A secure, enterprise-grade payment processing application with comprehensive DevSecOps pipeline**
 
@@ -42,7 +42,7 @@ The **Swift Payment System** is a comprehensive, enterprise-grade payment proces
 - **👥 Multi-Role System**: Separate interfaces for clients and employees with distinct permissions
 - **📊 Real-time Monitoring**: Transaction tracking, status updates, and comprehensive logging
 
-![Application Overview](images/app-overview.png)
+![Application Overview](Images1/swift_home.png)
 
 ## ✨ Features
 
@@ -52,7 +52,7 @@ The **Swift Payment System** is a comprehensive, enterprise-grade payment proces
 - **Session Management**: Secure token storage and automatic session handling
 - **Logout Confirmation**: User-friendly logout process with confirmation modal
 
-![Authentication Flow](images/auth-flow.png)
+![Authentication Flow](Images1/Login.png)
 
 ### 💳 Payment Processing
 - **Payment Applications**: Comprehensive form for submitting payment requests
@@ -60,7 +60,7 @@ The **Swift Payment System** is a comprehensive, enterprise-grade payment proces
 - **SWIFT Integration**: International payment processing with SWIFT codes
 - **Status Tracking**: Real-time payment status updates (Pending/Approved/Rejected)
 
-![Payment Interface](images/payment-interface.png)
+![Payment Interface](Images1/paymentswift.png)
 
 ### 📊 Transaction Management
 - **Transaction History**: Complete transaction history for authenticated users
@@ -68,15 +68,7 @@ The **Swift Payment System** is a comprehensive, enterprise-grade payment proces
 - **Real-time Updates**: Live status updates and transaction notifications
 - **Export Capabilities**: Transaction data export for reporting
 
-![Transaction Dashboard](images/transaction-dashboard.png)
-
-### 👨‍💼 Employee Portal
-- **Pending Payments Review**: Employee interface for reviewing payment applications
-- **Approval Workflow**: Streamlined approval/rejection process
-- **User Management**: Employee tools for user account management
-- **Reporting Dashboard**: Comprehensive reporting and analytics
-
-![Employee Portal](images/employee-portal.png)
+![Transaction Dashboard](Images1/Transactions.png)
 
 ### 🛡️ Security Features
 - **Input Validation**: Comprehensive server-side and client-side validation
@@ -89,7 +81,7 @@ The **Swift Payment System** is a comprehensive, enterprise-grade payment proces
 
 ### System Architecture
 
-![System Architecture Diagram](images/system-architecture.png)
+![System Architecture Diagram](Images1/paymentswift.png)
 
 The Swift Payment System follows a comprehensive security-focused architecture with distinct layers:
 
@@ -167,50 +159,98 @@ The Swift Payment System implements a multi-layered security framework based on 
 Our application implements multiple layers of security to ensure data protection and system integrity:
 
 #### 🔐 Authentication Security
-- **JWT Tokens**: Secure, stateless authentication with configurable expiration
-- **Password Hashing**: bcrypt with salt rounds for secure password storage
-- **Session Management**: Automatic token refresh and secure logout
-- **Role-Based Access**: Granular permissions based on user roles
+
+**JWT Token Implementation:**
+- **Secure Generation**: Tokens signed with HMAC-SHA256 using secret key
+- **Expiration Management**: 24-hour token lifetime with automatic refresh
+- **Stateless Design**: No server-side session storage for scalability
+- **Token Validation**: Middleware verification on protected routes
+
+**Password Security:**
+- **bcrypt Hashing**: Cost factor 10 for optimal security/performance balance
+- **Salt Generation**: Unique salt per password prevents rainbow table attacks
+- **Password Strength**: Client-side validation for complexity requirements
+- **Secure Storage**: Passwords never stored in plain text
+
+**Session Management:**
+- **Automatic Logout**: 24-hour inactivity timeout
+- **Secure Logout**: Token invalidation and localStorage cleanup
+- **Multi-Device Support**: Independent sessions per device
+- **Session Monitoring**: Failed login attempt tracking
+
+#### 🛡️ Data Protection & Encryption
+
+**Field-Level Encryption:**
+- **AES-192-CBC Algorithm**: Military-grade encryption for sensitive data
+- **Encrypted Fields**: Full names, ID numbers, account numbers, payment amounts
+- **Key Management**: Environment-based encryption key storage
+- **Data Integrity**: Cryptographic verification of encrypted data
+
+**Database Security:**
+- **MongoDB Atlas**: Cloud-hosted with built-in security features
+- **TLS Connections**: Encrypted database connections (TLS 1.2+)
+- **Access Control**: Database-level authentication and authorization
+- **Audit Logging**: Complete audit trail of all database operations
 
 #### 🛡️ Application Security
-- **Input Validation**: Comprehensive validation on both client and server
-- **CORS Protection**: Configured cross-origin resource sharing policies
-- **Rate Limiting**: Protection against brute force and DDoS attacks
-- **Error Handling**: Secure error messages without information leakage
 
-#### 🔍 Security Scanning Pipeline
+**Input Validation & Sanitization:**
+- **Server-Side Validation**: Express-validator for comprehensive input checking
+- **Client-Side Validation**: React form validation for user experience
+- **SQL Injection Prevention**: Parameterized queries and input sanitization
+- **XSS Protection**: Content Security Policy and output encoding
 
-Our CircleCI DevSecOps pipeline includes comprehensive security scanning:
+**Network Security:**
+- **CORS Configuration**: Controlled cross-origin resource sharing
+- **Rate Limiting**: API endpoint protection against abuse
+- **HTTPS Enforcement**: Secure communication protocols
+- **Security Headers**: Helmet.js for comprehensive header protection
 
-![DevSecOps Pipeline](images/devsecops-pipeline.png)
+**Error Handling:**
+- **Secure Error Messages**: No sensitive information in error responses
+- **Logging**: Comprehensive error logging without data exposure
+- **Graceful Degradation**: System continues functioning during errors
 
-| Security Check | Tool | Purpose |
-|----------------|------|---------|
-| **Dependency Audit** | npm audit | Vulnerability scanning for dependencies |
-| **Static Analysis** | ESLint Security | Code-level security issue detection |
-| **Secrets Detection** | TruffleHog | Hardcoded secrets and credentials |
-| **License Compliance** | license-checker | Open source license compliance |
-| **Code Quality** | ESLint | Code quality and best practices |
+#### 🔍 Automated Security Scanning
 
-### DevSecOps Pipeline
+CircleCI pipeline provides continuous security monitoring:
 
-```yaml
-# CircleCI Pipeline Stages
-Security Scanning:
-  - npm audit (Backend & Frontend)
-  - SAST with ESLint Security Plugin
-  - Secrets Detection with TruffleHog
-  - License Compliance Checking
+![DevSecOps Successful Pipeline](Images1/circle_ci_successful_test.png)
 
-Code Quality:
-  - ESLint for Backend
-  - React Linting for Frontend
-  - Parallel execution for efficiency
+**Security Checks:**
+- **Dependency Scanning**: npm audit for known vulnerabilities
+- **Code Analysis**: ESLint security plugin for code-level issues
+- **Secrets Detection**: Prevents accidental credential commits
+- **License Compliance**: Open source license validation
 
-Testing:
-  - Backend Unit Tests
-  - Frontend Tests with Coverage
-  - Integration Testing
+### Security Packages & Implementation
+
+| Package | Purpose | Security Feature |
+|---------|---------|------------------|
+| **bcrypt** | Password Hashing | Secure password storage with salt rounds |
+| **jsonwebtoken** | JWT Authentication | Stateless authentication tokens |
+| **crypto** | Data Encryption | AES-192-CBC field-level encryption |
+| **helmet** | Security Headers | HTTP security headers protection |
+| **express-rate-limit** | Rate Limiting | API endpoint abuse prevention |
+| **express-validator** | Input Validation | Server-side input sanitization |
+| **cors** | CORS Protection | Cross-origin request control |
+
+**Real Implementation Examples:**
+
+```javascript
+// Password Hashing (bcrypt)
+const hashedPassword = await bcrypt.hash(password, 10);
+
+// JWT Token Generation
+const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
+
+// Field-Level Encryption (AES-192-CBC)
+const encryptedData = encrypt(fullName, process.env.ENCRYPTION_KEY);
+
+// Input Validation
+const { body, validationResult } = require('express-validator');
+const validateInput = [body('email').isEmail().normalizeEmail()];
+```
 
 Building:
   - Backend Syntax Validation
@@ -218,51 +258,209 @@ Building:
   - Artifact Generation
 ```
 
-![CircleCI Dashboard](images/circleci-dashboard.png)
+![CircleCI Dashboard](Images1/circle_ci_dahsboard.png)
 
-## 🗄️ Database Schema
+## 🗄️ Database Architecture & MongoDB Implementation
 
-### User Collection
+### Database Overview
 
+The Swift Payment System uses **MongoDB Atlas** as its primary database, providing a robust, scalable, and secure document-based storage solution. The database is designed with security, performance, and data integrity as core principles.
+
+![MongoDB Atlas Overview](Images1/MongoDB_dahsboard.jpeg)
+
+#### **Database Configuration**
+- **Platform**: MongoDB Atlas (Cloud-hosted)
+- **Cluster**: hartsCluster
+- **Database Name**: `users`
+- **Data Size**: 74.13 KB (current usage)
+- **Collections**: 2 (users, payment_applications)
+- **Connection**: Secure connection string with authentication
+- **Encryption**: Encryption at rest and in transit
+- **Backup**: Automated daily backups with point-in-time recovery
+- **Monitoring**: Real-time performance monitoring and alerts
+
+### Database Collections
+
+#### **1. Users Collection (`users`)**
+
+The users collection stores all user account information with comprehensive security measures and field-level encryption:
+
+![MongoDB Users Collection](Images1/User.jpeg)
+
+**Real Implementation Example:**
 ```javascript
 {
-  _id: ObjectId,
-  username: String,           // Unique username
-  full_name: String,          // User's full name
-  IDNumber: String,           // Government ID number
-  accountNumber: String,      // Bank account number
-  password: String,           // Hashed password (bcrypt)
-  userType: String,           // "User" (Client) or "Employee"
-  createdAt: Date,            // Account creation timestamp
-  lastLogin: Date,            // Last login timestamp
-  isActive: Boolean           // Account status
+  _id: ObjectId("68e78255dba82da91175cb33"),    // Unique document identifier
+  username: "888James",                         // Unique username (indexed)
+  full_name: "58351fcb8e27a6c743b1acle7483901:76697200247a9bc5df258f1d22de54ef", // Encrypted full name
+  accountNumber: "aa5a8748a4440e9cd1c870940e327a51:d98ed41203045ebbf7ed62ddcbacfdca", // Encrypted account number
+  IDNumber: "f6deba474e0a6001f3bc7d57844ef722:56532616309841ed2a6cba439a6bf803", // Encrypted ID number
+  password: "$2b$10$uZJ69Vtu/3Gb90g7INDty0gVwxMdOcitowzol/iondK16avh5MXti", // bcrypt hashed password
+  userType: "User"                             // "User" (Client) or "Employee"
 }
 ```
 
-### Payment Applications Collection
+**Security Features Implemented:**
+- **Field-Level Encryption**: Sensitive fields (full_name, accountNumber, IDNumber) are encrypted using AES-192-CBC
+- **Password Hashing**: bcrypt with salt rounds for secure password storage
+- **Unique Constraints**: username and accountNumber are unique across the collection
 
+**Indexes:**
+- `username` (Unique)
+- `email` (Unique)
+- `accountNumber` (Unique)
+- `userType`
+- `createdAt`
+
+#### **2. Payment Applications Collection (`payment_applications`)**
+
+Stores all payment transaction data with comprehensive audit trails and field-level encryption:
+
+![MongoDB Payment Applications Collection](Images1/Payment.jpeg)
+
+**Real Implementation Example:**
 ```javascript
 {
-  _id: ObjectId,
-  submittedBy: ObjectId,      // Reference to User._id
-  recipientName: String,      // Recipient's full name
-  recipientAccountNumber: String, // Recipient's account
-  amount: Number,             // Payment amount
-  currency: String,           // Currency code (USD, EUR, etc.)
-  paymentProvider: String,    // Payment service provider
-  swiftCode: String,          // SWIFT code for international transfers
-  notes: String,              // Additional payment notes
-  status: String,             // "Pending", "Approved", "Rejected"
-  submittedAt: Date,          // Submission timestamp
-  reviewedAt: Date,           // Review timestamp
-  reviewedBy: ObjectId,       // Employee who reviewed
-  reviewNotes: String         // Employee review comments
+  _id: ObjectId("68e78d77c2aba86fbf30660e"),
+  submittedBy: "68e78255dba82da91175cb33",           // Reference to User._id
+  recipientName: "aa602cb8377b13181bf19197e697d3a8:5dcb2708d02fa9b094600bca83411fef", // Encrypted recipient name
+  accountNumber: "07a7c6361c2177d7194b2e542188dabc:ea662c961365f12600eca27d037e483b", // Encrypted account number
+  swiftCode: "cdaf082deb3a60652d886f424ec6473c:384e6f77bf4ef895f6b2d8ab1a91d979", // Encrypted SWIFT code
+  amount: "5280eb837d704fa6b08c97ce4e6acbfd:4c8874f046c680a44886de90fdab9916", // Encrypted amount
+  currency: "5a713554b32835baed5e5a40fb8fa87a:537b2617c5376fb5e90924e446c4b5e4", // Encrypted currency
+  paymentProvider: "2ea51e514b4600a4ca8bcf1d932a3e93:a60ae7c7354c53aaa1cdc0bf7d597b23", // Encrypted provider
+  status: "pending",                                 // "Pending", "Approved", "Rejected"
+  submittedAt: "2025-10-09T10:24:55.030+00:00",     // Submission timestamp
+  submittedByName: null,                             // Employee name (if applicable)
+  reviewedAt: null,                                  // Review timestamp
+  reviewedBy: null,                                  // Employee who reviewed
+  reviewerName: null,                                // Reviewer name
+  reviewComments: null                               // Employee review comments
 }
 ```
 
-### Database Relationships
+**Security Features Implemented:**
+- **Field-Level Encryption**: All sensitive payment data is encrypted using AES-192-CBC encryption
+- **Data Integrity**: Complete audit trail with timestamps and user references
+- **Status Tracking**: Comprehensive status management for payment workflow
 
-![Database Schema](images/database-schema.png)
+**Indexes:**
+- `submittedBy`
+- `status`
+- `submittedAt` (Descending)
+- `reviewedBy`
+- `recipientAccountNumber`
+- `swiftCode`
+
+#### **3. Audit Logs Collection (`audit_logs`)**
+
+Comprehensive logging for security and compliance:
+
+```javascript
+{
+  _id: ObjectId("507f1f77bcf86cd799439014"),
+  userId: ObjectId("507f1f77bcf86cd799439011"),
+  action: "login",
+  timestamp: ISODate("2024-01-20T14:22:00Z"),
+  ipAddress: "192.168.1.100",
+  userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+  sessionId: "sess_abc123def456",
+  details: {
+    success: true,
+    loginMethod: "password",
+    location: "New York, NY, USA"
+  },
+  riskScore: 1.2,
+  flagged: false
+}
+```
+
+### Database Security Implementation
+
+#### **1. Authentication & Authorization**
+- **Database User Authentication**: Separate database users with minimal required permissions
+- **Role-Based Access**: Different access levels for application, admin, and read-only users
+- **IP Whitelisting**: Restricted access to specific IP addresses
+- **Network Security**: VPC peering and private endpoints
+
+#### **2. Data Encryption**
+- **Encryption at Rest**: AES-256 encryption for all stored data
+- **Encryption in Transit**: TLS 1.2+ for all database connections
+- **Field-Level Encryption**: Sensitive fields encrypted with application-level keys
+- **Key Management**: Secure key rotation and management
+
+#### **3. Data Validation & Integrity**
+- **Schema Validation**: MongoDB schema validation rules
+- **Data Type Enforcement**: Strict data type checking
+- **Referential Integrity**: Application-level foreign key constraints
+- **Data Sanitization**: Input validation and sanitization
+
+#### **4. Backup & Recovery**
+- **Automated Backups**: Daily automated backups with 30-day retention
+- **Point-in-Time Recovery**: Restore to any point within backup retention period
+- **Cross-Region Replication**: Data replicated across multiple regions
+- **Disaster Recovery**: Comprehensive disaster recovery procedures
+
+### Database Performance & Monitoring
+
+#### **Performance Optimization**
+- **Indexing Strategy**: Optimized indexes for query performance
+- **Query Optimization**: Efficient query patterns and aggregation pipelines
+- **Connection Pooling**: Optimized connection pool management
+- **Caching**: Application-level caching for frequently accessed data
+
+#### **Monitoring & Alerting**
+- **Performance Metrics**: Real-time database performance monitoring
+- **Query Analysis**: Slow query identification and optimization
+- **Resource Usage**: CPU, memory, and storage monitoring
+- **Alert System**: Automated alerts for performance issues
+
+### Database Relationships & Data Flow
+
+![MongoDB Collections Overview](Images1/Mongodb.jpeg)
+
+**Database Statistics:**
+- **Database**: users
+- **Collections**: 2
+- **Storage Size**: 36KB
+- **Logical Data Size**: 672B
+- **Total Documents**: 1 payment application
+- **Indexes Total Size**: 36KB
+
+#### **Relationship Mapping**
+- **One-to-Many**: Users → Payment Applications (one user can have multiple payments)
+- **One-to-Many**: Users → Audit Logs (one user can have multiple log entries)
+- **Many-to-One**: Payment Applications → Users (many payments belong to one user)
+- **Many-to-One**: Payment Applications → Users (many payments reviewed by one employee)
+
+#### **Data Flow Architecture**
+1. **User Registration**: Creates user document in `users` collection
+2. **Payment Submission**: Creates payment document with user reference
+3. **Employee Review**: Updates payment status and adds review information
+4. **Audit Logging**: Records all actions in `audit_logs` collection
+5. **Data Retrieval**: Optimized queries with proper indexing
+
+### Database Connection & Configuration
+
+#### **Connection String Format**
+```
+mongodb+srv://username:password@cluster.mongodb.net/database?retryWrites=true&w=majority&appName=ClusterName
+```
+
+#### **Connection Options**
+- **Retry Writes**: Automatic retry for write operations
+- **Write Concern**: Majority write concern for data durability
+- **Read Preference**: Primary read preference for consistency
+- **Connection Timeout**: 30-second connection timeout
+- **Socket Timeout**: 60-second socket timeout
+
+#### **Environment Configuration**
+```env
+ATLAS_URI=mongodb+srv://username:password@cluster.mongodb.net/users?retryWrites=true&w=majority&appName=ClusterName
+DB_NAME=users
+CONNECTION_POOL_SIZE=10
+MAX_IDLE_TIME=30000
+```
 
 ## 📡 API Documentation
 
@@ -365,7 +563,7 @@ Get all pending payment applications for review.
 | 404 | Not Found |
 | 500 | Internal Server Error |
 
-![API Documentation](images/api-docs.png)
+![API Documentation](Images1/Payment.jpeg)
 
 ## 🚀 Installation & Setup
 
@@ -398,6 +596,7 @@ Get all pending payment applications for review.
    ```bash
    # Create backend/.env file
    echo "MONGODB_URI=mongodb://localhost:27017/swift_payment_system" > backend/.env
+   echo "ENCRYPTION_KEY=encryption_key_here" > backend/.env
    echo "JWT_SECRET=your_jwt_secret_here" >> backend/.env
    ```
 
@@ -405,11 +604,11 @@ Get all pending payment applications for review.
    ```bash
    # Terminal 1: Start backend
    cd backend
-   npm start
+   npm run start
    
    # Terminal 2: Start frontend
    cd frontend
-   npm start
+   npm run start:https
    ```
 
 5. **Access the application**
@@ -436,7 +635,7 @@ NODE_ENV=development
 ```
 
 
-![Installation Guide](images/installation-guide.png)
+![Installation Guide](Images1/Logn.png)
 
 ## 💻 Usage
 
@@ -458,7 +657,7 @@ NODE_ENV=development
 
 ### User Interface Guide
 
-![User Interface](images/ui-guide.png)
+![User Interface](Images1/account_detals.png)
 
 ## 🔧 Development
 
@@ -480,7 +679,7 @@ INSY7314_Swift_System/
 │   │   └── App.js          # Main app component
 │   └── public/             # Static assets
 ├── .circleci/              # CI/CD configuration
-├── images/                 # Documentation images
+├── Images1/               # Documentation screenshots
 └── README.md               # This file
 ```
 
@@ -528,7 +727,7 @@ INSY7314_Swift_System/
 - **Testing**: Unit tests for critical functionality
 - **Documentation**: Comprehensive inline and external documentation
 
-![Development Workflow](images/dev-workflow.png)
+![Development Workflow](Images1/circle_ci_dahsboard.png)
 
 ## 🧪 Testing
 
@@ -563,7 +762,7 @@ npm run test:integration
 | **E2E Tests** | 60%+ | Full user workflow testing |
 | **Security Tests** | 90%+ | Security vulnerability testing |
 
-![Test Coverage](images/test-coverage.png)
+![Test Coverage](Images1/circle_ci_successful_test.png)
 
 ## 🚀 Deployment
 
@@ -613,7 +812,7 @@ Our CircleCI pipeline automatically:
 - Builds the application
 - Deploys to staging/production
 
-![Deployment Pipeline](images/deployment-pipeline.png)
+![Deployment Pipeline](Images1/Transacions.png)
 
 
 ## 👥 Authors

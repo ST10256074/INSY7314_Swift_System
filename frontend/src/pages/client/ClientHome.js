@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { ROUTES } from "../../utils/navigation";
 import apiService from "../../utils/api.js";
+import LogoutModal from "../../components/LogoutModal.js";
 import "./ClientHome.css";
 
 export default function ClientHome() {
@@ -10,6 +11,7 @@ export default function ClientHome() {
   const navigate = useNavigate();
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
     fetchDashboardData();
@@ -30,9 +32,18 @@ export default function ClientHome() {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogoutClick = () => {
+    setShowLogoutModal(true);
+  };
+
+  const handleLogoutConfirm = () => {
     logout();
+    setShowLogoutModal(false);
     navigate(ROUTES.LOGIN);
+  };
+
+  const handleLogoutCancel = () => {
+    setShowLogoutModal(false);
   };
 
   const formatAmount = (amount, currency = 'ZAR') => {
@@ -114,9 +125,9 @@ export default function ClientHome() {
               Make Payment
             </Link>
             <Link to={ROUTES.ACCOUNT_DETAILS} className="action-btn secondary">
-              Account Details
+              Account Info
             </Link>
-            <button onClick={handleLogout} className="action-btn secondary">
+            <button onClick={handleLogoutClick} className="action-btn secondary">
               Logout
             </button>
           </div>
@@ -164,6 +175,13 @@ export default function ClientHome() {
 
         </div>
       </div>
+      
+      {/* Logout Confirmation Modal */}
+      <LogoutModal
+        isOpen={showLogoutModal}
+        onClose={handleLogoutCancel}
+        onConfirm={handleLogoutConfirm}
+      />
     </div>
   );
 }
