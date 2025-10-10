@@ -1119,6 +1119,66 @@ This project is developed for educational purposes as part of INSY7314 coursewor
 - [Lighthouse Performance](https://developers.google.com/web/tools/lighthouse)
 - [ChatGPT](https://chatgpt.com)
 
+References
+aquasecurity, 2025. Code Repository. [Online] 
+Available at: https://trivy.dev/latest/docs/target/repository/
+[Accessed 7 October 2025].
+Artillery, 2025. Load testing. [Online] 
+Available at: https://www.artillery.io/docs
+[Accessed 7 October 2025].
+CircleCI, 2025. Configuration introduction. [Online] 
+Available at: https://circleci.com/docs/config-intro/
+[Accessed 5 October 2025].
+circleci, 2025. Quickstart guide. [Online] 
+Available at: https://circleci.com/docs/guides/getting-started/getting-started/
+[Accessed 5 October 2025].
+commitlint, 2025. Getting started. [Online] 
+Available at: https://commitlint.js.org/
+[Accessed 7 October 2025].
+conventional-changelog, 2025. conventional-changelog. [Online] 
+Available at: https://github.com/conventional-changelog/conventional-changelog
+[Accessed 7 October 2025].
+davglass, 2019. github. [Online] 
+Available at: https://github.com/davglass/license-checker
+[Accessed 6 October 2025].
+eslint-community, 2025. eslint-plugin-security. [Online] 
+Available at: https://github.com/eslint-community/eslint-plugin-security
+[Accessed 6 October 2025].
+Google Chrome, 2025. lighthouse-ci. [Online] 
+Available at: https://github.com/GoogleChrome/lighthouse-ci
+[Accessed 7 October 2025].
+Jestjs, 2025. Getting Started. [Online] 
+Available at: https://jestjs.io/docs/getting-started
+[Accessed 8 October 2025].
+MongoDB, 2025. Use Promises with Asynchronous JavaScript. [Online] 
+Available at: https://www.mongodb.com/docs/drivers/node/current/promises/
+[Accessed 3 October 2025].
+npm, 2025. MongoDB Node.js Driver. [Online] 
+Available at: https://www.npmjs.com/package/mongodb
+[Accessed 2 October 2025].
+React, 2025. Quick Start. [Online] 
+Available at: https://react.dev/learn
+[Accessed 1 October 2025].
+Semgrep, 2025. Add Semgrep to CI. [Online] 
+Available at: https://semgrep.dev/docs/deployment/add-semgrep-to-ci
+[Accessed 8 October 2025].
+Snyk, 2024. CircleCI integration using a Snyk Orb. [Online] 
+Available at: https://docs.snyk.io/developer-tools/snyk-ci-cd-integrations/circleci-integration-using-a-snyk-orb
+[Accessed 7 October 2025].
+Truffle Security, 2025. Built by experts in app, infrastructure, and offensive security. [Online] 
+Available at: https://trufflesecurity.com/security
+[Accessed 7 October 2025].
+W3 Schools, 2025. React Tutorial. [Online] 
+Available at: https://www.w3schools.com/react/
+[Accessed 25 September 2025].
+W3Schools, 2025. React CSS Modules. [Online] 
+Available at: https://www.w3schools.com/REACT/react_css_modules.asp
+[Accessed 8 October 2025].
+W3Schools, 2025. React Router. [Online] 
+Available at: https://www.w3schools.com/REACT/react_router.asp
+[Accessed 8 October 2025].
+
+
 ---
 
 <div align="center">
