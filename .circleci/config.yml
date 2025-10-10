@@ -258,16 +258,195 @@ jobs:
             echo "=== Frontend Licenses ==="
             cd ../frontend && npx license-checker --summary
 
+  # Advanced Security Scanning with Trivy
+  advanced-security-scan:
+    docker:
+      - image: cimg/node:20.11
+    steps:
+      - checkout
+      - run:
+          name: Install Trivy
+          command: |
+            sudo apt-get update
+            sudo apt-get install wget apt-transport-https gnupg lsb-release
+            wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+            echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
+            sudo apt-get update
+            sudo apt-get install trivy
+      - run:
+          name: Filesystem Security Scan
+          command: |
+            trivy fs --format json --output security-report.json . || true
+            trivy fs --severity HIGH,CRITICAL . || true
+      - store_artifacts:
+          path: security-report.json
+      - run:
+          name: Check for Critical Security Issues
+          command: |
+            if trivy fs --severity CRITICAL . 2>&1 | grep -q "Total: [1-9]"; then
+              echo "Critical security vulnerabilities found!"
+              trivy fs --severity CRITICAL .
+              exit 1
+            fi
+
+  # Performance Testing
+  performance-test:
+    docker:
+      - image: cimg/node:20.11
+    steps:
+      - checkout
+      - install-backend-deps
+      - run:
+          name: Install Artillery
+          command: |
+            npm install -g artillery
+      - run:
+          name: Start Backend Server
+          command: |
+            cd backend
+            npm start &
+            sleep 10
+      - run:
+          name: Run Performance Tests
+          command: |
+            # Create performance test configuration
+            echo '{
+              "config": {
+                "target": "http://localhost:8080",
+                "phases": [
+                  {"duration": "30s", "arrivalRate": 5},
+                  {"duration": "1m", "arrivalRate": 10}
+                ]
+              },
+              "scenarios": [
+                {
+                  "name": "Health Check",
+                  "weight": 100,
+                  "flow": [
+                    {"get": {"url": "/api/health"}}
+                  ]
+                }
+              ]
+            }' > performance-test.json
+            artillery run performance-test.json --output performance-report.json || true
+      - store_artifacts:
+          path: performance-report.json
+
+  # Code Quality Enhancement with Coverage Thresholds
+  enhanced-code-quality:
+    docker:
+      - image: cimg/node:20.11
+    steps:
+      - checkout
+      - install-backend-deps
+      - install-frontend-deps
+      - run:
+          name: Enhanced Code Quality Analysis
+          command: |
+            echo "Running enhanced code quality checks..."
+            # Backend code quality
+            cd backend
+            npx eslint . --ext .js --format json --output-file eslint-backend.json || true
+            # Frontend code quality
+            cd ../frontend
+            npx eslint src --ext .js,.jsx --format json --output-file eslint-frontend.json || true
+      - run:
+          name: Coverage Threshold Check
+          command: |
+            cd frontend
+            # Set coverage thresholds
+            npm test -- --coverage --coverageThreshold.global.statements=70 --coverageThreshold.global.branches=60 --coverageThreshold.global.functions=70 --coverageThreshold.global.lines=70 --watchAll=false || true
+      - store_artifacts:
+          path: backend/eslint-backend.json
+      - store_artifacts:
+          path: frontend/eslint-frontend.json
+
+  # Frontend Performance Testing with Lighthouse CI
+  lighthouse-performance:
+    docker:
+      - image: cimg/node:20.11
+    steps:
+      - checkout
+      - install-frontend-deps
+      - run:
+          name: Install Lighthouse CI
+          command: |
+            npm install -g @lhci/cli
+      - run:
+          name: Build Frontend for Performance Testing
+          command: |
+            cd frontend
+            npm run build
+      - run:
+          name: Run Lighthouse Performance Tests
+          command: |
+            # Create Lighthouse CI configuration
+            echo '{
+              "ci": {
+                "collect": {
+                  "startServerCommand": "cd frontend && npx serve -s build -l 3000",
+                  "url": ["http://localhost:3000"],
+                  "numberOfRuns": 3
+                },
+                "assert": {
+                  "assertions": {
+                    "categories:performance": ["warn", {"minScore": 0.8}],
+                    "categories:accessibility": ["error", {"minScore": 0.9}],
+                    "categories:best-practices": ["warn", {"minScore": 0.8}],
+                    "categories:seo": ["warn", {"minScore": 0.8}]
+                  }
+                },
+                "upload": {
+                  "target": "temporary-public-storage"
+                }
+              }
+            }' > lighthouserc.json
+            lhci autorun || true
+      - store_artifacts:
+          path: lighthouserc.json
+
+  # Commit Message Linting and Changelog Generation
+  compliance-automation:
+    docker:
+      - image: cimg/node:20.11
+    steps:
+      - checkout
+      - run:
+          name: Install Commit Linting Tools
+          command: |
+            npm install -g @commitlint/cli @commitlint/config-conventional
+            npm install -g conventional-changelog-cli
+      - run:
+          name: Lint Commit Messages
+          command: |
+            # Create commitlint configuration
+            echo '{
+              "extends": ["@commitlint/config-conventional"],
+              "rules": {
+                "type-enum": [2, "always", ["feat", "fix", "docs", "style", "refactor", "perf", "test", "chore", "ci", "build", "revert"]],
+                "subject-case": [2, "never", ["sentence-case", "start-case", "pascal-case", "upper-case"]]
+              }
+            }' > commitlint.config.js
+            # Check last commit message
+            commitlint --from HEAD~1 --to HEAD --verbose || true
+      - run:
+          name: Generate Changelog
+          command: |
+            conventional-changelog -p angular -i CHANGELOG.md -s -r 0 || true
+      - store_artifacts:
+          path: CHANGELOG.md
+
 # Workflows define the order of jobs
 workflows:
   version: 2
   devsecops-pipeline:
     jobs:
-      # Security scans run first (fail fast)
+      # Advanced Security scans run first (fail fast)
       - security-scan-backend
       - security-scan-frontend
       - sast-scan
       - secrets-scan
+      - advanced-security-scan
       
       # Code quality checks
       - lint-backend:
@@ -276,6 +455,9 @@ workflows:
       - lint-frontend:
           requires:
             - security-scan-frontend
+      - enhanced-code-quality:
+          requires:
+            - sast-scan
       
       # Tests
       - test-backend:
@@ -287,6 +469,14 @@ workflows:
             - lint-frontend
             - sast-scan
       
+      # Performance Testing (runs in parallel with builds)
+      - performance-test:
+          requires:
+            - test-backend
+      - lighthouse-performance:
+          requires:
+            - test-frontend
+      
       # Builds (only if tests pass)
       - build-backend:
           requires:
@@ -295,8 +485,11 @@ workflows:
           requires:
             - test-frontend
       
-      # License checking (can run in parallel)
+      # Compliance and License checking (can run in parallel)
       - license-check:
           requires:
             - build-backend
             - build-frontend
+      - compliance-automation:
+          requires:
+            - enhanced-code-quality
