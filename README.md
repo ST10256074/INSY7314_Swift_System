@@ -51,51 +51,7 @@ The **Swift Payment System** is a comprehensive, enterprise-grade international 
 
 ### High-Level Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        CLIENT BROWSER                            │
-│                     (React 19 Frontend)                          │
-└────────────────┬────────────────────────────────────────────────┘
-                 │ HTTPS (Port 3001)
-                 │ JWT Token Authentication
-                 ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                     EXPRESS SERVER                               │
-│                   (Node.js Backend)                              │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
-│  │ Rate Limiting│  │ CORS Security│  │ Auth Middleware│         │
-│  └──────────────┘  └──────────────┘  └──────────────┘         │
-│  ┌──────────────────────────────────────────────────┐          │
-│  │          API Routes                               │          │
-│  │  • /user/signup      • /user/login               │          │
-│  │  • /payments/submit  • /payments/my-applications │          │
-│  └──────────────────────────────────────────────────┘          │
-└────────────────┬────────────────────────────────────────────────┘
-                 │ Encrypted Connection
-                 │ AES-256-GCM Encryption
-                 ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                   MONGODB ATLAS                                  │
-│  ┌──────────────────┐  ┌──────────────────────────────┐        │
-│  │  users           │  │  payment_applications        │        │
-│  │  - Encrypted PII │  │  - Encrypted payment data    │        │
-│  │  - Hashed passwords│  │  - Transaction history     │        │
-│  └──────────────────┘  └──────────────────────────────┘        │
-└─────────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────┐
-│                    CIRCLECI DEVSECOPS                            │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐       │
-│  │   Snyk   │  │TruffleHog│  │ Semgrep  │  │Artillery │       │
-│  └──────────┘  └──────────┘  └──────────┘  └──────────┘       │
-│  Security Scan  Secret Scan   SAST Scan    Performance         │
-│                                                                  │
-│  ┌──────────────────────────────────────────────────┐          │
-│  │  168 Automated Tests (100% Pass Rate)            │          │
-│  │  • 144 Backend Tests  • 24 Frontend Tests        │          │
-│  └──────────────────────────────────────────────────┘          │
-└─────────────────────────────────────────────────────────────────┘
-```
+![System Architecture](Images1/system_architecture.png)
 
 ### Technology Stack
 
