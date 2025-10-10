@@ -11,6 +11,8 @@ frontend/node_modules
 /coverage
 backend/coverage
 frontend/coverage
+backend/test-results
+frontend/test-results
 
 # production
 /build
