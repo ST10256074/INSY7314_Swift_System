@@ -50,7 +50,22 @@ export async function encrypt(text) {
 
 // Decryption function
 export async function decrypt(encryptedText) {
-    if (!encryptedText || !encryptedText.includes(':')) return encryptedText;
+    // Handle non-string inputs (Buffer, null, undefined, etc.)
+    if (!encryptedText) return encryptedText;
+    
+    // Convert Buffer to string if needed
+    if (Buffer.isBuffer(encryptedText)) {
+        encryptedText = encryptedText.toString('utf8');
+    } else if (typeof encryptedText !== 'string') {
+        // Convert other types to string, or return as-is if conversion fails
+        try {
+            encryptedText = String(encryptedText);
+        } catch (error) {
+            return encryptedText;
+        }
+    }
+    
+    if (!encryptedText.includes(':')) return encryptedText;
     try {
         const key = await deriveKey();
         const textParts = encryptedText.split(':');
