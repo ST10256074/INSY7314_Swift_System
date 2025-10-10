@@ -1103,7 +1103,7 @@ This project is developed for educational purposes as part of INSY7314 coursewor
 
 ---
 
-## 🔗 Resources
+## 🔗 References
 
 - [CircleCI Documentation](https://circleci.com/docs/)
 - [Snyk Security Scanner](https://snyk.io/)
@@ -1113,6 +1113,7 @@ This project is developed for educational purposes as part of INSY7314 coursewor
 - [Jest Testing Framework](https://jestjs.io/)
 - [Artillery Load Testing](https://artillery.io/)
 - [Lighthouse Performance](https://developers.google.com/web/tools/lighthouse)
+- [ChatGPT](https://chatgpt.com)
 
 ---
 
