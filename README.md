@@ -978,11 +978,6 @@ HTTP_PORT=8080
 
 **Generate SSL Certificates (for HTTPS)(Used in Backend and Frontend):**
 ```bash
-cd frontend
-mkdir keys
-openssl req -x509 -newkey rsa:4096 -keyout keys/privatekey.pem -out keys/certificate.pem -days 365 -nodes
-
-cd backend
 mkdir keys
 openssl req -x509 -newkey rsa:4096 -keyout keys/privatekey.pem -out keys/certificate.pem -days 365 -nodes
 ```
@@ -998,6 +993,17 @@ npm run dev
 cd frontend
 npm install
 ```
+
+**Create `.env` file:**
+```env
+HTTPS=true
+SSL_CRT_FILE=../frontend/keys/certificate.pem
+SSL_KEY_FILE=../frontend/keys/privatekey.pem
+```
+
+
+**Copy SSL Certificates (for HTTPS)(Used in Backend and Frontend):**
+Using the same certificates from earlier, create a keys folder in the frontend and store them there for https
 
 **Start Development Server:**
 ```bash
