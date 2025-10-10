@@ -7,6 +7,7 @@ import payments from "./routes/payments.js";
 import express from "express";
 import cors from "cors";
 import {execPath} from "process";
+import { rateLimit } from 'express-rate-limit';
 
 // Configure environment variables
 dotenv.config();
@@ -16,6 +17,21 @@ dotenv.config();
 const PORT = 8443;  
 const HTTP_PORT = 8080;  
 const app = express();
+
+// Rate limiting middleware
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: true,
+});
+app.use(limiter);
+
+//Prevent Clickjacking
+app.use((req, res, next) => {
+  res.setHeader('X-Frame-Options', 'DENY');
+  next();
+});
 
 const options = {
     key: fs.readFileSync('keys/privatekey.pem'),
@@ -45,28 +61,11 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//Test middleware
-// app.use((req,res,next) => {
-//     req.body.name = "Easy";
-//     req.body.password = "12345";
-//     next();
-// });
-
-// app.use((req,res,next) => {
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Headers", "*");
-//     res.header("Access-Control-Allow-Methods", "*");
-//     next();
-// });
-
 
 app.use("/user", users);
 app.route("/user", users);
 app.use("/payments", payments);
 app.route("/payments", payments);
-
-// let server = https.createServer(options, app);
-// console.log(PORT);
 
 
 app.get('/', (req, res) => {
@@ -92,18 +91,4 @@ https.createServer(options, app).listen(PORT, () => {
 http.createServer(app).listen(HTTP_PORT, () => {
     console.log(`HTTP Server running on port ${HTTP_PORT}`);
 });
-
-// app.listen(PORT, () => {
-//     console.log(`Server is running on port ${PORT}`);
-// });
-
-// app.use(express.urlencoded({ extended: true }));
-// app.use(express.json());
-
-// console.log("Server is running on port", PORT);
-
-// let server = https.createServer(options, app)
-// server.listen(PORT)
-// console.log(PORT);
-// server.listen(PORT);
 
