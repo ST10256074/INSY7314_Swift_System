@@ -173,9 +173,7 @@ jobs:
           command: |
             cd backend
             # Run our comprehensive test suite (encryption + server tests)
-            npm test
-      - store_test_results:
-          path: backend/coverage
+            npm run test:coverage
       - store_artifacts:
           path: backend/coverage
 
