@@ -1096,7 +1096,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 - **James** - MongoDB Setup, API & Backend Development
 - **Kevin** - UI/UX Design & Frontend Development
 
-**Institution:** INSY7314 - Secure Application Development  
+**Module:** INSY7314 - Secure Application Development  
 **Year:** 2025
 
 ---
