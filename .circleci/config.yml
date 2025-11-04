@@ -1,10 +1,10 @@
 version: 2.1
 
-# Orbs are reusable packages of CircleCI configuration
+# Orbs
 orbs:
   node: circleci/node@5.2.0
 
-# Define reusable commands
+# Definition of reusable commands
 commands:
   install-backend-deps:
     description: "Install backend dependencies with caching"
@@ -180,6 +180,10 @@ jobs:
           path: backend/coverage
       - store_artifacts:
           path: backend/test-results
+      - persist_to_workspace:
+          root: backend
+          paths:
+            - coverage
 
   test-frontend:
     docker:
@@ -203,6 +207,10 @@ jobs:
           path: frontend/test-results
       - store_artifacts:
           path: frontend/coverage
+      - persist_to_workspace:
+          root: frontend
+          paths:
+            - coverage
 
   # Build
   build-backend:
@@ -301,7 +309,7 @@ jobs:
               exit 1
             fi
 
-  # Performance Testing - FIXED: Use local installation
+# Performance Testing
   performance-test:
     docker:
       - image: cimg/node:20.11
@@ -384,7 +392,7 @@ jobs:
       - store_artifacts:
           path: frontend/eslint-frontend.json
 
-  # Frontend Performance Testing with Lighthouse CI - FIXED: Use local installation
+  # Frontend Performance Testing with Lighthouse CI
   lighthouse-performance:
     docker:
       - image: cimg/node:20.11
@@ -430,7 +438,7 @@ jobs:
       - store_artifacts:
           path: lighthouserc.json
 
-  # Commit Message Linting and Changelog Generation - FIXED: Use local installation
+  # Commit Message Linting and Changelog Generation
   compliance-automation:
     docker:
       - image: cimg/node:20.11
@@ -462,6 +470,44 @@ jobs:
             npx conventional-changelog -p angular -i CHANGELOG.md -s -r 0 || true
       - store_artifacts:
           path: CHANGELOG.md
+
+# SonarQube Code Quality Analysis
+  sonarqube-scan:
+    docker:
+      - image: sonarsource/sonar-scanner-cli:latest
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run SonarQube Scan
+          command: |
+            SCANNER_CMD="sonar-scanner \
+              -Dsonar.host.url=https://sonarcloud.io \
+              -Dsonar.login=${SONAR_TOKEN} \
+              -Dsonar.organization=${SONAR_ORGANIZATION} \
+              -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+              -Dsonar.sources=backend,frontend/src \
+              -Dsonar.exclusions=**/node_modules/**,**/coverage/**,**/build/**,**/*.test.js,**/*.test.jsx \
+              -Dsonar.sourceEncoding=UTF-8 \
+              -Dsonar.javascript.file.suffixes=.js,.jsx"
+            
+            if [ -f "backend/coverage/lcov.info" ] && [ -f "frontend/coverage/lcov.info" ]; then
+              SCANNER_CMD="$SCANNER_CMD -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info,frontend/coverage/lcov.info"
+              echo "Including both backend and frontend coverage"
+            elif [ -f "backend/coverage/lcov.info" ]; then
+              SCANNER_CMD="$SCANNER_CMD -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info"
+              echo "Including backend coverage only"
+            elif [ -f "frontend/coverage/lcov.info" ]; then
+              SCANNER_CMD="$SCANNER_CMD -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info"
+              echo "Including frontend coverage only"
+            else
+              echo "No coverage files found, proceeding without coverage"
+            fi
+            
+            eval $SCANNER_CMD
+      - store_artifacts:
+          path: .scannerwork
 
 # Workflows define the order of jobs
 workflows:
@@ -496,7 +542,7 @@ workflows:
             - lint-frontend
             - sast-scan
       
-      # Performance Testing (runs in parallel with builds)
+      # Performance Testing 
       - performance-test:
           requires:
             - test-backend
@@ -510,6 +556,12 @@ workflows:
             - test-backend
       - build-frontend:
           requires:
+            - test-frontend
+      
+      # SonarQube Code Quality Analysis (runs after tests to use coverage data)
+      - sonarqube-scan:
+          requires:
+            - test-backend
             - test-frontend
       
       # Compliance and License checking (can run in parallel)
