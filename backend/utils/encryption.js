@@ -19,7 +19,11 @@ function deriveKey() {
 
 // Encryption function
 export async function encrypt(text) {
-    if (!text) return text;
+    // Handle null, undefined, or non-string values
+    if (!text || typeof text !== 'string') {
+        return text;
+    }
+    
     try {
         const key = await deriveKey();
         
@@ -50,7 +54,16 @@ export async function encrypt(text) {
 
 // Decryption function
 export async function decrypt(encryptedText) {
-    if (!encryptedText || !encryptedText.includes(':')) return encryptedText;
+    // Handle null, undefined, or non-string values
+    if (!encryptedText || typeof encryptedText !== 'string') {
+        return encryptedText;
+    }
+    
+    // Check if the encrypted text has the expected format (IV:encryptedData)
+    if (!encryptedText.includes(':')) {
+        return encryptedText;
+    }
+    
     try {
         const key = await deriveKey();
         const textParts = encryptedText.split(':');

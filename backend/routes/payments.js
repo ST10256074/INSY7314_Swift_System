@@ -120,15 +120,30 @@ router.get('/all', async (req, res) => {
 
         // Decrypt sensitive data for response
         const decryptedApplications = await Promise.all(applications.map(async (app) => {
-            return {
-                ...app,
-                recipientName: await decrypt(app.recipientName),
-                accountNumber: await decrypt(app.accountNumber),
-                swiftCode: await decrypt(app.swiftCode),
-                amount: parseFloat(await decrypt(app.amount)),
-                currency: await decrypt(app.currency),
-                paymentProvider: await decrypt(app.paymentProvider)
-            };
+            try {
+                const decryptedAmount = await decrypt(app.amount);
+                return {
+                    ...app,
+                    recipientName: await decrypt(app.recipientName) || 'Unknown Recipient',
+                    accountNumber: await decrypt(app.accountNumber) || 'Unknown Account',
+                    swiftCode: await decrypt(app.swiftCode) || 'Unknown SWIFT',
+                    amount: decryptedAmount ? parseFloat(decryptedAmount) : 0,
+                    currency: await decrypt(app.currency) || 'USD',
+                    paymentProvider: await decrypt(app.paymentProvider) || 'Unknown Provider'
+                };
+            } catch (error) {
+                console.error(`Error decrypting application ${app._id}:`, error);
+                // Return the application with default values if decryption fails
+                return {
+                    ...app,
+                    recipientName: 'Decryption Error',
+                    accountNumber: 'Decryption Error',
+                    swiftCode: 'Decryption Error',
+                    amount: 0,
+                    currency: 'USD',
+                    paymentProvider: 'Decryption Error'
+                };
+            }
         }));
 
         res.status(200).json({ 
@@ -156,15 +171,29 @@ router.get('/my-applications', async (req, res) => {
 
         // Decrypt sensitive data for response
         const decryptedApplications = await Promise.all(applications.map(async (app) => {
-            return {
-                ...app,
-                recipientName: await decrypt(app.recipientName),
-                accountNumber: await decrypt(app.accountNumber),
-                swiftCode: await decrypt(app.swiftCode),
-                amount: parseFloat(await decrypt(app.amount)),
-                currency: await decrypt(app.currency),
-                paymentProvider: await decrypt(app.paymentProvider)
-            };
+            try {
+                const decryptedAmount = await decrypt(app.amount);
+                return {
+                    ...app,
+                    recipientName: await decrypt(app.recipientName) || 'Unknown Recipient',
+                    accountNumber: await decrypt(app.accountNumber) || 'Unknown Account',
+                    swiftCode: await decrypt(app.swiftCode) || 'Unknown SWIFT',
+                    amount: decryptedAmount ? parseFloat(decryptedAmount) : 0,
+                    currency: await decrypt(app.currency) || 'USD',
+                    paymentProvider: await decrypt(app.paymentProvider) || 'Unknown Provider'
+                };
+            } catch (error) {
+                console.error(`Error decrypting application ${app._id}:`, error);
+                return {
+                    ...app,
+                    recipientName: 'Decryption Error',
+                    accountNumber: 'Decryption Error',
+                    swiftCode: 'Decryption Error',
+                    amount: 0,
+                    currency: 'USD',
+                    paymentProvider: 'Decryption Error'
+                };
+            }
         }));
 
         res.status(200).json({ 
@@ -199,15 +228,30 @@ router.get('/:id', async (req, res) => {
         }
 
         // Decrypt sensitive data for response
-        const decryptedApplication = {
-            ...application,
-            recipientName: await decrypt(application.recipientName),
-            accountNumber: await decrypt(application.accountNumber),
-            swiftCode: await decrypt(application.swiftCode),
-            amount: parseFloat(await decrypt(application.amount)),
-            currency: await decrypt(application.currency),
-            paymentProvider: await decrypt(application.paymentProvider)
-        };
+        let decryptedApplication;
+        try {
+            const decryptedAmount = await decrypt(application.amount);
+            decryptedApplication = {
+                ...application,
+                recipientName: await decrypt(application.recipientName) || 'Unknown Recipient',
+                accountNumber: await decrypt(application.accountNumber) || 'Unknown Account',
+                swiftCode: await decrypt(application.swiftCode) || 'Unknown SWIFT',
+                amount: decryptedAmount ? parseFloat(decryptedAmount) : 0,
+                currency: await decrypt(application.currency) || 'USD',
+                paymentProvider: await decrypt(application.paymentProvider) || 'Unknown Provider'
+            };
+        } catch (error) {
+            console.error(`Error decrypting application ${application._id}:`, error);
+            decryptedApplication = {
+                ...application,
+                recipientName: 'Decryption Error',
+                accountNumber: 'Decryption Error',
+                swiftCode: 'Decryption Error',
+                amount: 0,
+                currency: 'USD',
+                paymentProvider: 'Decryption Error'
+            };
+        }
 
         res.status(200).json({ 
             message: 'Payment application retrieved successfully',
@@ -275,15 +319,30 @@ router.patch('/review/:id', async (req, res) => {
         let updatedApplication = await collection.findOne({ _id: new ObjectId(id) });
 
         // Decrypt sensitive data for response
-        const decryptedApplication = {
-            ...updatedApplication,
-            recipientName: await decrypt(updatedApplication.recipientName),
-            accountNumber: await decrypt(updatedApplication.accountNumber),
-            swiftCode: await decrypt(updatedApplication.swiftCode),
-            amount: parseFloat(await decrypt(updatedApplication.amount)),
-            currency: await decrypt(updatedApplication.currency),
-            paymentProvider: await decrypt(updatedApplication.paymentProvider)
-        };
+        let decryptedApplication;
+        try {
+            const decryptedAmount = await decrypt(updatedApplication.amount);
+            decryptedApplication = {
+                ...updatedApplication,
+                recipientName: await decrypt(updatedApplication.recipientName) || 'Unknown Recipient',
+                accountNumber: await decrypt(updatedApplication.accountNumber) || 'Unknown Account',
+                swiftCode: await decrypt(updatedApplication.swiftCode) || 'Unknown SWIFT',
+                amount: decryptedAmount ? parseFloat(decryptedAmount) : 0,
+                currency: await decrypt(updatedApplication.currency) || 'USD',
+                paymentProvider: await decrypt(updatedApplication.paymentProvider) || 'Unknown Provider'
+            };
+        } catch (error) {
+            console.error(`Error decrypting updated application ${updatedApplication._id}:`, error);
+            decryptedApplication = {
+                ...updatedApplication,
+                recipientName: 'Decryption Error',
+                accountNumber: 'Decryption Error',
+                swiftCode: 'Decryption Error',
+                amount: 0,
+                currency: 'USD',
+                paymentProvider: 'Decryption Error'
+            };
+        }
 
         res.status(200).json({ 
             message: `Payment application ${status} successfully`,
@@ -314,15 +373,29 @@ router.get('/status/:status', async (req, res) => {
 
         // Decrypt sensitive data for response
         const decryptedApplications = await Promise.all(applications.map(async (app) => {
-            return {
-                ...app,
-                recipientName: await decrypt(app.recipientName),
-                accountNumber: await decrypt(app.accountNumber),
-                swiftCode: await decrypt(app.swiftCode),
-                amount: parseFloat(await decrypt(app.amount)),
-                currency: await decrypt(app.currency),
-                paymentProvider: await decrypt(app.paymentProvider)
-            };
+            try {
+                const decryptedAmount = await decrypt(app.amount);
+                return {
+                    ...app,
+                    recipientName: await decrypt(app.recipientName) || 'Unknown Recipient',
+                    accountNumber: await decrypt(app.accountNumber) || 'Unknown Account',
+                    swiftCode: await decrypt(app.swiftCode) || 'Unknown SWIFT',
+                    amount: decryptedAmount ? parseFloat(decryptedAmount) : 0,
+                    currency: await decrypt(app.currency) || 'USD',
+                    paymentProvider: await decrypt(app.paymentProvider) || 'Unknown Provider'
+                };
+            } catch (error) {
+                console.error(`Error decrypting application ${app._id}:`, error);
+                return {
+                    ...app,
+                    recipientName: 'Decryption Error',
+                    accountNumber: 'Decryption Error',
+                    swiftCode: 'Decryption Error',
+                    amount: 0,
+                    currency: 'USD',
+                    paymentProvider: 'Decryption Error'
+                };
+            }
         }));
 
         res.status(200).json({ 
