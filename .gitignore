@@ -9,6 +9,10 @@ frontend/node_modules
 
 # testing
 /coverage
+backend/coverage
+frontend/coverage
+backend/test-results
+frontend/test-results
 
 # production
 /build

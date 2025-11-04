@@ -4,832 +4,1156 @@
 
 ![Swift Payment System](Images1/swift_home.png)
 
-**A secure, enterprise-grade payment processing application with comprehensive DevSecOps pipeline**
+**A secure, enterprise-grade international payment processing application with comprehensive DevSecOps pipeline**
 
 [![CircleCI](https://img.shields.io/badge/CircleCI-DevSecOps-blue?style=for-the-badge&logo=circleci)](https://circleci.com)
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green?style=for-the-badge&logo=node.js)](https://nodejs.org)
-[![React](https://img.shields.io/badge/React-18+-blue?style=for-the-badge&logo=react)](https://reactjs.org)
-[![MongoDB](https://img.shields.io/badge/MongoDB-Database-green?style=for-the-badge&logo=mongodb)](https://mongodb.com)
-[![Security](https://img.shields.io/badge/Security-Enterprise-red?style=for-the-badge&logo=security)](SECURITY.md)
+[![Node.js](https://img.shields.io/badge/Node.js-20+-green?style=for-the-badge&logo=node.js)](https://nodejs.org)
+[![React](https://img.shields.io/badge/React-19+-blue?style=for-the-badge&logo=react)](https://reactjs.org)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green?style=for-the-badge&logo=mongodb)](https://mongodb.com)
+[![Tests](https://img.shields.io/badge/Tests-168%20Passing-success?style=for-the-badge&logo=jest)](https://jestjs.io)
+[![Security](https://img.shields.io/badge/Security-Enterprise-red?style=for-the-badge&logo=security)](#security--devsecops)
 
 </div>
 
+---
+
 ## 📋 Table of Contents
 
-- [Overview](#overview)
-- [Features](#features)
-- [Architecture](#architecture)
-- [Security & DevSecOps](#security--devsecops)
-- [Database Schema](#database-schema)
-- [API Documentation](#api-documentation)
-- [Installation & Setup](#installation--setup)
-- [Usage](#usage)
-- [Development](#development)
-- [Testing](#testing)
-- [Deployment](#deployment)
-- [Contributing](#contributing)
-- [License](#license)
+- [Overview](#-overview)
+- [System Architecture](#-system-architecture)
+- [User Interface](#-user-interface)
+- [Backend & API](#-backend--api)
+- [Database Schema](#-database-schema)
+- [Security Implementation](#-security-implementation)
+- [DevSecOps Pipeline](#-devsecops-pipeline)
+- [Testing Suite](#-testing-suite)
+- [Installation & Setup](#-installation--setup)
+- [Authors](#-authors)
+
+---
 
 ## 🎯 Overview
 
-The **Swift Payment System** is a comprehensive, enterprise-grade payment processing application designed for financial institutions and businesses requiring secure, efficient payment management. Built with modern web technologies and fortified with advanced security measures, it provides a robust platform for handling payment applications, user authentication, and transaction management.
+The **Swift Payment System** is a comprehensive, enterprise-grade international payment processing application designed for financial institutions and businesses requiring secure, efficient payment management. Built with modern web technologies and fortified with advanced security measures, it provides a robust platform for handling payment applications, user authentication, and transaction management.
+
+## Youtube Link
+
+https://www.youtube.com/watch?v=D1dcny9Nhz0
 
 ### Key Highlights
 
-- **🔐 Enterprise Security**: JWT authentication, role-based access control, and comprehensive security scanning
-- **⚡ Modern Stack**: React 18+ frontend, Node.js/Express backend, MongoDB database
-- **🛡️ DevSecOps Pipeline**: Automated security scanning, code quality checks, and continuous integration
-- **👥 Multi-Role System**: Separate interfaces for clients and employees with distinct permissions
-- **📊 Real-time Monitoring**: Transaction tracking, status updates, and comprehensive logging
+- 🔐 **Enterprise Security**: AES-192-CBC encryption, bcrypt password hashing, JWT authentication
+- 🛡️ **DevSecOps Pipeline**: 168 automated tests, 4 security scanning tools, performance monitoring
+- ⚡ **Modern Stack**: React 19+ frontend, Node.js/Express backend, MongoDB Atlas database
+- 👥 **Multi-Role System**: Separate interfaces for clients and employees
+- 📊 **Real-time Monitoring**: Transaction tracking, status updates, comprehensive logging
+- 🧪 **Comprehensive Testing**: 37 security tests, 85% code coverage on critical components
 
-![Application Overview](Images1/swift_home.png)
+---
 
-## ✨ Features
+## 🏗️ System Architecture
 
-### 🔑 Authentication & Authorization
-- **Secure Login System**: JWT-based authentication with bcrypt password hashing
-- **Role-Based Access Control**: Separate user types (Client/Employee) with appropriate permissions
-- **Session Management**: Secure token storage and automatic session handling
-- **Logout Confirmation**: User-friendly logout process with confirmation modal
+### High-Level Architecture
 
-![Authentication Flow](Images1/Login.png)
-
-### 💳 Payment Processing
-- **Payment Applications**: Comprehensive form for submitting payment requests
-- **Multi-Currency Support**: Support for various currencies and payment providers
-- **SWIFT Integration**: International payment processing with SWIFT codes
-- **Status Tracking**: Real-time payment status updates (Pending/Approved/Rejected)
-
-![Payment Interface](Images1/paymentswift.png)
-
-### 📊 Transaction Management
-- **Transaction History**: Complete transaction history for authenticated users
-- **Filtering & Search**: Advanced filtering by status, date, and amount
-- **Real-time Updates**: Live status updates and transaction notifications
-- **Export Capabilities**: Transaction data export for reporting
-
-![Transaction Dashboard](Images1/Transactions.png)
-
-### 🛡️ Security Features
-- **Input Validation**: Comprehensive server-side and client-side validation
-- **SQL Injection Prevention**: Parameterized queries and input sanitization
-- **XSS Protection**: Content Security Policy and input encoding
-- **CORS Configuration**: Proper cross-origin resource sharing setup
-- **Rate Limiting**: Protection against brute force attacks
-
-## 🏗️ Architecture
-
-### System Architecture
-
-![System Architecture Diagram](Images1/paymentswift.png)
-
-The Swift Payment System follows a comprehensive security-focused architecture with distinct layers:
-
-**Client Side (Blue):** User interface for payment transactions, authentication, and transaction management.
-
-**Employee Side (Orange):** Administrative interface for transaction approval, user management, and system oversight.
-
-**Database Layer (Green):** Secure data storage with encryption, hashed passwords, parameterized queries, and input sanitization.
-
-**SWIFT Layer (Red):** International payment processing with encryption, authentication, access control, and validation.
-
-**Security Considerations:** The system addresses multiple attack vectors including SQL injection, DDoS, session jacking, clickjacking, and man-in-the-middle attacks through comprehensive security measures across all layers.
-
-### Security Framework Implementation
-
-The Swift Payment System implements a multi-layered security framework based on industry best practices:
-
-#### **Authentication & Authorization Layer**
-- **JWT Token Management**: Secure token generation, validation, and expiration
-- **Role-Based Access Control**: Separate permissions for clients and employees
-- **Password Security**: bcrypt hashing with salt rounds for secure password storage
-- **Session Management**: Automatic token refresh and secure logout procedures
-
-#### **Data Protection Layer**
-- **Encryption at Rest**: AES-192-CBC encryption for sensitive payment data
-- **Encryption in Transit**: HTTPS/TLS for all communications
-- **Key Management**: Secure key derivation using scrypt algorithm
-- **Data Sanitization**: Input validation and sanitization across all endpoints
-
-#### **Network Security Layer**
-- **CORS Protection**: Configured cross-origin resource sharing policies
-- **Rate Limiting**: Protection against brute force and DDoS attacks
-- **Security Headers**: Helmet.js implementation for comprehensive header protection
-- **Input Validation**: Express-validator for preventing injection attacks
-
-#### **Database Security Layer**
-- **NoSQL Injection Prevention**: Parameterized queries and input sanitization
-- **Connection Security**: Encrypted connections to MongoDB Atlas
-- **Access Control**: Database-level authentication and authorization
-- **Audit Logging**: Comprehensive logging of all database operations
+![System Architecture](Images1/system_architecture.png)
 
 ### Technology Stack
 
-| Component | Technology | Version | Security Features |
-|-----------|------------|---------|-------------------|
-| **Frontend** | React | 18+ | XSS protection, CSRF tokens, Content Security Policy |
-| **Backend** | Node.js | 18+ | Secure runtime environment, memory protection |
-| **Framework** | Express.js | 5+ | Helmet.js security headers, rate limiting |
-| **Database** | MongoDB Atlas | 6+ | Encryption at rest, network isolation, authentication |
-| **Authentication** | JWT + bcrypt | 9+ | Token-based auth, password hashing with salt |
-| **Encryption** | Node.js Crypto | Built-in | AES-192-CBC encryption, scrypt key derivation |
-| **Validation** | Express Validator | Latest | Input sanitization, SQL injection prevention |
-| **CORS** | cors | 2.8+ | Cross-origin request protection |
-| **Styling** | CSS3 | Latest | Responsive design and UI |
-| **CI/CD** | CircleCI | Latest | Automated security scanning, dependency auditing |
-
-### Security NPM Packages
-
-| Package | Purpose | Security Against |
-|---------|---------|------------------|
-| **bcrypt** | Password hashing | Brute force attacks, rainbow table attacks |
-| **jsonwebtoken** | JWT authentication | Session hijacking, unauthorized access |
-| **helmet** | Security headers | XSS, clickjacking, MIME sniffing |
-| **express-rate-limit** | Rate limiting | DDoS attacks, brute force attempts |
-| **cors** | CORS configuration | Cross-origin attacks, unauthorized domains |
-| **express-validator** | Input validation | SQL injection, XSS, data corruption |
-| **dotenv** | Environment variables | Credential exposure, configuration leaks |
-| **mongodb** | Database driver | NoSQL injection, connection hijacking |
-| **crypto** | Built-in encryption | Data interception, man-in-the-middle attacks |
-
-## 🛡️ Security & DevSecOps
-
-### Security Measures
-
-Our application implements multiple layers of security to ensure data protection and system integrity:
-
-#### 🔐 Authentication Security
-
-**JWT Token Implementation:**
-- **Secure Generation**: Tokens signed with HMAC-SHA256 using secret key
-- **Expiration Management**: 24-hour token lifetime with automatic refresh
-- **Stateless Design**: No server-side session storage for scalability
-- **Token Validation**: Middleware verification on protected routes
-
-**Password Security:**
-- **bcrypt Hashing**: Cost factor 10 for optimal security/performance balance
-- **Salt Generation**: Unique salt per password prevents rainbow table attacks
-- **Password Strength**: Client-side validation for complexity requirements
-- **Secure Storage**: Passwords never stored in plain text
-
-**Session Management:**
-- **Automatic Logout**: 24-hour inactivity timeout
-- **Secure Logout**: Token invalidation and localStorage cleanup
-- **Multi-Device Support**: Independent sessions per device
-- **Session Monitoring**: Failed login attempt tracking
-
-#### 🛡️ Data Protection & Encryption
-
-**Field-Level Encryption:**
-- **AES-192-CBC Algorithm**: Military-grade encryption for sensitive data
-- **Encrypted Fields**: Full names, ID numbers, account numbers, payment amounts
-- **Key Management**: Environment-based encryption key storage
-- **Data Integrity**: Cryptographic verification of encrypted data
-
-**Database Security:**
-- **MongoDB Atlas**: Cloud-hosted with built-in security features
-- **TLS Connections**: Encrypted database connections (TLS 1.2+)
-- **Access Control**: Database-level authentication and authorization
-- **Audit Logging**: Complete audit trail of all database operations
-
-#### 🛡️ Application Security
-
-**Input Validation & Sanitization:**
-- **Server-Side Validation**: Express-validator for comprehensive input checking
-- **Client-Side Validation**: React form validation for user experience
-- **SQL Injection Prevention**: Parameterized queries and input sanitization
-- **XSS Protection**: Content Security Policy and output encoding
-
-**Network Security:**
-- **CORS Configuration**: Controlled cross-origin resource sharing
-- **Rate Limiting**: API endpoint protection against abuse
-- **HTTPS Enforcement**: Secure communication protocols
-- **Security Headers**: Helmet.js for comprehensive header protection
-
-**Error Handling:**
-- **Secure Error Messages**: No sensitive information in error responses
-- **Logging**: Comprehensive error logging without data exposure
-- **Graceful Degradation**: System continues functioning during errors
-
-#### 🔍 Automated Security Scanning
-
-CircleCI pipeline provides continuous security monitoring:
-
-![DevSecOps Successful Pipeline](Images1/circle_ci_successful_test.png)
-
-**Security Checks:**
-- **Dependency Scanning**: npm audit for known vulnerabilities
-- **Code Analysis**: ESLint security plugin for code-level issues
-- **Secrets Detection**: Prevents accidental credential commits
-- **License Compliance**: Open source license validation
-
-### Security Packages & Implementation
-
-| Package | Purpose | Security Feature |
-|---------|---------|------------------|
-| **bcrypt** | Password Hashing | Secure password storage with salt rounds |
-| **jsonwebtoken** | JWT Authentication | Stateless authentication tokens |
-| **crypto** | Data Encryption | AES-192-CBC field-level encryption |
-| **helmet** | Security Headers | HTTP security headers protection |
-| **express-rate-limit** | Rate Limiting | API endpoint abuse prevention |
-| **express-validator** | Input Validation | Server-side input sanitization |
-| **cors** | CORS Protection | Cross-origin request control |
-
-**Real Implementation Examples:**
-
-```javascript
-// Password Hashing (bcrypt)
-const hashedPassword = await bcrypt.hash(password, 10);
-
-// JWT Token Generation
-const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
-
-// Field-Level Encryption (AES-192-CBC)
-const encryptedData = encrypt(fullName, process.env.ENCRYPTION_KEY);
-
-// Input Validation
-const { body, validationResult } = require('express-validator');
-const validateInput = [body('email').isEmail().normalizeEmail()];
-```
-
-Building:
-  - Backend Syntax Validation
-  - Frontend Production Build
-  - Artifact Generation
-```
-
-![CircleCI Dashboard](Images1/circle_ci_dahsboard.png)
-
-## 🗄️ Database Architecture & MongoDB Implementation
-
-### Database Overview
-
-The Swift Payment System uses **MongoDB Atlas** as its primary database, providing a robust, scalable, and secure document-based storage solution. The database is designed with security, performance, and data integrity as core principles.
-
-![MongoDB Atlas Overview](Images1/MongoDB_dahsboard.jpeg)
-
-#### **Database Configuration**
-- **Platform**: MongoDB Atlas (Cloud-hosted)
-- **Cluster**: hartsCluster
-- **Database Name**: `users`
-- **Data Size**: 74.13 KB (current usage)
-- **Collections**: 2 (users, payment_applications)
-- **Connection**: Secure connection string with authentication
-- **Encryption**: Encryption at rest and in transit
-- **Backup**: Automated daily backups with point-in-time recovery
-- **Monitoring**: Real-time performance monitoring and alerts
-
-### Database Collections
-
-#### **1. Users Collection (`users`)**
-
-The users collection stores all user account information with comprehensive security measures and field-level encryption:
-
-![MongoDB Users Collection](Images1/User.jpeg)
-
-**Real Implementation Example:**
-```javascript
-{
-  _id: ObjectId("68e78255dba82da91175cb33"),    // Unique document identifier
-  username: "888James",                         // Unique username (indexed)
-  full_name: "58351fcb8e27a6c743b1acle7483901:76697200247a9bc5df258f1d22de54ef", // Encrypted full name
-  accountNumber: "aa5a8748a4440e9cd1c870940e327a51:d98ed41203045ebbf7ed62ddcbacfdca", // Encrypted account number
-  IDNumber: "f6deba474e0a6001f3bc7d57844ef722:56532616309841ed2a6cba439a6bf803", // Encrypted ID number
-  password: "$2b$10$uZJ69Vtu/3Gb90g7INDty0gVwxMdOcitowzol/iondK16avh5MXti", // bcrypt hashed password
-  userType: "User"                             // "User" (Client) or "Employee"
-}
-```
-
-**Security Features Implemented:**
-- **Field-Level Encryption**: Sensitive fields (full_name, accountNumber, IDNumber) are encrypted using AES-192-CBC
-- **Password Hashing**: bcrypt with salt rounds for secure password storage
-- **Unique Constraints**: username and accountNumber are unique across the collection
-
-**Indexes:**
-- `username` (Unique)
-- `email` (Unique)
-- `accountNumber` (Unique)
-- `userType`
-- `createdAt`
-
-#### **2. Payment Applications Collection (`payment_applications`)**
-
-Stores all payment transaction data with comprehensive audit trails and field-level encryption:
-
-![MongoDB Payment Applications Collection](Images1/Payment.jpeg)
-
-**Real Implementation Example:**
-```javascript
-{
-  _id: ObjectId("68e78d77c2aba86fbf30660e"),
-  submittedBy: "68e78255dba82da91175cb33",           // Reference to User._id
-  recipientName: "aa602cb8377b13181bf19197e697d3a8:5dcb2708d02fa9b094600bca83411fef", // Encrypted recipient name
-  accountNumber: "07a7c6361c2177d7194b2e542188dabc:ea662c961365f12600eca27d037e483b", // Encrypted account number
-  swiftCode: "cdaf082deb3a60652d886f424ec6473c:384e6f77bf4ef895f6b2d8ab1a91d979", // Encrypted SWIFT code
-  amount: "5280eb837d704fa6b08c97ce4e6acbfd:4c8874f046c680a44886de90fdab9916", // Encrypted amount
-  currency: "5a713554b32835baed5e5a40fb8fa87a:537b2617c5376fb5e90924e446c4b5e4", // Encrypted currency
-  paymentProvider: "2ea51e514b4600a4ca8bcf1d932a3e93:a60ae7c7354c53aaa1cdc0bf7d597b23", // Encrypted provider
-  status: "pending",                                 // "Pending", "Approved", "Rejected"
-  submittedAt: "2025-10-09T10:24:55.030+00:00",     // Submission timestamp
-  submittedByName: null,                             // Employee name (if applicable)
-  reviewedAt: null,                                  // Review timestamp
-  reviewedBy: null,                                  // Employee who reviewed
-  reviewerName: null,                                // Reviewer name
-  reviewComments: null                               // Employee review comments
-}
-```
-
-**Security Features Implemented:**
-- **Field-Level Encryption**: All sensitive payment data is encrypted using AES-192-CBC encryption
-- **Data Integrity**: Complete audit trail with timestamps and user references
-- **Status Tracking**: Comprehensive status management for payment workflow
-
-**Indexes:**
-- `submittedBy`
-- `status`
-- `submittedAt` (Descending)
-- `reviewedBy`
-- `recipientAccountNumber`
-- `swiftCode`
-
-#### **3. Audit Logs Collection (`audit_logs`)**
-
-Comprehensive logging for security and compliance:
-
-```javascript
-{
-  _id: ObjectId("507f1f77bcf86cd799439014"),
-  userId: ObjectId("507f1f77bcf86cd799439011"),
-  action: "login",
-  timestamp: ISODate("2024-01-20T14:22:00Z"),
-  ipAddress: "192.168.1.100",
-  userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-  sessionId: "sess_abc123def456",
-  details: {
-    success: true,
-    loginMethod: "password",
-    location: "New York, NY, USA"
-  },
-  riskScore: 1.2,
-  flagged: false
-}
-```
-
-### Database Security Implementation
-
-#### **1. Authentication & Authorization**
-- **Database User Authentication**: Separate database users with minimal required permissions
-- **Role-Based Access**: Different access levels for application, admin, and read-only users
-- **IP Whitelisting**: Restricted access to specific IP addresses
-- **Network Security**: VPC peering and private endpoints
-
-#### **2. Data Encryption**
-- **Encryption at Rest**: AES-256 encryption for all stored data
-- **Encryption in Transit**: TLS 1.2+ for all database connections
-- **Field-Level Encryption**: Sensitive fields encrypted with application-level keys
-- **Key Management**: Secure key rotation and management
-
-#### **3. Data Validation & Integrity**
-- **Schema Validation**: MongoDB schema validation rules
-- **Data Type Enforcement**: Strict data type checking
-- **Referential Integrity**: Application-level foreign key constraints
-- **Data Sanitization**: Input validation and sanitization
-
-#### **4. Backup & Recovery**
-- **Automated Backups**: Daily automated backups with 30-day retention
-- **Point-in-Time Recovery**: Restore to any point within backup retention period
-- **Cross-Region Replication**: Data replicated across multiple regions
-- **Disaster Recovery**: Comprehensive disaster recovery procedures
-
-### Database Performance & Monitoring
-
-#### **Performance Optimization**
-- **Indexing Strategy**: Optimized indexes for query performance
-- **Query Optimization**: Efficient query patterns and aggregation pipelines
-- **Connection Pooling**: Optimized connection pool management
-- **Caching**: Application-level caching for frequently accessed data
-
-#### **Monitoring & Alerting**
-- **Performance Metrics**: Real-time database performance monitoring
-- **Query Analysis**: Slow query identification and optimization
-- **Resource Usage**: CPU, memory, and storage monitoring
-- **Alert System**: Automated alerts for performance issues
-
-### Database Relationships & Data Flow
-
-![MongoDB Collections Overview](Images1/Mongodb.jpeg)
-
-**Database Statistics:**
-- **Database**: users
-- **Collections**: 2
-- **Storage Size**: 36KB
-- **Logical Data Size**: 672B
-- **Total Documents**: 1 payment application
-- **Indexes Total Size**: 36KB
-
-#### **Relationship Mapping**
-- **One-to-Many**: Users → Payment Applications (one user can have multiple payments)
-- **One-to-Many**: Users → Audit Logs (one user can have multiple log entries)
-- **Many-to-One**: Payment Applications → Users (many payments belong to one user)
-- **Many-to-One**: Payment Applications → Users (many payments reviewed by one employee)
-
-#### **Data Flow Architecture**
-1. **User Registration**: Creates user document in `users` collection
-2. **Payment Submission**: Creates payment document with user reference
-3. **Employee Review**: Updates payment status and adds review information
-4. **Audit Logging**: Records all actions in `audit_logs` collection
-5. **Data Retrieval**: Optimized queries with proper indexing
-
-### Database Connection & Configuration
-
-#### **Connection String Format**
-```
-mongodb+srv://username:password@cluster.mongodb.net/database?retryWrites=true&w=majority&appName=ClusterName
-```
-
-#### **Connection Options**
-- **Retry Writes**: Automatic retry for write operations
-- **Write Concern**: Majority write concern for data durability
-- **Read Preference**: Primary read preference for consistency
-- **Connection Timeout**: 30-second connection timeout
-- **Socket Timeout**: 60-second socket timeout
-
-#### **Environment Configuration**
-```env
-ATLAS_URI=mongodb+srv://username:password@cluster.mongodb.net/users?retryWrites=true&w=majority&appName=ClusterName
-DB_NAME=users
-CONNECTION_POOL_SIZE=10
-MAX_IDLE_TIME=30000
-```
-
-## 📡 API Documentation
+**Frontend:**
+- React 19.1.0
+- React Router DOM 7.9.3
+- Context API for state management
+- Custom authentication context
+- HTTPS/SSL support
+
+**Backend:**
+- Node.js with Express 5.1.0
+- JWT (jsonwebtoken 9.0.2)
+- bcrypt 6.0.0 for password hashing
+- AES-192-CBC encryption
+- Express Rate Limit for DDoS protection
+- CORS configuration
+
+**Database:**
+- MongoDB Atlas (Cloud-hosted)
+- Encrypted data at rest
+- Connection pooling
+- Secure environment-based configuration
+
+**DevSecOps:**
+- CircleCI for CI/CD orchestration
+- Snyk for dependency scanning
+- TruffleHog for secret detection
+- Semgrep for SAST
+- Artillery for load testing
+- Lighthouse for performance audits
+- Jest for automated testing (168 tests)
+
+---
+
+## 🎨 User Interface
+
+### Login Page
+Secure authentication with input validation and error handling.
+
+![Login Page](Images1/Login.png)
+
+### Home Dashboard
+Clean, modern interface with navigation to key features.
+
+![Home Dashboard](Images1/swift_home.png)
+
+### Payment Submission
+International payment form with SWIFT code validation and real-time input verification.
+
+![Payment Page](Images1/paymentswift.png)
+
+### Transaction History
+View all payment applications with status tracking and filtering.
+
+![Transactions](Images1/Transactions.png)
+
+### Account Details
+Secure view of user profile with encrypted sensitive data.
+
+![Account Details](Images1/account_details.png)
+
+---
+
+## 🔧 Backend & API
+
+### API Architecture
+
+The backend implements a RESTful API architecture with comprehensive security middleware and data encryption.
+
+**Base URL:** `https://localhost:8443` (Production) | `http://localhost:8080` (Development)
 
 ### Authentication Endpoints
 
-#### POST `/api/auth/login`
-Authenticate user and return JWT token.
+#### `POST /user/signup`
+Creates a new user account with encrypted personal information.
 
 **Request Body:**
 ```json
 {
-  "name": "username",
-  "password": "userpassword"
+  "username": "johndoe",
+  "password": "SecurePass123",
+  "full_name": "John Doe",
+  "accountNumber": "1234567890",
+  "IDNumber": "1234567890123"
 }
 ```
 
-**Response:**
+**Security Features:**
+- Input validation with RegEx patterns
+- Field whitelisting (prevents privilege escalation)
+- Password hashing with bcrypt (10+ salt rounds)
+- AES-192-CBC encryption for PII (full_name, accountNumber, IDNumber)
+- Duplicate username prevention
+
+**Response (201 Created):**
+```json
+{
+  "message": "User created successfully",
+  "userId": "507f1f77bcf86cd799439011"
+}
+```
+
+---
+
+#### `POST /user/login`
+Authenticates user and returns JWT token.
+
+**Request Body:**
+```json
+{
+  "username": "johndoe",
+  "password": "SecurePass123"
+}
+```
+
+**Security Features:**
+- Password verification with bcrypt.compare()
+- JWT token generation (24-hour expiration)
+- Data decryption for user profile
+- Rate limiting to prevent brute force
+
+**Response (200 OK):**
 ```json
 {
   "message": "Login successful",
-  "token": "jwt_token_here",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "user": {
-    "id": "user_id",
-    "username": "username",
-    "full_name": "Full Name",
-    "userType": "User"
+    "_id": "507f1f77bcf86cd799439011",
+    "username": "johndoe",
+    "full_name": "John Doe",
+    "accountNumber": "1234567890",
+    "IDNumber": "1234567890123"
   }
 }
 ```
 
-#### POST `/api/auth/register`
-Register a new user account.
+---
 
-**Request Body:**
-```json
-{
-  "username": "newuser",
-  "full_name": "Full Name",
-  "IDNumber": "123456789",
-  "accountNumber": "1234567890",
-  "password": "securepassword"
-}
+### Payment Endpoints (Protected - Requires Authentication)
+
+#### `POST /payments/submit`
+Submits an international payment application.
+
+**Headers:**
+```
+Authorization: Bearer <JWT_TOKEN>
 ```
 
-### Payment Endpoints
-
-#### POST `/api/payments/submit`
-Submit a new payment application.
-
-**Headers:** `Authorization: Bearer <jwt_token>`
-
 **Request Body:**
 ```json
 {
-  "recipientName": "John Doe",
-  "recipientAccountNumber": "9876543210",
-  "amount": 1000.00,
+  "recipientName": "Jane Smith",
+  "accountNumber": "9876543210",
+  "swiftCode": "ABCDUS33",
+  "amount": "1000.50",
   "currency": "USD",
-  "paymentProvider": "Bank Transfer",
-  "swiftCode": "CHASUS33",
-  "notes": "Payment for services"
+  "paymentProvider": "Bank of America"
 }
 ```
 
-#### GET `/api/payments/my-applications`
-Get current user's payment applications.
+**Security Features:**
+- JWT token verification
+- Field whitelisting (6 allowed fields)
+- Input validation with RegEx:
+  - SWIFT: `^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$`
+  - Amount: `^\d+(\.\d{1,2})?$`
+  - Currency: `^[A-Z]{3}$`
+- AES-192-CBC encryption for all sensitive fields
+- User ID attached from JWT token
 
-**Headers:** `Authorization: Bearer <jwt_token>`
-
-**Response:**
+**Response (201 Created):**
 ```json
 {
-  "message": "Your payment applications retrieved successfully",
+  "message": "Payment application submitted successfully",
+  "applicationId": "507f1f77bcf86cd799439012"
+}
+```
+
+---
+
+#### `GET /payments/my-applications`
+Retrieves all payment applications for the authenticated user.
+
+**Headers:**
+```
+Authorization: Bearer <JWT_TOKEN>
+```
+
+**Security Features:**
+- JWT token verification
+- User-specific filtering (only returns user's own applications)
+- Data decryption before response
+- Sorted by submission date (newest first)
+
+**Response (200 OK):**
+```json
+{
+  "message": "Applications retrieved successfully",
   "applications": [
     {
-      "_id": "app_id",
-      "recipientName": "John Doe",
-      "amount": 1000.00,
-      "status": "Pending",
-      "submittedAt": "2024-01-01T00:00:00.000Z"
+      "_id": "507f1f77bcf86cd799439012",
+      "recipientName": "Jane Smith",
+      "accountNumber": "9876543210",
+      "swiftCode": "ABCDUS33",
+      "amount": 1000.50,
+      "currency": "USD",
+      "paymentProvider": "Bank of America",
+      "status": "pending",
+      "submittedAt": "2025-10-10T10:30:00.000Z"
     }
   ]
 }
 ```
 
-#### GET `/api/payments/pending` (Employee Only)
-Get all pending payment applications for review.
+---
 
-**Headers:** `Authorization: Bearer <jwt_token>`
+### API Security Implementation
 
-### API Response Codes
+**1. Input Validation (WhiteList Approach)**
+All inputs are validated with strict RegEx patterns:
 
-| Code | Description |
-|------|-------------|
-| 200 | Success |
-| 201 | Created |
-| 400 | Bad Request |
-| 401 | Unauthorized |
-| 403 | Forbidden |
-| 404 | Not Found |
-| 500 | Internal Server Error |
+| Field | Pattern | Purpose |
+|-------|---------|---------|
+| Username | `^[a-zA-Z0-9_]{3,16}$` | Alphanumeric only, 3-16 chars |
+| Password | `^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$` | Min 6 chars, letter + number |
+| Account Number | `^\d{6,20}$` | 6-20 digits only |
+| ID Number | `^\d{13}$` | Exactly 13 digits |
+| Full Name | `^[a-zA-Z .,'-]{2,50}$` | Letters, spaces, punctuation |
+| SWIFT Code | `^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$` | 8 or 11 chars, specific format |
+| Amount | `^\d+(\.\d{1,2})?$` | Positive numbers, max 2 decimals |
+| Currency | `^[A-Z]{3}$` | 3 uppercase letters (ISO 4217) |
 
-![API Documentation](Images1/Payment.jpeg)
+**2. Field Whitelisting**
+- Signup: Only `username`, `password`, `full_name`, `accountNumber`, `IDNumber` allowed
+- Payment: Only `recipientName`, `accountNumber`, `swiftCode`, `amount`, `currency`, `paymentProvider` allowed
+- Prevents privilege escalation (e.g., injecting `admin: true`)
 
-## 🚀 Installation & Setup
+**3. Rate Limiting**
+```javascript
+windowMs: 15 * 60 * 1000,  // 15 minutes
+max: 100                    // 100 requests per IP
+```
+
+**4. CORS Configuration**
+```javascript
+origin: ['http://localhost:3001', 'https://localhost:3001']
+credentials: true
+methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
+```
+
+**5. Authentication Middleware**
+- Verifies JWT token on protected routes
+- Extracts user information from token
+- Returns 401 Unauthorized if token invalid/missing
+
+---
+
+## 🗄️ Database Schema
+
+### MongoDB Collections
+
+![MongoDB Dashboard](Images1/MongoDB_dahsboard.jpeg)
+
+#### **Users Collection**
+
+```javascript
+{
+  _id: ObjectId,
+  username: String,                    // Plain text (used for login)
+  password: String,                    // Bcrypt hashed (60 chars)
+  full_name: String,                   // AES-192-CBC encrypted
+  accountNumber: String,               // AES-192-CBC encrypted
+  IDNumber: String,                    // AES-192-CBC encrypted
+  userType: String,                    // "User" or "Employee"
+  createdAt: Date
+}
+```
+
+**Security Features:**
+- Passwords hashed with bcrypt (10 salt rounds)
+- All PII encrypted with AES-192-CBC
+- Username plain text for authentication efficiency
+- Indexed on username for fast lookups
+
+![User Document](Images1/User.jpeg)
+
+---
+
+#### **Payment Applications Collection**
+
+```javascript
+{
+  _id: ObjectId,
+  recipientName: String,               // AES-192-CBC encrypted
+  accountNumber: String,               // AES-192-CBC encrypted (recipient)
+  swiftCode: String,                   // AES-192-CBC encrypted
+  amount: String,                      // AES-192-CBC encrypted
+  currency: String,                    // AES-192-CBC encrypted
+  paymentProvider: String,             // AES-192-CBC encrypted
+  submittedBy: String,                 // User ID from JWT
+  submittedByName: String,             // Username from JWT
+  status: String,                      // "pending", "approved", "rejected"
+  submittedAt: Date,
+  reviewedAt: Date,
+  reviewedBy: String,
+  reviewerName: String,
+  reviewComments: String
+}
+```
+
+**Security Features:**
+- All payment details encrypted before storage
+- User ID extracted from JWT (prevents spoofing)
+- Status controlled by backend (can't be manipulated)
+- Timestamps for audit trail
+
+![Payment Document](Images1/Payment.jpeg)
+
+---
+
+### MongoDB Atlas Configuration
+
+**Connection Details:**
+- **Cluster**: M0 Free Tier (Development) / M10+ (Production)
+- **Region**: Multi-region for high availability
+- **Connection**: MongoDB Driver with connection pooling
+- **Authentication**: Username/password via environment variables
+- **Encryption**: Data encrypted at rest and in transit
+
+**Environment Configuration:**
+```javascript
+ATLAS_URI=mongodb+srv://username:password@cluster.mongodb.net/database
+```
+
+![MongoDB Cluster](Images1/Mongodb.jpeg)
+
+**Security Features:**
+- IP whitelisting for database access
+- TLS/SSL encryption for all connections
+- Database-level authentication
+- Network isolation
+- Automated backups
+
+---
+
+## 🔒 Security Implementation
+
+### 1. Encryption (AES-192-CBC)
+
+**What We Encrypt:**
+- User PII: `full_name`, `accountNumber`, `IDNumber`
+- Payment data: `recipientName`, `accountNumber`, `swiftCode`, `amount`, `currency`, `paymentProvider`
+
+**Implementation:**
+```javascript
+// Encryption
+const cipher = crypto.createCipheriv('aes-192-cbc', key, iv);
+const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
+const authTag = cipher.getAuthTag();
+
+// Decryption with authentication tag verification
+const decipher = crypto.createDecipheriv('aes-192-cbc', key, iv);
+decipher.setAuthTag(authTag);
+const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]);
+```
+
+**Security Benefits:**
+- Military-grade encryption (256-bit keys)
+- Authentication tag prevents tampering
+- Unique IV for each encryption
+- Data unreadable even if database compromised
+
+**Test Coverage:** 17 tests, 85% code coverage
+
+---
+
+### 2. Password Security
+
+**Bcrypt Hashing with Salting:**
+```javascript
+const hashedPassword = await bcrypt.hash(password, 10);  // 10 salt rounds
+const isValid = await bcrypt.compare(password, hashedPassword);
+```
+
+**Security Benefits:**
+- Unique salt for each password
+- Computationally expensive (prevents brute force)
+- Rainbow table resistant
+- 60-character hashes
+
+**Password Requirements:**
+- Minimum 6 characters
+- At least one letter
+- At least one number
+- RegEx: `^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$`
+
+---
+
+### 3. JWT Authentication
+
+**Token Generation:**
+```javascript
+const token = jwt.sign(
+  { userId: user._id, username: user.username },
+  process.env.JWT_SECRET,
+  { expiresIn: '24h' }
+);
+```
+
+**Token Storage:**
+- Stored in `localStorage` on client
+- Sent in `Authorization: Bearer <token>` header
+- Verified on every protected route request
+
+**Security Benefits:**
+- Stateless authentication
+- Cryptographically signed (prevents tampering)
+- Auto-expiration after 24 hours
+- User info embedded (no database lookup needed)
+
+---
+
+### 4. Input Validation & Attack Prevention
+
+**Defense Against:**
+
+✅ **XSS (Cross-Site Scripting)**
+- All inputs validated with whitelist RegEx
+- Script tags, event handlers rejected
+- HTML encoding on output
+
+✅ **SQL Injection**
+- No raw SQL queries (using MongoDB)
+- RegEx blocks quotes, semicolons, DROP, UNION
+- Parameterized queries only
+
+✅ **NoSQL Injection**
+- RegEx blocks `$gt`, `$ne`, `$where` operators
+- Input type validation
+- MongoDB operators sanitized
+
+✅ **Command Injection**
+- RegEx blocks pipes (`|`), backticks, `$()`
+- No shell command execution
+- Input strictly validated
+
+✅ **Path Traversal**
+- RegEx blocks `../` and `..\` patterns
+- File paths not user-controlled
+
+✅ **LDAP Injection**
+- Special LDAP characters blocked
+
+✅ **Privilege Escalation**
+- Field whitelisting prevents `admin: true` injection
+- Role assignment server-controlled only
+
+---
+
+### 5. Security Headers
+
+```javascript
+X-Frame-Options: DENY              // Clickjacking protection
+X-Content-Type-Options: nosniff     // MIME sniffing protection
+X-XSS-Protection: 1; mode=block     // XSS filter
+Strict-Transport-Security: max-age=31536000  // Force HTTPS
+```
+
+---
+
+### 6. HTTPS/SSL Enforcement
+
+**Certificate Configuration:**
+```javascript
+const options = {
+  key: fs.readFileSync('keys/privatekey.pem'),
+  cert: fs.readFileSync('keys/certificate.pem')
+};
+https.createServer(options, app).listen(8443);
+```
+
+**Production Enforcement:**
+```javascript
+if (req.headers['x-forwarded-proto'] !== 'https' && process.env.NODE_ENV === 'production') {
+  return res.status(403).send('HTTPS required');
+}
+```
+
+---
+
+## 🚀 DevSecOps Pipeline
+
+![CircleCI Dashboard](Images1/circle_ci_dahsboard.png)
+
+### Pipeline Overview
+
+Our CircleCI pipeline implements a comprehensive DevSecOps workflow with **11 different tools** and **168 automated tests**.
+
+### Pipeline Stages
+
+#### **Stage 1: Security Scanning (Parallel Execution)**
+
+**A. Snyk - Dependency Vulnerability Scanning**
+```yaml
+- run: npm audit
+- run: snyk test
+```
+- Scans 800+ npm packages
+- Checks CVE database for known vulnerabilities
+- Fails on critical/high severity issues
+- Generates security reports
+
+**B. TruffleHog - Secret Detection**
+```yaml
+- run: docker run trufflesecurity/trufflehog:latest github --repo=<repo>
+```
+- Scans entire git history
+- Detects API keys, tokens, passwords
+- Pattern matching + entropy analysis
+- Prevents credential leaks
+
+**C. Semgrep - SAST (Static Application Security Testing)**
+```yaml
+- run: semgrep --config=auto .
+```
+- Analyzes code for security vulnerabilities
+- Checks for hardcoded credentials
+- Detects weak cryptography
+- Validates secure coding practices
+
+**D. ESLint Security Rules**
+```yaml
+- run: eslint . --plugin security
+```
+- Detects unsafe patterns (eval, buffer manipulation)
+- Validates error handling
+- Checks for unsafe regex
+
+---
+
+#### **Stage 2: Code Quality**
+
+**Backend & Frontend Linting:**
+```yaml
+- run: npx eslint . --ext .js --max-warnings 10
+```
+- Enforces coding standards
+- Catches potential bugs
+- Ensures consistency
+
+---
+
+#### **Stage 3: Automated Testing**
+
+![CircleCI Test Results](Images1/circle_ci_successful_test.png)
+
+**Backend Tests (144 tests)**
+```yaml
+- run: npm run test:coverage
+- store_test_results: backend/test-results
+- store_artifacts: backend/coverage
+```
+
+**Test Breakdown:**
+- **37 Security Tests**: XSS, SQL injection, NoSQL injection, command injection, etc.
+- **36 Route Validation Tests**: Verify security implementations in code
+- **20 Server Tests**: Middleware, CORS, rate limiting
+- **19 Authentication Tests**: Bcrypt, JWT, validation
+- **17 Encryption Tests**: AES-192-CBC (85% coverage)
+- **15 Payment Tests**: SWIFT, amount, currency validation
+
+**Frontend Tests (24 tests)**
+```yaml
+- run: npm test -- --coverage --watchAll=false
+```
+- **14 Validation Tests**: Client-side RegEx patterns
+- **10 Auth Tests**: Token management, localStorage
+
+**Results Visibility:**
+- JUnit XML format for CircleCI UI
+- Test results displayed in "Tests" tab
+- Coverage reports as artifacts
+- Execution time: ~2 seconds total
+
+---
+
+#### **Stage 4: Performance Testing (Parallel)**
+
+**A. Artillery - Backend Load Testing**
+```yaml
+- run: artillery run artillery-config.yml
+```
+- Simulates 10 virtual users
+- 30-second test duration
+- Measures response times
+- Validates API can handle load
+
+**B. Lighthouse - Frontend Performance**
+```yaml
+- run: lighthouse http://localhost:3001 --output json
+```
+- Performance score (0-100)
+- Accessibility audit
+- Best practices validation
+- SEO analysis
+
+---
+
+#### **Stage 5: Build Verification**
+
+**Backend Build:**
+```yaml
+- run: node -c server.js
+```
+- Syntax validation
+- Dependency verification
+- Only runs if tests pass
+
+**Frontend Build:**
+```yaml
+- run: npm run build
+```
+- Production build creation
+- Asset optimization
+- Only runs if tests pass
+
+---
+
+#### **Stage 6: Compliance & Quality**
+
+**License Checking:**
+```yaml
+- run: npx license-checker --summary
+```
+- Validates open-source licenses
+- Prevents legal issues
+- Ensures compliance
+
+**Enhanced Code Quality:**
+```yaml
+- run: eslint --format json --output-file report.json
+```
+- Detailed quality metrics
+- Exportable reports
+- Threshold enforcement
+
+---
+
+### Pipeline Execution Flow
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ COMMIT PUSHED TO MAIN                                   │
+└────────────────────┬────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────┐
+│ STAGE 1: SECURITY SCANS (Parallel - Fail Fast)         │
+│  Snyk          TruffleHog                          │
+│  Semgrep       ESLint Security                     │
+└────────────────────┬────────────────────────────────────┘
+                     │ All Pass?
+                     ▼ YES
+┌─────────────────────────────────────────────────────────┐
+│ STAGE 2: CODE QUALITY                                   │
+│  Lint Backend   Lint Frontend                      │
+└────────────────────┬────────────────────────────────────┘
+                     │ All Pass?
+                     ▼ YES
+┌─────────────────────────────────────────────────────────┐
+│ STAGE 3: AUTOMATED TESTING                              │
+│  Backend: 144 tests (1.5s)                            │
+│  Frontend: 24 tests (0.5s)                            │
+└────────────────────┬────────────────────────────────────┘
+                     │ All Pass?
+                     ▼ YES
+┌─────────────────────────────────────────────────────────┐
+│ STAGE 4: PERFORMANCE (Parallel)                         │
+│  Artillery Load Test  Lighthouse Audit             │
+└────────────────────┬────────────────────────────────────┘
+                     │ All Pass?
+                     ▼ YES
+┌─────────────────────────────────────────────────────────┐
+│ STAGE 5: BUILD                                          │
+│  Build Backend   Build Frontend                    │
+└────────────────────┬────────────────────────────────────┘
+                     │ All Pass?
+                     ▼ YES
+┌─────────────────────────────────────────────────────────┐
+│ STAGE 6: COMPLIANCE                                     │
+│  License Check   Enhanced Quality                  │
+└────────────────────┬────────────────────────────────────┘
+                     │ All Pass?
+                     ▼ YES
+┌─────────────────────────────────────────────────────────┐
+│ PIPELINE SUCCESS - Ready for Deployment              │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Total Execution Time:** ~5-6 minutes
+
+---
+
+## 🧪 Testing Suite
+
+### Test Statistics
+
+- **Total Tests:** 168
+- **Pass Rate:** 100%
+- **Execution Time:** ~2 seconds
+- **Code Coverage:** 85% on encryption utilities
+
+### Backend Tests (144 tests)
+
+#### **1. Security Tests (37 tests)** - `security.test.js`
+
+**Password Security (7 tests):**
+- Bcrypt hashing with salt
+- Salt uniqueness validation
+- Password verification
+- Minimum 10 salt rounds enforcement
+
+**Input Whitelisting (20 tests):**
+- Username validation
+- Password strength requirements
+- Account number validation
+- ID number validation
+- Full name validation
+- SWIFT code validation
+- Amount validation
+- Currency code validation
+
+**Attack Prevention (19 tests):**
+- XSS injection attempts (5 tests)
+- SQL injection attempts (3 tests)
+- NoSQL injection attempts (2 tests)
+- Command injection attempts (2 tests)
+- Path traversal attempts (2 tests)
+- LDAP injection attempts (1 test)
+- Privilege escalation prevention (4 tests)
+
+**SSL/HTTPS & Headers (5 tests):**
+- HTTPS enforcement
+- Security headers validation
+
+---
+
+#### **2. Encryption Tests (17 tests)** - `encryption.test.js`
+
+**Functionality Tests:**
+- Encrypt/decrypt text successfully
+- Handle empty strings
+- Handle special characters
+- Handle large data
+
+**Security Tests:**
+- Unique IV generation
+- Authentication tag validation
+- Tamper detection
+- Invalid key handling
+
+**Error Handling:**
+- Missing parameters
+- Invalid encrypted data
+- Corrupted data
+
+**Code Coverage:** 85% statements, 80% branches, 100% functions
+
+---
+
+#### **3. Server Middleware Tests (20 tests)** - `server.test.js`
+
+**Security Middleware:**
+- CORS configuration
+- Rate limiting
+- Security headers
+- Error handling
+
+**Parsing:**
+- JSON body parsing
+- URL-encoded data
+- Large payloads
+
+---
+
+#### **4. Authentication Tests (19 tests)** - `auth-simple.test.js`
+
+**Password Tests:**
+- Bcrypt hashing
+- Salt uniqueness
+- Verification
+
+**JWT Tests:**
+- Token generation
+- Token verification
+- Expiration handling
+- Invalid token rejection
+
+**Validation Tests:**
+- Username format
+- Password strength
+- Account number format
+- ID number format
+
+---
+
+#### **5. Payment Tests (15 tests)** - `payment-simple.test.js`
+
+**Validation Tests:**
+- SWIFT code format
+- Amount validation
+- Currency codes
+- Recipient name
+- Account numbers
+- Payment provider
+
+**Security Tests:**
+- Field whitelisting
+- Required field validation
+
+---
+
+#### **6. Route Validation Tests (36 tests)** - `routes-validation.test.js`
+
+**User Routes (13 tests):**
+- File existence
+- Signup/login endpoints
+- Bcrypt implementation
+- JWT implementation
+- Encryption usage
+- Input validation
+- Error handling
+
+**Payment Routes (13 tests):**
+- File existence
+- Submit/retrieve endpoints
+- Authentication middleware
+- Encryption usage
+- Validation implementation
+
+**Middleware & Config (10 tests):**
+- Auth middleware (JWT verification)
+- Server configuration
+- Database connection
+- App configuration
+
+---
+
+### Frontend Tests (24 tests)
+
+#### **1. Validation Tests (14 tests)** - `validation.test.js`
+
+**Client-Side RegEx Validation:**
+- Username format
+- Password strength
+- Account numbers
+- ID numbers
+- SWIFT codes
+- Amounts
+- Currency codes
+
+**Purpose:** Defense in depth - validation on both client and server
+
+---
+
+#### **2. AuthContext Tests (10 tests)** - `AuthContext.test.js`
+
+**Token Management:**
+- localStorage token storage
+- Token retrieval
+- Token removal on logout
+- JWT structure validation
+
+**User Data:**
+- JSON serialization/deserialization
+- Data persistence
+- Error handling
+
+---
+
+### Running Tests Locally
+
+**Backend:**
+```bash
+cd backend
+npm test                    # Run all tests
+npm run test:coverage       # Run with coverage report
+npm run test:watch          # Watch mode
+```
+
+**Frontend:**
+```bash
+cd frontend
+npm test                    # Run all tests
+CI=true npm test -- --coverage --watchAll=false  # Coverage report
+```
+
+---
+
+## 📦 Installation & Setup
 
 ### Prerequisites
 
-- **Node.js** 18+ and npm
-- **MongoDB** 6+ (local or cloud instance)
-- **Git** for version control
+- Node.js 20+ and npm
+- MongoDB Atlas account
+- Git
 
-### Quick Start
+### Backend Setup
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/ST10256074/INSY7314_Swift_System.git
-   cd INSY7314_Swift_System
-   ```
-
-2. **Install dependencies**
-   ```bash
-   # Backend dependencies
-   cd backend
-   npm install
-   
-   # Frontend dependencies
-   cd ../frontend
-   npm install
-   ```
-
-3. **Configure environment**
-   ```bash
-   # Create backend/.env file
-   echo "MONGODB_URI=mongodb://localhost:27017/swift_payment_system" > backend/.env
-   echo "ENCRYPTION_KEY=encryption_key_here" > backend/.env
-   echo "JWT_SECRET=your_jwt_secret_here" >> backend/.env
-   ```
-
-4. **Start the application**
-   ```bash
-   # Terminal 1: Start backend
-   cd backend
-   npm run start
-   
-   # Terminal 2: Start frontend
-   cd frontend
-   npm run start:https
-   ```
-
-5. **Access the application**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:8080
-
-### Environment Configuration
-
-#### Backend Environment Variables
-
-```env
-# Database (MongoDB Atlas)
-ATLAS_URI=mongodb+srv://username:password@cluster.mongodb.net/?retryWrites=true&w=majority&appName=ClusterName
-
-# Authentication
-JWT_SECRET=your_secure_jwt_secret_here
-
-# Encryption
-ENCRYPTION_KEY=your_encryption_key_here_32_chars
-
-# Server
-PORT=8080
-NODE_ENV=development
-```
-
-
-![Installation Guide](Images1/Logn.png)
-
-## 💻 Usage
-
-### For Clients
-
-1. **Registration**: Create an account with your personal information
-2. **Login**: Access your secure dashboard
-3. **Submit Payments**: Use the payment form to submit payment requests
-4. **Track Transactions**: Monitor your payment status and history
-5. **Account Management**: Update your profile and preferences
-
-### For Employees
-
-1. **Login**: Access the employee portal with your credentials
-2. **Review Payments**: Examine pending payment applications
-3. **Approve/Reject**: Make decisions on payment requests
-4. **User Management**: Handle user accounts and permissions
-5. **Reporting**: Generate reports and analytics
-
-### User Interface Guide
-
-![User Interface](Images1/account_detals.png)
-
-## 🔧 Development
-
-### Project Structure
-
-```
-INSY7314_Swift_System/
-├── backend/                 # Node.js backend
-│   ├── routes/             # API route handlers
-│   ├── db/                 # Database connection and models
-│   ├── middleware/         # Custom middleware
-│   └── server.js           # Main server file
-├── frontend/               # React frontend
-│   ├── src/
-│   │   ├── components/     # Reusable UI components
-│   │   ├── pages/          # Page components
-│   │   ├── contexts/       # React contexts
-│   │   ├── utils/          # Utility functions
-│   │   └── App.js          # Main app component
-│   └── public/             # Static assets
-├── .circleci/              # CI/CD configuration
-├── Images1/               # Documentation screenshots
-└── README.md               # This file
-```
-
-### Development Workflow
-
-1. **Feature Development**
-   ```bash
-   # Create feature branch
-   git checkout -b feature/new-feature
-   
-   # Make changes and test locally
-   npm run dev
-   
-   # Commit changes
-   git add .
-   git commit -m "Add new feature"
-   ```
-
-2. **Code Quality**
-   ```bash
-   # Run linting
-   npm run lint
-   
-   # Run tests
-   npm test
-   
-   # Check security
-   npm audit
-   ```
-
-3. **Pull Request**
-   ```bash
-   # Push to remote
-   git push origin feature/new-feature
-   
-   # Create pull request on GitHub
-   # CircleCI will automatically run tests
-   ```
-
-### Code Standards
-
-- **ESLint**: Enforced code style and best practices
-- **Prettier**: Consistent code formatting
-- **Security**: Regular security audits and scanning
-- **Testing**: Unit tests for critical functionality
-- **Documentation**: Comprehensive inline and external documentation
-
-![Development Workflow](Images1/circle_ci_dahsboard.png)
-
-## 🧪 Testing
-
-### Test Coverage
-
-Our application includes comprehensive testing at multiple levels:
-
-#### Backend Testing
 ```bash
 cd backend
-npm test
+npm install
 ```
 
-#### Frontend Testing
+**Create `.env` file:**
+```env
+ATLAS_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret_key
+ENCRYPTION_KEY=your_32_byte_encryption_key
+PORT=8443
+HTTP_PORT=8080
+```
+
+**Generate SSL Certificates (for HTTPS)(Used in Backend and Frontend):**
+```bash
+mkdir keys
+openssl req -x509 -newkey rsa:4096 -keyout keys/privatekey.pem -out keys/certificate.pem -days 365 -nodes
+```
+
+**Start Server:**
+```bash
+npm run dev        
+```
+
+### Frontend Setup
+
 ```bash
 cd frontend
-npm test
+npm install
 ```
 
-#### Integration Testing
+**Create `.env` file:**
+```env
+HTTPS=true
+SSL_CRT_FILE=../frontend/keys/certificate.pem
+SSL_KEY_FILE=../frontend/keys/privatekey.pem
+```
+
+
+**Copy SSL Certificates (for HTTPS)(Used in Backend and Frontend):**
+Using the same certificates from earlier, create a keys folder in the frontend and store them there for https
+
+**Start Development Server:**
 ```bash
-# Run full test suite
-npm run test:integration
+npm run start    # HTTPS (port 3001)
 ```
 
-### Test Types
+---
 
-| Test Type | Coverage | Purpose |
-|-----------|----------|---------|
-| **Unit Tests** | 80%+ | Individual component testing |
-| **Integration Tests** | 70%+ | API endpoint testing |
-| **E2E Tests** | 60%+ | Full user workflow testing |
-| **Security Tests** | 90%+ | Security vulnerability testing |
+## 📸 Screenshots & API Testing
 
-![Test Coverage](Images1/circle_ci_successful_test.png)
+### Postman API Testing
 
-## 🚀 Deployment
+You can test the API endpoints using Postman or any HTTP client.
 
-### Production Deployment
+**Example: User Login**
+```bash
+POST https://localhost:8443/user/login
+Content-Type: application/json
 
-1. **Environment Setup**
-   ```bash
-   # Set production environment variables
-   export NODE_ENV=production
-   export MONGODB_URI=your_production_mongodb_uri
-   export JWT_SECRET=your_production_jwt_secret
-   ```
-
-2. **Build Application**
-   ```bash
-   # Build frontend
-   cd frontend
-   npm run build
-   
-   # The build artifacts will be in frontend/build/
-   ```
-
-3. **Deploy Backend**
-   ```bash
-   cd backend
-   npm start
-   ```
-
-### Docker Deployment (Optional)
-
-```dockerfile
-# Dockerfile example
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-EXPOSE 8080
-CMD ["npm", "start"]
+{
+  "name": "testuser",
+  "accountNumber": "1234567890",
+  "password": "1234567890123"
+}
 ```
+![HTTPS User Login](Images1/postman_https_user_login.jpeg)
 
-### CI/CD Pipeline
+**Example: Payment Submission (with JWT)**
+```bash
+POST https://localhost:8443/payments/submit
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
-Our CircleCI pipeline automatically:
-- Runs security scans
-- Executes tests
-- Builds the application
-- Deploys to staging/production
+{
+  "recipientName": "Jane Doe",
+  "accountNumber": "9876543210",
+  "swiftCode": "ABCDUS33",
+  "amount": "1000.50",
+  "currency": "USD",
+  "paymentProvider": "Bank of America"
+}
+```
+![HTTPS Post Payment](Images1/postman_http_post_payment.jpeg)
 
-![Deployment Pipeline](Images1/Transacions.png)
+---
 
+## 🔄 CircleCI Configuration
+
+### Setting Up CircleCI
+
+1. **Connect Repository:**
+   - Go to CircleCI dashboard
+   - Click "Set Up Project"
+   - Select your GitHub repository
+   - CircleCI will auto-detect `.circleci/config.yml`
+
+2. **Configure Environment Variables:**
+   ```
+   SNYK_TOKEN=your_snyk_token
+   GITHUB_TOKEN=your_github_token (for TruffleHog)
+   ```
+
+3. **Enable Pipeline:**
+   - Commit and push will automatically trigger pipeline
+   - View results in CircleCI dashboard
+
+### Viewing Test Results
+
+![CircleCI Test Results](Images1/circle_ci_successful_backend_test.png)
+
+**In CircleCI:**
+1. Click on the pipeline run
+2. Click "test-backend" job
+3. Click "Tests" tab
+4. See all 144 tests with pass/fail status
+5. View execution times per test
+
+**Coverage Reports:**
+1. Click "Artifacts" tab
+2. Download coverage reports
+3. View detailed coverage breakdown
+
+---
 
 ## 👥 Authors
 
-- **Emil Fabel** - *Initial work and DevSecOps implementation* - [ST10359034](https://github.com/ST10359034)
-- **Weylin** - *Collaborative development* - [INSY7314 Team](https://github.com/ST10256074/INSY7314_Swift_System)
-- **James** - *Collaborative development* - [INSY7314 Team](https://github.com/ST10256074/INSY7314_Swift_System)
-- **Kevin** - *Collaborative development* - [INSY7314 Team](https://github.com/ST10256074/INSY7314_Swift_System)
+**Developed by:**
+- **Emil Fabel** - DevSecOps & CircleCI Pipeline Implementation
+- **Weylin** - Security Implementation
+- **James** - MongoDB Setup, API & Backend Development
+- **Kevin** - UI/UX Design & Frontend Development
+
+**Module:** INSY7314 - Secure Application Development  
+**Year:** 2025
+
+---
+
+## 📄 License
+
+This project is developed for educational purposes as part of INSY7314 coursework.
+
+---
+
+## 🔥 Resources
+
+- [CircleCI Documentation](https://circleci.com/docs/)
+- [Snyk Security Scanner](https://snyk.io/)
+- [TruffleHog Secret Scanner](https://github.com/trufflesecurity/trufflehog)
+- [Semgrep SAST](https://semgrep.dev/)
+- [MongoDB Atlas](https://www.mongodb.com/atlas)
+- [Jest Testing Framework](https://jestjs.io/)
+- [Artillery Load Testing](https://artillery.io/)
+- [Lighthouse Performance](https://developers.google.com/web/tools/lighthouse)
+- [ChatGPT](https://chatgpt.com)
+
+## 🔗 References
+- aquasecurity, 2025. Code Repository. [Online] Available at: https://trivy.dev/latest/docs/target/repository/[Accessed 7 October 2025].
+- Artillery, 2025. Load testing. [Online] Available at: https://www.artillery.io/docs [Accessed 7 October 2025].
+- CircleCI, 2025. Configuration introduction. [Online]  Available at: https://circleci.com/docs/config-intro/ [Accessed 5 October 2025].
+- circleci, 2025. Quickstart guide. [Online]  Available at: https://circleci.com/docs/guides/getting-started/getting-started/ [Accessed 5 October 2025].
+- commitlint, 2025. Getting started. [Online]  Available at: https://commitlint.js.org/ [Accessed 7 October 2025].
+- conventional-changelog, 2025. conventional-changelog. [Online]  Available at: https://github.com/conventional-changelog/conventional-changelog [Accessed 7 October 2025].
+- davglass, 2019. github. [Online]  Available at: https://github.com/davglass/license-checker [Accessed 6 October 2025].
+- eslint-community, 2025. eslint-plugin-security. [Online] Available at: https://github.com/eslint-community/eslint-plugin-security [Accessed 6 October 2025].
+- Google Chrome, 2025. lighthouse-ci. [Online]  Available at: https://github.com/GoogleChrome/lighthouse-ci [Accessed 7 October 2025].
+- Jestjs, 2025. Getting Started. [Online]  Available at: https://jestjs.io/docs/getting-started [Accessed 8 October 2025].
+- MongoDB, 2025. Use Promises with Asynchronous JavaScript. [Online]  Available at: https://www.mongodb.com/docs/drivers/node/current/promises/ [Accessed 3 October 2025].
+- npm, 2025. MongoDB Node.js Driver. [Online]  Available at: https://www.npmjs.com/package/mongodb [Accessed 2 October 2025].
+- React, 2025. Quick Start. [Online]  Available at: https://react.dev/learn [Accessed 1 October 2025].
+- Semgrep, 2025. Add Semgrep to CI. [Online]  Available at: https://semgrep.dev/docs/deployment/add-semgrep-to-ci [Accessed 8 October 2025].
+- Snyk, 2024. CircleCI integration using a Snyk Orb. [Online]  Available at: https://docs.snyk.io/developer-tools/snyk-ci-cd-integrations/circleci-integration-using-a-snyk-orb [Accessed 7 October 2025].
+- Truffle Security, 2025. Built by experts in app, infrastructure, and offensive security. [Online]  Available at: https://trufflesecurity.com/security [Accessed 7 October 2025].
+- W3 Schools, 2025. React Tutorial. [Online]
+- Available at: https://www.w3schools.com/react/[Accessed 25 September 2025].
+- W3Schools, 2025. React CSS Modules. [Online]  Available at: https://www.w3schools.com/REACT/react_css_modules.asp [Accessed 8 October 2025].
+- W3Schools, 2025. React Router. [Online]  Available at: https://www.w3schools.com/REACT/react_router.asp [Accessed 8 October 2025].
 
 
 ---
 
 <div align="center">
 
-**Built with ❤️ by the INSY7314 Team**
+**Built with ❤️ and 🔒 Security-First Approach**
 
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-black?style=for-the-badge&logo=github)](https://github.com/ST10256074/INSY7314_Swift_System)
-[![CircleCI](https://img.shields.io/badge/CircleCI-Pipeline-blue?style=for-the-badge&logo=circleci)](https://circleci.com)
+![Tests](https://img.shields.io/badge/Tests-168%20Passing-success?style=flat-square&logo=jest)
+![Coverage](https://img.shields.io/badge/Coverage-85%25-green?style=flat-square)
+![Security](https://img.shields.io/badge/Security-Enterprise%20Grade-red?style=flat-square)
 
 </div>
