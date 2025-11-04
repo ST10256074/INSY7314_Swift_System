@@ -30,8 +30,22 @@ function AppContent() {
         <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
         
         {/* Home routes */}
-        <Route path={ROUTES.CLIENT_HOME} element={<ClientHome />} />
-        <Route path={ROUTES.EMPLOYEE_HOME} element={<EmployeeHome />} />
+        <Route 
+          path={ROUTES.CLIENT_HOME} 
+          element={
+            <ProtectedRoute requireClient={true}>
+              <ClientHome />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path={ROUTES.EMPLOYEE_HOME} 
+          element={
+            <ProtectedRoute requireEmployee={true}>
+              <EmployeeHome />
+            </ProtectedRoute>
+          } 
+        />
         
         {/* Protected routes */}
         <Route 
