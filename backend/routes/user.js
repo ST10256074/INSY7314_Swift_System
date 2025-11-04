@@ -94,6 +94,90 @@ router.post("/signup", async (req, res) => {
     }
 });
 
+// Remove later
+/**
+ * Employee registration endpoint
+ * Validates input data, encrypts sensitive information, and creates new employee account
+ * POST /user/signup-employee
+ */
+router.post("/signup-employee", async (req, res) => {
+    try {
+        // Whitelist allowed fields
+        const allowedFields = ["username", "full_name", "accountNumber", "IDNumber", "password"];
+        Object.keys(req.body).forEach(key => {
+            if (!allowedFields.includes(key)) {
+                delete req.body[key];
+            }
+        });
+
+        // Regex patterns for input validation
+        const usernameRegex = /^[a-zA-Z0-9_]{3,16}$/;
+        const fullNameRegex = /^[a-zA-Z .,'-]{2,50}$/;
+        const accountNumberRegex = /^\d{6,20}$/;
+        const idNumberRegex = /^\d{13}$/;
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/;
+
+        let username = req.body.username;
+        let full_name = req.body.full_name;
+        let accountNumber = req.body.accountNumber;
+        let IDNumber = req.body.IDNumber;
+        let password = req.body.password;
+
+        if (!username || !full_name || !accountNumber || !IDNumber || !password) {
+            return res.status(400).send('All fields (username, full name, account number, ID number, password) are required');
+        }
+
+        if (!usernameRegex.test(username)) {
+            return res.status(400).send('Username must be 3-16 characters and contain only letters, numbers, or underscores');
+        }
+        if (!fullNameRegex.test(full_name)) {
+            return res.status(400).send('Full name contains invalid characters');
+        }
+        if (!accountNumberRegex.test(accountNumber)) {
+            return res.status(400).send('Account number must be 6-20 digits');
+        }
+        if (!idNumberRegex.test(IDNumber)) {
+            return res.status(400).send('ID Number must be exactly 13 digits');
+        }
+        if (!passwordRegex.test(password)) {
+            return res.status(400).send('Password must be at least 6 characters and contain at least one letter and one number');
+        }
+
+        // Check if username already exists
+        let userCollection = await db.collection("users");
+        const existingUser = await userCollection.findOne({ username: username });
+        
+        if (existingUser) {
+            return res.status(400).send('Username already exists');
+        }
+
+        //salted and hashed 10 rounds
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Encrypt sensitive data before storing
+        const encryptedAccountNumber = await encrypt(accountNumber);
+        const encryptedIDNumber = await encrypt(IDNumber);
+        const encryptedFullName = await encrypt(full_name);
+
+        const newDocument = {
+            username: username, // Username is not encrypted as it's used for login
+            full_name: encryptedFullName,
+            accountNumber: encryptedAccountNumber,
+            IDNumber: encryptedIDNumber,
+            password: hashedPassword,
+            userType: "Employee"
+        };
+
+        let result = await userCollection.insertOne(newDocument);
+
+        res.status(201).json({ message: 'Employee created successfully', result });
+    }
+    catch (error) {
+        console.error("employee signup error:", error);  
+        res.status(500).send('Internal server error');
+    }
+});
+
 /**
  * Retrieves authenticated user's profile information
  * Decrypts sensitive data before sending response
