@@ -224,7 +224,7 @@ export default function PaymentPage() {
           <button 
             type="button" 
             className="cancel-btn"
-            onClick={() => navigation.accountInfo()}
+            onClick={() => navigation.clientHome()}
             disabled={loading}
           >
             Cancel
