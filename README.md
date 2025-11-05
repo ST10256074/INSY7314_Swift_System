@@ -20,6 +20,7 @@
 ## 📋 Table of Contents
 
 - [Overview](#-overview)
+- [POE Part 3 Updates](#-poe-part-3-updates)
 - [System Architecture](#-system-architecture)
 - [User Interface](#-user-interface)
 - [Backend & API](#-backend--api)
@@ -48,6 +49,27 @@ https://www.youtube.com/watch?v=D1dcny9Nhz0
 - 👥 **Multi-Role System**: Separate interfaces for clients and employees
 - 📊 **Real-time Monitoring**: Transaction tracking, status updates, comprehensive logging
 - 🧪 **Comprehensive Testing**: 37 security tests, 85% code coverage on critical components
+
+---
+
+## ⚡ POE Part 3 Updates
+
+**The following updates were made for Part 3 of the POE:**
+
+### New Employee Home Page
+A dashboard for employees.
+
+![Employee Home Page](Images1/EmployeeHome.png)
+
+### New Pending Payments Page
+View all payment applications to approve or deny.
+
+![Pending Payments Page](Images1/PendingPayments.png)
+
+### New Inspect Payments Page
+View the details of a specific payment application and print it if needed.
+
+![Inspect Payments Page](Images1/InspectPayments.png)
 
 ---
 
