@@ -181,9 +181,9 @@ jobs:
       - store_artifacts:
           path: backend/test-results
       - persist_to_workspace:
-          root: backend
+          root: .
           paths:
-            - coverage
+            - backend/coverage
 
   test-frontend:
     docker:
@@ -208,9 +208,9 @@ jobs:
       - store_artifacts:
           path: frontend/coverage
       - persist_to_workspace:
-          root: frontend
+          root: .
           paths:
-            - coverage
+            - frontend/coverage
 
   # Build
   build-backend:
