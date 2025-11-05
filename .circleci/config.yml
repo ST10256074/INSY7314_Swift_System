@@ -181,9 +181,9 @@ jobs:
       - store_artifacts:
           path: backend/test-results
       - persist_to_workspace:
-          root: backend
+          root: .
           paths:
-            - coverage
+            - backend/coverage
 
   test-frontend:
     docker:
@@ -208,9 +208,9 @@ jobs:
       - store_artifacts:
           path: frontend/coverage
       - persist_to_workspace:
-          root: frontend
+          root: .
           paths:
-            - coverage
+            - frontend/coverage
 
   # Build
   build-backend:
@@ -482,30 +482,31 @@ jobs:
       - run:
           name: Run SonarQube Scan
           command: |
-            SCANNER_CMD="sonar-scanner \
-              -Dsonar.host.url=https://sonarcloud.io \
-              -Dsonar.login=${SONAR_TOKEN} \
-              -Dsonar.organization=${SONAR_ORGANIZATION} \
-              -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-              -Dsonar.sources=backend,frontend/src \
-              -Dsonar.exclusions=**/node_modules/**,**/coverage/**,**/build/**,**/*.test.js,**/*.test.jsx \
-              -Dsonar.sourceEncoding=UTF-8 \
-              -Dsonar.javascript.file.suffixes=.js,.jsx"
-            
+            COVERAGE_ARG=""
             if [ -f "backend/coverage/lcov.info" ] && [ -f "frontend/coverage/lcov.info" ]; then
-              SCANNER_CMD="$SCANNER_CMD -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info,frontend/coverage/lcov.info"
+              COVERAGE_ARG="-Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info,frontend/coverage/lcov.info"
               echo "Including both backend and frontend coverage"
             elif [ -f "backend/coverage/lcov.info" ]; then
-              SCANNER_CMD="$SCANNER_CMD -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info"
+              COVERAGE_ARG="-Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info"
               echo "Including backend coverage only"
             elif [ -f "frontend/coverage/lcov.info" ]; then
-              SCANNER_CMD="$SCANNER_CMD -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info"
+              COVERAGE_ARG="-Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info"
               echo "Including frontend coverage only"
             else
               echo "No coverage files found, proceeding without coverage"
             fi
             
-            eval $SCANNER_CMD
+            sonar-scanner \
+              -Dsonar.host.url=https://sonarcloud.io \
+              -Dsonar.token="${SONAR_TOKEN}" \
+              -Dsonar.organization="${SONAR_ORGANIZATION}" \
+              -Dsonar.projectKey="${SONAR_PROJECT_KEY}" \
+              -Dsonar.branch.name=main \
+              -Dsonar.sources=backend,frontend/src \
+              -Dsonar.exclusions=**/node_modules/**,**/coverage/**,**/build/**,**/*.test.js,**/*.test.jsx \
+              -Dsonar.sourceEncoding=UTF-8 \
+              -Dsonar.javascript.file.suffixes=.js,.jsx \
+              ${COVERAGE_ARG}
       - store_artifacts:
           path: .scannerwork
 

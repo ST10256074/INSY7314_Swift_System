@@ -1,8 +1,39 @@
-import React from "react";
 import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import "./EmployeeHome.css";
+import apiService from "../../utils/api";
 
 export default function EmployeeHome() {
+  const [payments, setPayments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+   useEffect(() => {
+    const fetchPayments = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await apiService.getAllPayments();
+        
+        if (response.applications) {
+         //using same filter of pending payments as in PendingPayments.js
+         //added splice to see top 5 
+          const pendingPayments = response.applications.filter(app => app.status === 'pending');
+          setPayments(pendingPayments.slice(0, 5)); 
+        } else {
+          setPayments([]);
+        }
+      } catch (error) {
+        console.error('Error fetching payments:', error);
+        setError('Failed to load payment applications. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPayments();
+  }, []);
+
   return (
     <div className="employee-home">
       <div className="home-header">
@@ -26,43 +57,42 @@ export default function EmployeeHome() {
           <div className="card-header">
             <h3>Payment Status</h3>
           </div>
-          <div className="status-list">
-            <div className="status-item">
-              <div className="status-indicator pending"></div>
-              <div className="status-info">
-                <span className="status-text">Payment Pending</span>
-                <span className="status-detail">R 5,000.00 from Client A</span>
-              </div>
-            </div>
-            <div className="status-item">
-              <div className="status-indicator pending"></div>
-              <div className="status-info">
-                <span className="status-text">Payment Pending</span>
-                <span className="status-detail">R 3,200.00 from Client B</span>
-              </div>
-            </div>
-            <div className="status-item">
-              <div className="status-indicator pending"></div>
-              <div className="status-info">
-                <span className="status-text">Payment Pending</span>
-                <span className="status-detail">R 1,800.00 from Client C</span>
-              </div>
-            </div>
-            <div className="status-item">
-              <div className="status-indicator completed"></div>
-              <div className="status-info">
-                <span className="status-text">Payment Approved</span>
-                <span className="status-detail">R 2,500.00 from Client D</span>
-              </div>
-            </div>
-            <div className="status-item">
-              <div className="status-indicator completed"></div>
-              <div className="status-info">
-                <span className="status-text">Payment Approved</span>
-                <span className="status-detail">R 4,100.00 from Client E</span>
-              </div>
-            </div>
-          </div>
+          {/* views pending payments */}
+         <div className="status-list">
+  {loading ? (
+    <div className="status-item">
+      <div className="status-info">
+        <span className="status-text">Loading...</span>
+      </div>
+    </div>
+  ) : error ? (
+    <div className="status-item">
+      <div className="status-info">
+        <span className="status-text" style={{ color: "#ef4444" }}>{error}</span>
+      </div>
+    </div>
+  ) : payments.length === 0 ? (
+    <div className="status-item">
+      <div className="status-info">
+        <span className="status-text">No payments found.</span>
+      </div>
+    </div>
+  ) : (
+    payments.map((payment) => (
+      <div className="status-item" key={payment._id}>
+        <div className={`status-indicator ${payment.status}`}></div>
+        <div className="status-info">
+          <span className="status-text">
+            {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
+          </span>
+          <span className="status-detail">
+            {payment.currency} {payment.amount} from {payment.recipientName}
+          </span>
+        </div>
+      </div>
+    ))
+  )}
+</div>
         </div>
 
         <div className="card">
