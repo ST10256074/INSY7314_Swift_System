@@ -61,7 +61,7 @@ router.post("/signup", async (req, res) => {
 
         // Check if username already exists
         let userCollection = await db.collection("users");
-        const existingUser = await userCollection.findOne({ username: username });
+        const existingUser = await userCollection.findOne({ username: { $eq: username.toString() } });
         
         if (existingUser) {
             return res.status(400).send('Username already exists');
@@ -76,7 +76,7 @@ router.post("/signup", async (req, res) => {
         const encryptedFullName = await encrypt(full_name);
 
         const newDocument = {
-            username: username, // Username is not encrypted as it's used for login
+            username: username.toString(), // Username is not encrypted as it's used for login but sanitized
             full_name: encryptedFullName,
             accountNumber: encryptedAccountNumber,
             IDNumber: encryptedIDNumber,
@@ -145,7 +145,7 @@ router.post("/signup-employee", async (req, res) => {
 
         // Check if username already exists
         let userCollection = await db.collection("users");
-        const existingUser = await userCollection.findOne({ username: username });
+        const existingUser = await userCollection.findOne({ username: { $eq: username.toString() } });
         
         if (existingUser) {
             return res.status(400).send('Username already exists');
@@ -160,7 +160,7 @@ router.post("/signup-employee", async (req, res) => {
         const encryptedFullName = await encrypt(full_name);
 
         const newDocument = {
-            username: username, // Username is not encrypted as it's used for login
+            username: username.toString(), // Username is not encrypted as it's used for login but sanitized
             full_name: encryptedFullName,
             accountNumber: encryptedAccountNumber,
             IDNumber: encryptedIDNumber,
@@ -192,7 +192,7 @@ router.get('/profile', checkAuth, async (req, res) => {
         }
 
         let userCollection = await db.collection("users");
-        let user = await userCollection.findOne({ username: userName });
+        let user = await userCollection.findOne({ username: { $eq: userName.toString() } });
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -256,7 +256,7 @@ router.post('/login', async (req, res) => {
 
     try{
     let userCollection = await db.collection("users");
-    let result = await userCollection.findOne({ username: user });
+    let result = await userCollection.findOne({ username: { $eq: user.toString() } });
 
     if (!result) {
         return res.status(401).send('Authentication failed');
