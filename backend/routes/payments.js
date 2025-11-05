@@ -369,7 +369,9 @@ router.get('/status/:status', async (req, res) => {
         }
 
         let collection = await db.collection("payment_applications");
-        let applications = await collection.find({ status: status }).sort({ submittedAt: -1 }).toArray();
+        // Use parameterized query to prevent injection attacks
+        const sanitizedStatus = status.toString();
+        let applications = await collection.find({ status: { $eq: sanitizedStatus } }).sort({ submittedAt: -1 }).toArray();
 
         // Decrypt sensitive data for response
         const decryptedApplications = await Promise.all(applications.map(async (app) => {
