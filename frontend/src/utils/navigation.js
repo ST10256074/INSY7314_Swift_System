@@ -19,6 +19,7 @@ export const useAppNavigation = () => {
     // Employee routes
     employeeHome: () => navigate('/EmployeeHome'),
     pendingPayments: () => navigate('/pendingPayments'),
+    inspectPayment: (paymentId) => navigate(`/inspect-payment/${paymentId}`),
     
     // Generic navigation
     goTo: (path) => navigate(path),
@@ -40,4 +41,5 @@ export const ROUTES = {
   PENDING_PAYMENTS: '/pendingPayments',
   ACCOUNT_DETAILS: '/account-details',
   INSPECT_TRANSACTION: '/inspect-transaction/:transactionId',
+  INSPECT_PAYMENT: '/inspect-payment/:paymentId'
 };

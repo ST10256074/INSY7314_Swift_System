@@ -15,6 +15,7 @@ import ClientHome from './pages/client/ClientHome.js';
 import EmployeeHome from './pages/employee/EmployeeHome.js';
 import AccountDetails from './pages/client/AccountDetails.js';
 import InspectTransaction from './pages/client/InspectTransaction.js';
+import InspectPayment from './pages/employee/InspectPayment.js';
 
 function AppContent() {
   const location = useLocation();
@@ -86,6 +87,14 @@ function AppContent() {
           element={
             <ProtectedRoute requireEmployee={true}>
               <PendingPayments />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path={ROUTES.INSPECT_PAYMENT} 
+          element={
+            <ProtectedRoute requireEmployee={true}>
+              <InspectPayment />
             </ProtectedRoute>
           } 
         />

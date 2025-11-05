@@ -71,7 +71,6 @@
   font-size: 0.98rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
 }
 
 .approve-btn {
@@ -86,6 +85,7 @@
 .deny-btn {
   background-color: #ef4444;
   color: #fff;
+  margin-top: 2px;
 }
 
 .deny-btn:hover {
@@ -94,6 +94,12 @@
 
 .swift-check-btn {
   background-color: #3b82f6;
+  color: #fff;
+}
+
+.inspect-btn {
+  background-color: #3b82f6;
+  border-radius: 6px;
   color: #fff;
 }
 

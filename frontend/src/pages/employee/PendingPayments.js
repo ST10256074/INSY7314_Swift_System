@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./PendingPayments.css";
 import apiService from "../../utils/api";
+import { Link } from "react-router-dom";
 
 export default function PendingPayments() {
   const [payments, setPayments] = useState([]);
@@ -160,6 +161,7 @@ export default function PendingPayments() {
                 <th>Date Submitted</th>
                 <th>SWIFT Code</th>
                 <th>Swift Check</th>
+                <th>Details</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -179,6 +181,16 @@ export default function PendingPayments() {
                     >
                       Check Swift
                     </button>
+                  </td>
+                  <td>
+                    <div className="action-btn">
+                    <Link 
+                      to={`/inspect-payment/${payment._id}`}
+                      className="inspect-btn"
+                    >
+                      View Details
+                    </Link>
+                  </div>
                   </td>
                   <td>
                     <button
