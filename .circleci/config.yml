@@ -501,6 +501,7 @@ jobs:
               -Dsonar.login="${SONAR_TOKEN}" \
               -Dsonar.organization="${SONAR_ORGANIZATION}" \
               -Dsonar.projectKey="${SONAR_PROJECT_KEY}" \
+              -Dsonar.branch.name=main \
               -Dsonar.sources=backend,frontend/src \
               -Dsonar.exclusions=**/node_modules/**,**/coverage/**,**/build/**,**/*.test.js,**/*.test.jsx \
               -Dsonar.sourceEncoding=UTF-8 \
