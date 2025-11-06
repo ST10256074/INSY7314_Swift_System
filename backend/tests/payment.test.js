@@ -65,12 +65,12 @@ describe('Payment Validation Tests', () => {
     test('should validate recipient name format', () => {
       const recipientNameRegex = /^[a-zA-Z0-9 .,'-]{2,50}$/;
       
-      expect(recipientNameRegex.test('John Doe')).toBe(true);
+      expect(recipientNameRegex.test('Jan Smit')).toBe(true);
       expect(recipientNameRegex.test('ABC Corp.')).toBe(true);
       expect(recipientNameRegex.test("O'Connor Inc")).toBe(true);
       expect(recipientNameRegex.test('Company-123')).toBe(true);
       expect(recipientNameRegex.test('J')).toBe(false); // Too short
-      expect(recipientNameRegex.test('J@hn D0e')).toBe(false); // Invalid @ character
+      expect(recipientNameRegex.test('J@n Sm1t')).toBe(false); // Invalid @ character
     });
   });
 
@@ -103,7 +103,7 @@ describe('Payment Validation Tests', () => {
     test('should filter out disallowed payment fields', () => {
       const allowedFields = ['recipientName', 'recipientAccountNumber', 'swiftCode', 'amount', 'currency', 'paymentProvider'];
       const paymentData = {
-        recipientName: 'John Doe',
+        recipientName: 'Jan Smit',
         recipientAccountNumber: '1234567890',
         swiftCode: 'ABCDUS33',
         amount: '1000.50',
@@ -121,7 +121,7 @@ describe('Payment Validation Tests', () => {
         }
       });
 
-      expect(paymentData.recipientName).toBe('John Doe');
+      expect(paymentData.recipientName).toBe('Jan Smit');
       expect(paymentData.swiftCode).toBe('ABCDUS33');
       expect(paymentData.admin).toBeUndefined();
       expect(paymentData.status).toBeUndefined();
@@ -134,7 +134,7 @@ describe('Payment Validation Tests', () => {
       const requiredFields = ['recipientName', 'recipientAccountNumber', 'swiftCode', 'amount', 'currency', 'paymentProvider'];
       
       const incompletePayment = {
-        recipientName: 'John Doe',
+        recipientName: 'Jan Smit',
         swiftCode: 'ABCDUS33'
         // Missing other required fields
       };
@@ -152,7 +152,7 @@ describe('Payment Validation Tests', () => {
       const requiredFields = ['recipientName', 'recipientAccountNumber', 'swiftCode', 'amount', 'currency', 'paymentProvider'];
       
       const completePayment = {
-        recipientName: 'John Doe',
+        recipientName: 'Jan Smit',
         recipientAccountNumber: '1234567890',
         swiftCode: 'ABCDUS33',
         amount: '1000.50',

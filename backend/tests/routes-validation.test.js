@@ -99,7 +99,7 @@ describe('Route Files Validation', () => {
       
       expect(content).toContain('username');
       expect(content).toContain('password');
-      expect(content).toContain('All fields');
+      expect(content).toContain('validateUserInput');
     });
   });
 

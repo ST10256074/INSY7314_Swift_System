@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import "./EmployeeHome.css";
 import apiService from "../../utils/api";
+import { filterPendingPayments, getTopPayments, formatPaymentDisplay } from "../../utils/componentUtils";
 
 export default function EmployeeHome() {
   const [payments, setPayments] = useState([]);
@@ -16,10 +17,8 @@ export default function EmployeeHome() {
         const response = await apiService.getAllPayments();
         
         if (response.applications) {
-         //using same filter of pending payments as in PendingPayments.js
-         //added splice to see top 5 
-          const pendingPayments = response.applications.filter(app => app.status === 'pending');
-          setPayments(pendingPayments.slice(0, 5)); 
+          const pendingPayments = filterPendingPayments(response.applications);
+          setPayments(getTopPayments(pendingPayments, 5)); 
         } else {
           setPayments([]);
         }
@@ -86,7 +85,7 @@ export default function EmployeeHome() {
             {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
           </span>
           <span className="status-detail">
-            {payment.currency} {payment.amount} from {payment.recipientName}
+            {formatPaymentDisplay(payment)}
           </span>
         </div>
       </div>

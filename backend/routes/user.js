@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import checkAuth from "../check-auth.js";
 import { encrypt, decrypt } from "../utils/encryption.js";
+import { validateUserInput, sanitizeUserInput } from "../utils/validation.js";
 
 const router = express.Router();
 
@@ -15,48 +16,12 @@ const router = express.Router();
  */
 router.post("/signup", async (req, res) => {
     try {
+        const sanitized = sanitizeUserInput(req.body);
+        const { username, full_name, accountNumber, IDNumber, password } = sanitized;
 
-                // Whitelist allowed fields
-        const allowedFields = ["username", "full_name", "accountNumber", "IDNumber", "password"];
-        Object.keys(req.body).forEach(key => {
-            if (!allowedFields.includes(key)) {
-                delete req.body[key];
-            }
-        });
-
-        // Regex patterns for input validation
-        const usernameRegex = /^[a-zA-Z0-9_]{3,16}$/;
-        const fullNameRegex = /^[a-zA-Z .,'-]{2,50}$/;
-        const accountNumberRegex = /^\d{6,20}$/;
-        const idNumberRegex = /^\d{13}$/;
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/;
-
-
-        let username = req.body.username;
-        let full_name = req.body.full_name;
-        let accountNumber = req.body.accountNumber;
-        let IDNumber = req.body.IDNumber;
-        let password = req.body.password;
-
-
-        if (!username || !full_name || !accountNumber || !IDNumber || !password) {
-            return res.status(400).send('All fields (username, full name, account number, ID number, password) are required');
-        }
-
-         if (!usernameRegex.test(username)) {
-            return res.status(400).send('Username must be 3-16 characters and contain only letters, numbers, or underscores');
-        }
-        if (!fullNameRegex.test(full_name)) {
-            return res.status(400).send('Full name contains invalid characters');
-        }
-        if (!accountNumberRegex.test(accountNumber)) {
-            return res.status(400).send('Account number must be 6-20 digits');
-        }
-        if (!idNumberRegex.test(IDNumber)) {
-            return res.status(400).send('ID Number must be exactly 13 digits');
-        }
-        if (!passwordRegex.test(password)) {
-            return res.status(400).send('Password must be at least 6 characters and contain at least one letter and one number');
+        const validation = validateUserInput(username, full_name, accountNumber, IDNumber, password);
+        if (!validation.isValid) {
+            return res.status(400).send(validation.errors[0]);
         }
 
         // Check if username already exists
@@ -102,45 +67,12 @@ router.post("/signup", async (req, res) => {
  */
 router.post("/signup-employee", async (req, res) => {
     try {
-        // Whitelist allowed fields
-        const allowedFields = ["username", "full_name", "accountNumber", "IDNumber", "password"];
-        Object.keys(req.body).forEach(key => {
-            if (!allowedFields.includes(key)) {
-                delete req.body[key];
-            }
-        });
+        const sanitized = sanitizeUserInput(req.body);
+        const { username, full_name, accountNumber, IDNumber, password } = sanitized;
 
-        // Regex patterns for input validation
-        const usernameRegex = /^[a-zA-Z0-9_]{3,16}$/;
-        const fullNameRegex = /^[a-zA-Z .,'-]{2,50}$/;
-        const accountNumberRegex = /^\d{6,20}$/;
-        const idNumberRegex = /^\d{13}$/;
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/;
-
-        let username = req.body.username;
-        let full_name = req.body.full_name;
-        let accountNumber = req.body.accountNumber;
-        let IDNumber = req.body.IDNumber;
-        let password = req.body.password;
-
-        if (!username || !full_name || !accountNumber || !IDNumber || !password) {
-            return res.status(400).send('All fields (username, full name, account number, ID number, password) are required');
-        }
-
-        if (!usernameRegex.test(username)) {
-            return res.status(400).send('Username must be 3-16 characters and contain only letters, numbers, or underscores');
-        }
-        if (!fullNameRegex.test(full_name)) {
-            return res.status(400).send('Full name contains invalid characters');
-        }
-        if (!accountNumberRegex.test(accountNumber)) {
-            return res.status(400).send('Account number must be 6-20 digits');
-        }
-        if (!idNumberRegex.test(IDNumber)) {
-            return res.status(400).send('ID Number must be exactly 13 digits');
-        }
-        if (!passwordRegex.test(password)) {
-            return res.status(400).send('Password must be at least 6 characters and contain at least one letter and one number');
+        const validation = validateUserInput(username, full_name, accountNumber, IDNumber, password);
+        if (!validation.isValid) {
+            return res.status(400).send(validation.errors[0]);
         }
 
         // Check if username already exists

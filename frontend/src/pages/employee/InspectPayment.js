@@ -4,6 +4,7 @@ import apiService from '../../utils/api.js';
 import { useAuth } from '../../contexts/AuthContext.js';
 import { ROUTES } from '../../utils/navigation.js';
 import { getStatusColor, getStatusIcon, formatDate, formatAmount } from '../../utils/paymentUtils.js';
+import { processPaymentResponse, validatePaymentId } from '../../utils/componentUtils.js';
 import './InspectPayment.css';
 
 const InspectPayment = () => {
@@ -22,7 +23,7 @@ const InspectPayment = () => {
         return;
       }
 
-      if (!paymentId) {
+      if (!validatePaymentId(paymentId)) {
         setError('No payment ID provided.');
         setLoading(false);
         return;
@@ -32,9 +33,7 @@ const InspectPayment = () => {
         setLoading(true);
         setError('');
         const response = await apiService.getPaymentById(paymentId);
-        
-        // Handle both direct application response and wrapped response
-        const applicationData = response.application || response;
+        const applicationData = processPaymentResponse(response);
         setTransaction(applicationData);
       } catch (err) {
         console.error('Error fetching payment:', err);
