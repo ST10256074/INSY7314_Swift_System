@@ -1,4 +1,7 @@
 import { describe, test, expect } from '@jest/globals';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import fs from 'fs';
 
 describe('Payment Validation Tests', () => {
   describe('SWIFT Code Validation', () => {
@@ -160,6 +163,32 @@ describe('Payment Validation Tests', () => {
       const missingFields = requiredFields.filter(field => !completePayment[field]);
       
       expect(missingFields.length).toBe(0);
+    });
+  });
+
+  describe('Status Parameter Sanitization', () => {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
+    const paymentRoutesPath = join(__dirname, '../routes/payments.js');
+
+    test('should sanitize status parameter using toString()', () => {
+      const content = fs.readFileSync(paymentRoutesPath, 'utf8');
+      expect(content).toContain('status.toString()');
+      expect(content).toContain('sanitizedStatus');
+    });
+
+    test('should validate status values in route', () => {
+      const content = fs.readFileSync(paymentRoutesPath, 'utf8');
+      expect(content).toContain("'pending'");
+      expect(content).toContain("'approved'");
+      expect(content).toContain("'rejected'");
+      expect(content).toContain('includes(status)');
+    });
+
+    test('should use parameterized query with $eq operator', () => {
+      const content = fs.readFileSync(paymentRoutesPath, 'utf8');
+      expect(content).toContain('$eq');
+      expect(content).toContain('status: { $eq:');
     });
   });
 });
