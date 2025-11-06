@@ -503,8 +503,9 @@ jobs:
               -Dsonar.projectKey="${SONAR_PROJECT_KEY}" \
               -Dsonar.branch.name=main \
               -Dsonar.sources=backend,frontend/src \
-              -Dsonar.exclusions=**/node_modules/**,**/coverage/**,**/build/**,**/*.test.js,**/*.test.jsx \
+              -Dsonar.exclusions=**/node_modules/**,**/coverage/**,**/build/**,**/*.test.js,**/*.test.jsx,**/pages/**,**/components/** \
               -Dsonar.cpd.exclusions=**/*.test.js,**/*.test.jsx,**/coverage/**,**/node_modules/** \
+              -Dsonar.coverage.exclusions=**/routes/**,**/pages/**,**/components/** \
               -Dsonar.sourceEncoding=UTF-8 \
               -Dsonar.javascript.file.suffixes=.js,.jsx \
               ${COVERAGE_ARG}

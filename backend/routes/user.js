@@ -10,6 +10,46 @@ import { validateUserInput, sanitizeUserInput } from "../utils/validation.js";
 const router = express.Router();
 
 /**
+ * Shared function to create a new user account
+ * Handles validation, encryption, and database insert
+ * @param {Object} sanitized - Sanitized user input
+ * @param {string} userType - Type of user
+ * @returns {Object} Result object with success status and data/error
+ */
+async function createUserAccount(sanitized, userType) {
+    const { username, full_name, accountNumber, IDNumber, password } = sanitized;
+
+    const validation = validateUserInput(username, full_name, accountNumber, IDNumber, password);
+    if (!validation.isValid) {
+        return { success: false, status: 400, message: validation.errors[0] };
+    }
+
+    const userCollection = await db.collection("users");
+    const existingUser = await userCollection.findOne({ username: { $eq: username.toString() } });
+    
+    if (existingUser) {
+        return { success: false, status: 400, message: 'Username already exists' };
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const encryptedAccountNumber = await encrypt(accountNumber);
+    const encryptedIDNumber = await encrypt(IDNumber);
+    const encryptedFullName = await encrypt(full_name);
+
+    const newDocument = {
+        username: username.toString(),
+        full_name: encryptedFullName,
+        accountNumber: encryptedAccountNumber,
+        IDNumber: encryptedIDNumber,
+        password: hashedPassword,
+        userType: userType
+    };
+
+    const result = await userCollection.insertOne(newDocument);
+    return { success: true, status: 201, result, userType };
+}
+
+/**
  * User registration endpoint
  * Validates input data, encrypts sensitive information, and creates new user account
  * POST /user/signup
@@ -17,41 +57,13 @@ const router = express.Router();
 router.post("/signup", async (req, res) => {
     try {
         const sanitized = sanitizeUserInput(req.body);
-        const { username, full_name, accountNumber, IDNumber, password } = sanitized;
-
-        const validation = validateUserInput(username, full_name, accountNumber, IDNumber, password);
-        if (!validation.isValid) {
-            return res.status(400).send(validation.errors[0]);
-        }
-
-        // Check if username already exists
-        let userCollection = await db.collection("users");
-        const existingUser = await userCollection.findOne({ username: { $eq: username.toString() } });
+        const createResult = await createUserAccount(sanitized, "User");
         
-        if (existingUser) {
-            return res.status(400).send('Username already exists');
+        if (!createResult.success) {
+            return res.status(createResult.status).send(createResult.message);
         }
 
-        //salted and hashed 10 rounds
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Encrypt sensitive data before storing
-        const encryptedAccountNumber = await encrypt(accountNumber);
-        const encryptedIDNumber = await encrypt(IDNumber);
-        const encryptedFullName = await encrypt(full_name);
-
-        const newDocument = {
-            username: username.toString(), // Username is not encrypted as it's used for login but sanitized
-            full_name: encryptedFullName,
-            accountNumber: encryptedAccountNumber,
-            IDNumber: encryptedIDNumber,
-            password: hashedPassword,
-            userType: "User"
-        };
-
-        let result = await userCollection.insertOne(newDocument);
-
-        res.status(201).json({ message: 'User created successfully', result });
+        res.status(201).json({ message: 'User created successfully', result: createResult.result });
     }
     catch (error) {
         console.error("signup error:", error);  
@@ -59,7 +71,6 @@ router.post("/signup", async (req, res) => {
     }
 });
 
-// Remove later
 /**
  * Employee registration endpoint
  * Validates input data, encrypts sensitive information, and creates new employee account
@@ -68,41 +79,13 @@ router.post("/signup", async (req, res) => {
 router.post("/signup-employee", async (req, res) => {
     try {
         const sanitized = sanitizeUserInput(req.body);
-        const { username, full_name, accountNumber, IDNumber, password } = sanitized;
-
-        const validation = validateUserInput(username, full_name, accountNumber, IDNumber, password);
-        if (!validation.isValid) {
-            return res.status(400).send(validation.errors[0]);
-        }
-
-        // Check if username already exists
-        let userCollection = await db.collection("users");
-        const existingUser = await userCollection.findOne({ username: { $eq: username.toString() } });
+        const createResult = await createUserAccount(sanitized, "Employee");
         
-        if (existingUser) {
-            return res.status(400).send('Username already exists');
+        if (!createResult.success) {
+            return res.status(createResult.status).send(createResult.message);
         }
 
-        //salted and hashed 10 rounds
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Encrypt sensitive data before storing
-        const encryptedAccountNumber = await encrypt(accountNumber);
-        const encryptedIDNumber = await encrypt(IDNumber);
-        const encryptedFullName = await encrypt(full_name);
-
-        const newDocument = {
-            username: username.toString(), // Username is not encrypted as it's used for login but sanitized
-            full_name: encryptedFullName,
-            accountNumber: encryptedAccountNumber,
-            IDNumber: encryptedIDNumber,
-            password: hashedPassword,
-            userType: "Employee"
-        };
-
-        let result = await userCollection.insertOne(newDocument);
-
-        res.status(201).json({ message: 'Employee created successfully', result });
+        res.status(201).json({ message: 'Employee created successfully', result: createResult.result });
     }
     catch (error) {
         console.error("employee signup error:", error);  
