@@ -50,25 +50,34 @@ async function createUserAccount(sanitized, userType) {
 }
 
 /**
- * User registration endpoint
- * Validates input data, encrypts sensitive information, and creates new user account
- * POST /user/signup
+ * Shared route handler for user registration
+ * Handles request/response and error handling for signup routes
  */
-router.post("/signup", async (req, res) => {
+async function handleSignup(req, res, userType, errorContext) {
     try {
         const sanitized = sanitizeUserInput(req.body);
-        const createResult = await createUserAccount(sanitized, "User");
+        const createResult = await createUserAccount(sanitized, userType);
         
         if (!createResult.success) {
             return res.status(createResult.status).send(createResult.message);
         }
 
-        res.status(201).json({ message: 'User created successfully', result: createResult.result });
+        const message = userType === "User" ? 'User created successfully' : 'Employee created successfully';
+        res.status(201).json({ message, result: createResult.result });
     }
     catch (error) {
-        console.error("signup error:", error);  
+        console.error(`${errorContext} error:`, error);  
         res.status(500).send('Internal server error');
     }
+}
+
+/**
+ * User registration endpoint
+ * Validates input data, encrypts sensitive information, and creates new user account
+ * POST /user/signup
+ */
+router.post("/signup", async (req, res) => {
+    await handleSignup(req, res, "User", "signup");
 });
 
 /**
@@ -77,20 +86,7 @@ router.post("/signup", async (req, res) => {
  * POST /user/signup-employee
  */
 router.post("/signup-employee", async (req, res) => {
-    try {
-        const sanitized = sanitizeUserInput(req.body);
-        const createResult = await createUserAccount(sanitized, "Employee");
-        
-        if (!createResult.success) {
-            return res.status(createResult.status).send(createResult.message);
-        }
-
-        res.status(201).json({ message: 'Employee created successfully', result: createResult.result });
-    }
-    catch (error) {
-        console.error("employee signup error:", error);  
-        res.status(500).send('Internal server error');
-    }
+    await handleSignup(req, res, "Employee", "employee signup");
 });
 
 /**
