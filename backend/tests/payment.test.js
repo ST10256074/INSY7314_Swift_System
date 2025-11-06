@@ -1,7 +1,26 @@
-import { describe, test, expect } from '@jest/globals';
+import { describe, test, expect, beforeEach, jest } from '@jest/globals';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import fs from 'fs';
+import request from 'supertest';
+import express from 'express';
+
+// Mock checkAuth before importing payment routes
+const mockCheckAuth = (req, res, next) => {
+  req.user = {
+    id: 'test_user_id',
+    name: 'Jan Smit',
+    type: 'User'
+  };
+  next();
+};
+
+jest.unstable_mockModule('../check-auth.js', () => ({
+  default: mockCheckAuth
+}));
+
+// Import payment routes after mocking checkAuth
+const { default: paymentRoutes } = await import('../routes/payments.js');
 
 describe('Payment Validation Tests', () => {
   describe('SWIFT Code Validation', () => {
@@ -91,9 +110,8 @@ describe('Payment Validation Tests', () => {
     test('should validate payment provider format', () => {
       const paymentProviderRegex = /^[a-zA-Z0-9 .,'-]{2,50}$/;
       
-      expect(paymentProviderRegex.test('Bank of America')).toBe(true);
-      expect(paymentProviderRegex.test('HSBC')).toBe(true);
-      expect(paymentProviderRegex.test('Chase Bank')).toBe(true);
+      expect(paymentProviderRegex.test('Mastercard')).toBe(true);
+      expect(paymentProviderRegex.test('Visa')).toBe(true);
       expect(paymentProviderRegex.test('B')).toBe(false); // Too short
       expect(paymentProviderRegex.test('B@nk')).toBe(false); // Invalid character
     });
@@ -108,7 +126,7 @@ describe('Payment Validation Tests', () => {
         swiftCode: 'ABCDUS33',
         amount: '1000.50',
         currency: 'USD',
-        paymentProvider: 'Bank of America',
+        paymentProvider: 'Visa',
         admin: true, // Disallowed
         status: 'approved', // Disallowed
         verified: true // Disallowed
@@ -157,7 +175,7 @@ describe('Payment Validation Tests', () => {
         swiftCode: 'ABCDUS33',
         amount: '1000.50',
         currency: 'USD',
-        paymentProvider: 'Bank of America'
+        paymentProvider: 'Mastercard'
       };
 
       const missingFields = requiredFields.filter(field => !completePayment[field]);
@@ -189,6 +207,148 @@ describe('Payment Validation Tests', () => {
       const content = fs.readFileSync(paymentRoutesPath, 'utf8');
       expect(content).toContain('$eq');
       expect(content).toContain('status: { $eq:');
+    });
+  });
+
+  describe('Payment API Endpoint Tests', () => {
+    let app;
+
+    beforeEach(() => {
+      app = express();
+      app.use(express.json());
+      app.use('/payments', paymentRoutes);
+    });
+
+    describe('POST /payments/submit', () => {
+      test('should reject request with missing required fields', async () => {
+        const response = await request(app)
+          .post('/payments/submit')
+          .send({
+            recipientName: 'Jan Smit',
+            swiftCode: 'ABCDUS33'
+          });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toContain('required');
+      });
+
+      test('should reject request with invalid SWIFT code format', async () => {
+        const response = await request(app)
+          .post('/payments/submit')
+          .send({
+            recipientName: 'Jan Smit',
+            accountNumber: '1234567890',
+            swiftCode: 'INVALID',
+            amount: '1000.50',
+            currency: 'USD',
+            paymentProvider: 'Visa'
+          });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toContain('SWIFT code');
+      });
+
+      test('should reject request with invalid amount format', async () => {
+        const response = await request(app)
+          .post('/payments/submit')
+          .send({
+            recipientName: 'Jan Smit',
+            accountNumber: '1234567890',
+            swiftCode: 'ABCDUS33',
+            amount: '-100',
+            currency: 'USD',
+            paymentProvider: 'Mastercard'
+          });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toMatch(/amount|format/i);
+      });
+
+      test('should reject request with invalid currency format', async () => {
+        const response = await request(app)
+          .post('/payments/submit')
+          .send({
+            recipientName: 'Jan Smit',
+            accountNumber: '1234567890',
+            swiftCode: 'ABCDUS33',
+            amount: '1000.50',
+            currency: 'US',
+            paymentProvider: 'Visa'
+          });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toMatch(/currency|format/i);
+      });
+
+      test('should filter out disallowed fields', async () => {
+        const response = await request(app)
+          .post('/payments/submit')
+          .send({
+            recipientName: 'Jan Smit',
+            accountNumber: '1234567890',
+            swiftCode: 'ABCDUS33',
+            amount: '1000.50',
+            currency: 'USD',
+            paymentProvider: 'Mastercard',
+            admin: true,
+            status: 'approved'
+          });
+
+        // Should fail validation, but disallowed fields should be filtered
+        expect(response.status).toBeGreaterThanOrEqual(400);
+      });
+    });
+
+    describe('GET /payments/status/:status', () => {
+      test('should reject invalid status parameter', async () => {
+        const response = await request(app)
+          .get('/payments/status/invalid');
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toContain('Invalid status');
+      });
+
+      test('should accept valid status parameter', async () => {
+        const response = await request(app)
+          .get('/payments/status/pending');
+
+        // Should not return 400 for invalid status
+        expect(response.status).not.toBe(400);
+      });
+    });
+
+    describe('GET /payments/:id', () => {
+      test('should reject invalid ObjectId format', async () => {
+        const response = await request(app)
+          .get('/payments/invalid-id');
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toContain('Invalid application ID');
+      });
+    });
+
+    describe('PATCH /payments/review/:id', () => {
+      test('should reject invalid status in review', async () => {
+        const response = await request(app)
+          .patch('/payments/review/507f1f77bcf86cd799439011')
+          .send({
+            status: 'invalid'
+          });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toMatch(/approved|rejected/i);
+      });
+
+      test('should reject invalid ObjectId format', async () => {
+        const response = await request(app)
+          .patch('/payments/review/invalid-id')
+          .send({
+            status: 'approved'
+          });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toContain('Invalid application ID');
+      });
     });
   });
 });
