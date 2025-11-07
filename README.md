@@ -71,6 +71,15 @@ View the details of a specific payment application and print it if needed.
 
 ![Inspect Payments Page](Images1/InspectPayments.png)
 
+### Employee Sign in Details
+#### Username
+Employee
+#### Account Number
+38259201
+#### Password
+fkjdlasUDSI324@!
+
+
 ---
 
 ## 🏗️ System Architecture
