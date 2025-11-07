@@ -39,7 +39,7 @@ The **Swift Payment System** is a comprehensive, enterprise-grade international 
 
 ## Youtube Link
 
-https://www.youtube.com/watch?v=D1dcny9Nhz0
+https://youtu.be/_tKUmDrKcq8
 
 ### Key Highlights
 
