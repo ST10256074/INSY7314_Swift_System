@@ -1162,10 +1162,15 @@ This project is developed for educational purposes as part of INSY7314 coursewor
 - Semgrep, 2025. Add Semgrep to CI. [Online]  Available at: https://semgrep.dev/docs/deployment/add-semgrep-to-ci [Accessed 8 October 2025].
 - Snyk, 2024. CircleCI integration using a Snyk Orb. [Online]  Available at: https://docs.snyk.io/developer-tools/snyk-ci-cd-integrations/circleci-integration-using-a-snyk-orb [Accessed 7 October 2025].
 - Truffle Security, 2025. Built by experts in app, infrastructure, and offensive security. [Online]  Available at: https://trufflesecurity.com/security [Accessed 7 October 2025].
-- W3 Schools, 2025. React Tutorial. [Online]
-- Available at: https://www.w3schools.com/react/[Accessed 25 September 2025].
+- W3 Schools, 2025. React Tutorial. [Online] Available at: https://www.w3schools.com/react/[Accessed 25 September 2025].
 - W3Schools, 2025. React CSS Modules. [Online]  Available at: https://www.w3schools.com/REACT/react_css_modules.asp [Accessed 8 October 2025].
 - W3Schools, 2025. React Router. [Online]  Available at: https://www.w3schools.com/REACT/react_router.asp [Accessed 8 October 2025].
+- Visionmedia, 2025. SuperTest GitHub Repository. [Online] Available at: https://github.com/visionmedia/supertest#readme [Accessed 3 November 2025].
+- Traversy Media, 2024. Write Less Code With The DRY Principle. [Video] Available at: https://www.youtube.com/watch?v=Eu35xM76kKY [Accessed 4 November 2025].
+- Stack Overflow, 2025. How to structure an Express.js application. [Online] Available at: https://stackoverflow.com/questions/23714023/how-to-structure-an-express-js-application [Accessed 4 November 2025].
+- SonarSource, 2025. SonarCloud Documentation. [Online] Available at: https://docs.sonarsource.com/sonarcloud/ [Accessed 3 November 2025].
+- SonarSource, 2025. SonarQube Analysis Parameters. [Online] Available at: https://docs.sonarsource.com/sonarqube/latest/analyzing-source-code/analysis-parameters/ [Accessed 4 November 2025].
+- SonarSource, 2025. JavaScript Test Coverage for SonarCloud. [Online] Available at: https://docs.sonarsource.com/sonarcloud/advanced-setup/languages/javascript/ [Accessed 5 November 2025].
 
 
 ---
